@@ -8,7 +8,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ("id", "name","image")
+        # fields = ("id", "name","image")
+        fields = '__all__'
 
 class BrandSerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
@@ -16,14 +17,15 @@ class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
         fields = '__all__'
+        # fields = ("id", "name", "image")
 
 class CollectionSerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
 
     class Meta:
         model = Collection
+        # fields = ("id", "name","image")
         fields = '__all__'
-
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,6 +35,20 @@ class ProductSerializer(serializers.ModelSerializer):
         depth = 1
 
 class AddProductSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        many=True,
+        queryset=Category.objects.all(),
+        slug_field='name'
+    )
+    brand = serializers.SlugRelatedField(
+        queryset=Brand.objects.all(),
+        slug_field='name'
+    )
+    collection = serializers.SlugRelatedField(
+        queryset=Collection.objects.all(),
+        slug_field='name'
+    )
+
     class Meta:
         model = Product
         fields = ['category','brand', 'collection','featured', 'top_rated','name','description', 'picture',

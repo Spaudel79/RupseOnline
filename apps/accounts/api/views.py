@@ -48,6 +48,31 @@ class LoginUserView(LoginView):
                                   "serializer.data": serializer.data},
                                    status=status.HTTP_200_OK)
 
+class VendorLoginUserView(LoginView):
+    permission_classes = [AllowAny]
+    serializer_class = CustomLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = CustomLoginSerializer(data=data)
+        data['user_type'] = request.user.user_type
+        user_type = data['user_type']
+        if user_type is 2:
+            serializer.is_valid(raise_exception=True)
+            new_data = serializer.data
+            user = serializer.validated_data["user"]
+            serializer = self.get_serializer(user)
+            token, created = Token.objects.get_or_create(user=user)
+            # return response.Response(new_data, status=status.HTTP_200_OK)
+            return response.Response({"token": token.key,
+                                      "serializer.data": serializer.data},
+                                       status=status.HTTP_200_OK)
+
+        # else:
+        #     message = "This is not a seller account"
+        #     return Response({'message':message,},
+        #                     status=status.HTTP_400_BAD_REQUEST)
+
 
 class Logout(GenericAPIView):
     permission_classes = [IsAuthenticated]

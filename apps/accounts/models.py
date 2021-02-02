@@ -39,12 +39,28 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(first_name, last_name, email, password, **extra_fields)
 
+# class UserType(models.Model):
+#     Customer = 1
+#     Vendor = 2
+#     Admin = 3
+#     Type_Choices = (
+#         (Customer, 'Customer'),
+#         (Vendor, 'Vendor'),
+#         (Admin, 'Admin'),
+#     )
 
 class CustomUser(AbstractUser):
     username = None
     first_name = models.CharField(max_length=255, verbose_name="First name")
     last_name = models.CharField(max_length=255, verbose_name="Last name")
     email = models.EmailField(unique=True)
+
+    Type_Choices = (
+                (1, 'Customer'),
+                (2, 'Vendor'),
+                (3, 'Admin'),
+            )
+    user_type = models.IntegerField(choices=Type_Choices, default=1)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]

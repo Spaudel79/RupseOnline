@@ -87,9 +87,9 @@ class ProductAddAPIView(CreateAPIView):
     serializer_class = AddProductSerializer
 
     # def perform_create(self, serializer):
-    #     # user = self.request.user
-    #     category = get_object_or_404(Package, pk=self.kwargs['pk'])
-    #     serializer.save(user=self.request.user, package=package)
+    #     brand = get_object_or_404(Brand, pk=self.kwargs['pk'])
+    #     collection = get_object_or_404(Collection, pk=self.kwargs['pk'])
+    #     serializer.save(brand=brand,collection=collection)
 
 
 

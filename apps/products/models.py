@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from taggit.managers import TaggableManager
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -73,7 +74,8 @@ class Product(models.Model):
     tags = TaggableManager(blank=True)  # tags mechanism
     name = models.CharField(max_length=150)
     # slug = models.SlugField(max_length=200)
-    description = models.TextField(max_length=500, default="Empty description.")
+    # description = models.TextField(max_length=500, default="Empty description.")
+    description = RichTextField(blank=True)
     picture = models.ImageField(upload_to="products/images", null=True, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     size = models.CharField(max_length=50, choices=SIZE, default='not applicable')

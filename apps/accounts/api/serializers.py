@@ -22,6 +22,9 @@ class CustomLoginSerializer(LoginSerializer):
     username = None
     email = serializers.EmailField(required=True)
     password = serializers.CharField(style={"input_type": "password"},)
+    user_type = serializers.IntegerField()
+
+    # fields = ("email", "password", "user_type")
 
 
 class CustomRegisterSerializer(serializers.Serializer):
