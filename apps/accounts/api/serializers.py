@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_auth.serializers import LoginSerializer
+from rest_auth.registration.serializers import RegisterSerializer
+from ..models import *
+
 
 try:
     from allauth.utils import email_address_exists
@@ -18,13 +21,43 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name", "email")
 
 
+class SellerRegisterSerializer(serializers.ModelSerializer):
+    seller = serializers.PrimaryKeyRelatedField(read_only=True,)
+    phone_num = serializers.CharField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['seller','email', 'phone_num', 'first_name', 'last_name', 'password']
+
+
+    def get_cleaned_data(self):
+        data = super(SellerRegisterSerializer, self).get_cleaned_data()
+        extra_data = {
+            'phone_num': self.validated_data.get('phone_num', ''),
+        }
+        data.update(extra_data)
+        return data
+
+    def save(self, request,*args, **kwargs):
+        user = super(self).save(request)
+        # user = super().save()
+        user.is_seller = True
+        user.save()
+        seller = Seller(seller=user,
+                        phone_num=self.cleaned_data.get('phone_num'))
+        seller.save(*args, **kwargs)
+        return user
+
+
 class CustomLoginSerializer(LoginSerializer):
-    username = None
+    # username = None
     email = serializers.EmailField(required=True)
     password = serializers.CharField(style={"input_type": "password"},)
-    user_type = serializers.IntegerField()
+    # user_type = serializers.IntegerField()
 
     # fields = ("email", "password", "user_type")
+
+
 
 
 class CustomRegisterSerializer(serializers.Serializer):
