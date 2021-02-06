@@ -23,11 +23,12 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
 
 class SellerRegisterSerializer(serializers.ModelSerializer):
     seller = serializers.PrimaryKeyRelatedField(read_only=True,)
-    phone_num = serializers.CharField(required=False)
+    # username = serializers.CharField(required=True)
+    # phone_num = serializers.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ['seller','email', 'phone_num', 'first_name', 'last_name', 'password']
+        fields = ['seller','email', 'first_name', 'last_name', 'password']
 
 
     def get_cleaned_data(self):
@@ -38,15 +39,25 @@ class SellerRegisterSerializer(serializers.ModelSerializer):
         data.update(extra_data)
         return data
 
-    def save(self, request,*args, **kwargs):
-        user = super(self).save(request)
-        # user = super().save()
+    def save(self, **kwargs):
+        user = super(SellerRegisterSerializer, self).save()
+        # user = super().save(is_seller=True)
         user.is_seller = True
         user.save()
         seller = Seller(seller=user,
                         phone_num=self.cleaned_data.get('phone_num'))
-        seller.save(*args, **kwargs)
+        seller.save()
         return user
+
+    # def create(self, validated_data):
+    #     seller = Seller.objects.create(seller=user,
+    #                                phone_num=self.cleaned_data.get('phone_num'))
+
+
+    # def create(self, *data):
+    #     user = super().save(is_seller=True)
+    #     return Seller.objects.create_seller(seller=user,
+    #                     phone_num=self.cleaned_data.get('phone_num'))
 
 
 class CustomLoginSerializer(LoginSerializer):

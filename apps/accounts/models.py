@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, AbstractBaseUser
 from django.db import models
 from django.conf import settings
 
@@ -50,7 +50,7 @@ class CustomUserManager(BaseUserManager):
 #     )
 
 class CustomUser(AbstractUser):
-    # username = models.CharField(max_length=255,)
+    username = models.CharField(max_length=255,blank=False)
     first_name = models.CharField(max_length=255, verbose_name="First name")
     last_name = models.CharField(max_length=255, verbose_name="Last name")
     email = models.EmailField(unique=True)
