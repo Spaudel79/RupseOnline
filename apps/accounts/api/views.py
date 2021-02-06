@@ -5,7 +5,7 @@ from rest_framework import viewsets, mixins, response, status
 from rest_framework.permissions import (
 AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly,
 )
-from rest_framework.generics import (GenericAPIView,CreateAPIView, ListCreateAPIView,
+from rest_framework.generics import (GenericAPIView,CreateAPIView, ListCreateAPIView,UpdateAPIView,
 ListAPIView,)
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
@@ -56,6 +56,33 @@ class SellerRegisterView(RegisterUserView):
     #                                phone_num=self.cleaned_data.get('phone_num'))
 
 
+class SellerLoginUserView(LoginView):
+    permission_classes = [AllowAny]
+    serializer_class = SellerLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = SellerLoginSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        new_data = serializer.data
+        user = serializer.validated_data["user"]
+        serializer = self.get_serializer(user)
+        token, created = Token.objects.get_or_create(user=user)
+        # return response.Response(new_data, status=status.HTTP_200_OK)
+        return response.Response({"token": token.key,
+                                  "serializer.data": serializer.data},
+                                   status=status.HTTP_200_OK)
+
+class SellerProfileView(ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Seller.objects.all()
+    serializer_class = SellerProfileSerializer
+
+
+class SellerUpdateProfileView(UpdateAPIView):
+    permission_classes = [AllowAny]
+    queryset = Seller.objects.all()
+    serializer_class = SellerProfileSerializer
 
 
 class Logout(GenericAPIView):

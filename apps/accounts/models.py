@@ -77,7 +77,22 @@ class CustomUser(AbstractUser):
 class Seller(models.Model):
     seller = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    business_name = models.CharField(max_length=50, blank=True)
     phone_num = models.CharField(max_length=50, blank=True)
+    legal_name = models.CharField(max_length=50, blank=True)
+    company_registration_name = models.CharField(max_length=50, blank=True)
+    business_registration_no = models.CharField(max_length=50, blank=True)
+    business_email = models.EmailField()
+    docs = models.FileField(blank=True, null=True)
+    full_name = models.CharField(max_length=100, blank=True)
+    mob_num = models.CharField(max_length=50, blank=True)
+    state = models.CharField(max_length=50, blank=True)
+    district = models.CharField(max_length=50, blank=True)
+    vdc = models.CharField(max_length=50, blank=True)
+    address = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return self.seller
 
 
 class Customer(models.Model):
