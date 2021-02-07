@@ -34,7 +34,7 @@ class ProductSerializer(serializers.ModelSerializer):
         # lookup_field = "slug"
         depth = 1
 
-class AddProductSerializer(serializers.ModelSerializer):
+class  AddProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         many=True,
         queryset=Category.objects.all(),

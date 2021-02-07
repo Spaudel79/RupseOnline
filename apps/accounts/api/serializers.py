@@ -136,7 +136,68 @@ class SellerLoginSerializer(serializers.ModelSerializer):
 
         return data
 
+class CustomerRegisterSerializer(RegisterSerializer):
+    customer = serializers.PrimaryKeyRelatedField(read_only=True,)
+    phone_num = serializers.CharField(required=False)
+    username = None
+    full_name = serializers.CharField(required=False)
 
+    def get_cleaned_data(self):
+        data = super(CustomerRegisterSerializer, self).get_cleaned_data()
+        extra_data = {
+            'phone_num': self.validated_data.get('phone_num', ''),
+            'full_name': self.validated_data.get('full_name', ''),
+        }
+        data.update(extra_data)
+        return data
+
+    def save(self,request,**kwargs):
+
+        user = super(CustomerRegisterSerializer,self).save(request)
+        user.is_customer = True
+        user.save()
+        customer = Customer(customer=user,
+                        phone_num=self.cleaned_data.get('phone_num'),
+                        full_name=self.cleaned_data.get('full_name'),
+                        )
+
+        customer.save()
+        return user
+
+class CustomerLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(label='Email Address')
+
+    class Meta:
+        model = User
+        fields = [
+            'id', 'email', 'password',
+        ]
+        # fields = '__all__'
+        extra_kwargs = {"password":
+                            {"write_only": True}}
+
+    def validate(self, data):
+        user = None
+        email = data.get("email", None)
+        password = data.get("password")
+        if not email:
+            raise serializers.ValidationError("Email is required for login")
+        if not password:
+            raise serializers.ValidationError("Password is required for login")
+        user = User.objects.filter(Q(email=email)).distinct()
+        if user.exists() and user.count() ==1:
+            user = user.first()
+        else:
+            raise serializers.ValidationError("This email is not valid")
+        if user:
+            if not user.check_password(password):
+                raise serializers.ValidationError("Incorrect password")
+            if not user.is_customer:
+                raise serializers.ValidationError("This is not a customer account.")
+
+        data['user'] = user
+
+        return data
 
 
 class CustomLoginSerializer(LoginSerializer):

@@ -97,5 +97,6 @@ class Seller(models.Model):
 
 class Customer(models.Model):
     customer = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    full_name = models.CharField(max_length=100, blank=True)
     phone_num = models.CharField(max_length=50, blank=True)
 

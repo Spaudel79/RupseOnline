@@ -1,12 +1,13 @@
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView
+from django.shortcuts import get_object_or_404
 from .serializers import *
 from rest_framework import viewsets, mixins, response, status
 from rest_framework.permissions import (
 AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly,
 )
 from rest_framework.generics import (GenericAPIView,CreateAPIView, ListCreateAPIView,UpdateAPIView,
-ListAPIView,)
+ListAPIView,RetrieveAPIView)
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -52,6 +53,7 @@ class SellerRegisterView(RegisterView):
     serializer_class = SellerRegisterSerializer
 
 
+
 class SellerLoginUserView(LoginView):
     permission_classes = [AllowAny]
     serializer_class = SellerLoginSerializer
@@ -70,9 +72,13 @@ class SellerLoginUserView(LoginView):
                                    status=status.HTTP_200_OK)
 
 class SellerProfileView(ListAPIView):
-    permission_classes = [AllowAny]
-    queryset = Seller.objects.all()
+    permission_classes = [IsAuthenticated]
+    # queryset = Seller.objects.filter(pk=pk)
     serializer_class = SellerProfileSerializer
+
+    def get_queryset(self):
+        queryset = Seller.objects.filter(seller=self.request.user)
+        return queryset
 
 
 class SellerUpdateProfileView(UpdateAPIView):
@@ -80,6 +86,31 @@ class SellerUpdateProfileView(UpdateAPIView):
     queryset = Seller.objects.all()
     serializer_class = SellerProfileSerializer
 
+    def perform_update(self, serializer):
+        user = self.request.user
+        seller = get_object_or_404(Seller, pk=self.kwargs['pk'])
+        serializer.save(user=user, seller=seller)
+
+class CustomerRegisterView(RegisterView):
+    serializer_class = CustomerRegisterSerializer
+
+
+class CustomerLoginUserView(LoginView):
+    permission_classes = [AllowAny]
+    serializer_class = CustomerLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = CustomerLoginSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        new_data = serializer.data
+        user = serializer.validated_data["user"]
+        serializer = self.get_serializer(user)
+        token, created = Token.objects.get_or_create(user=user)
+        # return response.Response(new_data, status=status.HTTP_200_OK)
+        return response.Response({"token": token.key,
+                                  "serializer.data": serializer.data},
+                                   status=status.HTTP_200_OK)
 
 class Logout(GenericAPIView):
     permission_classes = [IsAuthenticated]
