@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'i3jrp$h-yskvh6x-kio)$jf35x9gp*eg-(vg5-vgk+&ytii1!n'
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = '*'
 
 
 env = environ.Env(
@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -66,7 +65,6 @@ INSTALLED_APPS = [
     'django_filters',
     'rangefilter',
     'taggit',
-
     #custom apps
     'apps.accounts',
     'apps.products',
@@ -75,9 +73,10 @@ INSTALLED_APPS = [
 
 ]
 
-SITE_ID = 1
+# SITE_ID = 1
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -85,7 +84,25 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'whitenoise.middleware.WhiteNoiseMiddleware',
+     # 'whitenoise.middleware.WhiteNoiseMiddleware',
+
+]
+
+CORS_ORIGIN_ALLOW_ALL =False
+
+CORS_ORIGIN_WHITELIST = (
+
+    "http://localhost:3000",
+    "http://rupseonline.aakashlabs.com",
+)
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 ROOT_URLCONF = 'RupseOnline.urls'
@@ -120,8 +137,6 @@ DATABASES = {
     'extra': env.db('SQLITE_URL', default='sqlite:////tmp/my-tmp-sqlite.db')
 }
 
- 
-    
 
 
 # Password validation
