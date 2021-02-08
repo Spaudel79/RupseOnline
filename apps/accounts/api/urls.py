@@ -12,6 +12,7 @@ urlpatterns = [
     path("api/seller/profile/update", views.SellerUpdateProfileView.as_view(), name='api-seller-update' ),
     path("api/customer/register/",CustomerRegisterView.as_view(), name='api-registercustomer'),
     path("api/customer/login/", views.CustomerLoginUserView.as_view(), name='api-customer-login' ),
+    path("api/customer/profile/", views.SellerProfileView.as_view(), name='api-seller-profile' ),
     path("api/login/", views.LoginUserView.as_view(), name='api-login'),
     path("api/logout/", views.Logout.as_view(), name='api-logout'),
     # path("api/register", views.RegisterUserView.as_view(), name='api-register')

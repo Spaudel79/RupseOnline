@@ -199,6 +199,12 @@ class CustomerLoginSerializer(serializers.ModelSerializer):
 
         return data
 
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        depth = 1
+
 
 class CustomLoginSerializer(LoginSerializer):
     # username = None

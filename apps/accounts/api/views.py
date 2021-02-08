@@ -112,6 +112,15 @@ class CustomerLoginUserView(LoginView):
                                   "serializer.data": serializer.data},
                                    status=status.HTTP_200_OK)
 
+class CustomerProfileView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    # queryset = Seller.objects.filter(pk=pk)
+    serializer_class = CustomerProfileSerializer
+
+    def get_queryset(self):
+        queryset = Customer.objects.filter(seller=self.request.user)
+        return queryset
+
 class Logout(GenericAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
