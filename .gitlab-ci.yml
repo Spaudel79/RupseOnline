@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: alpine
+  before_script:
+    - apk add zip
+  script:
+    - zip -r public.zip .
+  artifacts:
+    paths:
+      - public.zip
+
+deploy:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - scp -o StrictHostKeyChecking=no public.zip root@202.166.194.143:/home/aakashlabs/rupseonline
+    - ssh -o StrictHostKeyChecking=no root@202.166.194.143 "cd /home/aakashlabs/rupseonline; unzip -o public.zip"
+    - ssh -o StrictHostKeyChecking=no root@202.166.194.143 "systemctl restart vproject.service; systemctl daemon-reload; rm /home/aakashlabs/rupseonline/public.zip"
