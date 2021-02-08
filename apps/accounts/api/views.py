@@ -82,7 +82,7 @@ class SellerProfileView(ListAPIView):
 
 
 class SellerUpdateProfileView(UpdateAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = Seller.objects.all()
     serializer_class = SellerProfileSerializer
 
@@ -93,7 +93,7 @@ class SellerUpdateProfileView(UpdateAPIView):
 
 class SellerTokenView(ListAPIView):
     def get(self, request, *args, **kwargs):
-        serializer = SellerProfileSerializer(request.user)
+        serializer = CustomUserDetailsSerializer(request.user)
         return Response({"user": serializer.data})
 
 class CustomerRegisterView(RegisterView):
@@ -123,12 +123,12 @@ class CustomerProfileView(ListAPIView):
     serializer_class = CustomerProfileSerializer
 
     def get_queryset(self):
-        queryset = Customer.objects.filter(seller=self.request.user)
+        queryset = Customer.objects.filter(customer=self.request.user)
         return queryset
 
 class CustomerTokenView(ListAPIView):
     def get(self, request, *args, **kwargs):
-        serializer = CustomerProfileSerializer(request.user)
+        serializer = CustomUserDetailsSerializer(request.user)
         return Response({"user": serializer.data})
 
 class Logout(GenericAPIView):
