@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'django_filters',
     'rangefilter',
     'taggit',
+    'ckeditor',
+    'ckeditor_uploader',
     #custom apps
     'apps.accounts',
     'apps.products',
@@ -73,7 +75,7 @@ INSTALLED_APPS = [
 
 ]
 
-# SITE_ID = 1
+SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -88,13 +90,13 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ORIGIN_ALLOW_ALL =False
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = (
-
-    "http://localhost:3000",
-    "http://rupseonline.aakashlabs.com",
-)
+# CORS_ORIGIN_WHITELIST = (
+#
+#     "http://localhost:3000",
+#     "http://rupseonline.aakashlabs.com",
+# )
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -179,6 +181,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -222,3 +225,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # REST_USE_JWT = True
+
+MATERIAL_ADMIN_SITE = {
+    'SHOW_COUNTS': True,
+}
