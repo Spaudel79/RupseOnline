@@ -2,9 +2,11 @@ from rest_framework import viewsets
 # from rest_framework.filters import SearchFilter, OrderingFilter
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
+from .pagination import CustomPagination
 from .filter import ProductFilter
 from django.shortcuts import get_object_or_404
 from .serializers import *
+from .pagination import *
 from ..import models
 from ..models import Category, Brand, Collection, Product
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
@@ -40,43 +42,35 @@ class ProductAPIView(ListAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    filter_backends = [DjangoFilterBackend]
+    # filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['availability',
     #                     'warranty', 'services'
     #                     ]
     filterset_class = ProductFilter
+    pagination_class = CustomPagination
 
     def get_queryset(self):
-        brand = self.request.query_params.get('brand', None)
-        collection = self.request.query_params.get('collection', None)
-        category = self.request.query_params.get('category', None)
+        brand = self.request.GET.get("brand", None)
+        # collection = self.request.GET.get('collection', None)
+        category = self.request.GET.get("category", None)
         if brand is not None:
-            if collection is not None:
-                if category is not None:
-                    return Product.objects.filter(brand__name=brand, collection__name=collection, category__name=category)
-                else:
-                    return Product.objects.filter(brand__name=brand, collection__name=collection)
-            else:
-                return Product.objects.filter(brand__name=brand)
-
-        elif collection is not None:
+            brand = self.request.GET.get("brand", "")
+            brand_values = brand.split(",")
             if category is not None:
-                if brand is not None:
-                    return Product.objects.filter(brand__name=brand, collection__name=collection, category__name=category)
-                else:
-                    return Product.objects.filter(collection__name=collection, category__name=category)
+                category=self.request.GET.get("category","")
+                category_values= category.split(",")
+                return Product.objects.filter(brand__name__in=brand_values,category__name__in=category_values)
             else:
-                return Product.objects.filter(collection__name=collection)
+                return Product.objects.filter(brand__name__in=brand_values)
         elif category is not None:
+            category = self.request.GET.get("category", "")
+            category_values = category.split(",")
             if brand is not None:
-                if collection is not None:
-                    return Product.objects.filter(brand__name=brand, collection__name=collection,
-                                                  category__name=category)
-                else:
-                    return Product.objects.filter(brand__name=brand,category__name=category)
+                brand = self.request.GET.get("brand", "")
+                brand_values = brand.split(",")
+                return Product.objects.filter( category__name__in=category_values,brand__name__in=brand_values)
             else:
-                return Product.objects.filter(brand__name=brand)
-
+                return Product.objects.filter(category__name__in=category_values)
         else:
             return Product.objects.all()
 

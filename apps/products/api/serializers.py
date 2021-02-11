@@ -30,7 +30,13 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = [
+            'category','brand','collection','featured',
+            'best_seller','top_rated','name',
+            'description','picture','price','size',
+            'color','quantity','availability','warranty',
+            'services',
+        ]
         # lookup_field = "slug"
         depth = 1
 
