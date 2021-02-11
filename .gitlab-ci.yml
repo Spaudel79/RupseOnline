@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: alpine
+  before_script:
+    - apk add zip
+  script:
+    - zip -r public.zip .
+  artifacts:
+    paths:
+      - public.zip
+
+deploy:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - scp public.zip aakashlabs@202.166.194.143:/home/aakashlabs/rupseonline
+    - ssh aakashlabs@202.166.194.143 "cd /home/aakashlabs/rupseonline; unzip -o public.zip"
+    - ssh aakashlabs@202.166.194.143 "sudo systemctl restart gunicorn.service; sudo systemctl daemon-reload; sudo rm /home/aakashlabs/rupseonline/public.zip"
