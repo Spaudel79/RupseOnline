@@ -100,3 +100,6 @@ class Customer(models.Model):
     full_name = models.CharField(max_length=100, blank=True)
     phone_num = models.CharField(max_length=50, blank=True)
 
+
+    def __str__(self):
+        return self.customer

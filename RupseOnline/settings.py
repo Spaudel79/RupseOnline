@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     #custom apps
     'apps.accounts',
     'apps.products',
+    'apps.orders',
 
 
 
@@ -204,7 +205,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     # 'DEFAULT_PAGINATION_CLASS': 'RupseOnline.core.pagination.CustomPagination',
     'PAGE_SIZE': 15,
 }

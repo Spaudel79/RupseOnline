@@ -41,5 +41,4 @@ admin.site.register(Product, ProductAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(Category, CategoryAdmin)
-
 admin.site.site_header = 'Rupse Online'
