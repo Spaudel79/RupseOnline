@@ -12,6 +12,7 @@ from .import views
 urlpatterns = [
 
     path('api/cart', views.CartAPIView.as_view(), name='api-cart'),
+    path('api/cart/<int:pk>', views.CartwithItemAPIView.as_view(), name='api-cart-details'),
     path('api/cartitem', views.CartItemAPIView.as_view(), name='api-cartitem'),
     path('api/cartitem/<int:pk>', views.CartItemDetailAPIView.as_view(), name='api-cartitem-detail'),
     path('api/cartitem/<int:pk1>/products/<int:pk2>', views.CartItemAPIView.as_view(), name='api-cartitem-add'),

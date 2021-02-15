@@ -17,13 +17,22 @@ class CartItemSerializer(serializers.ModelSerializer):
         depth = 1
 
 class CartSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Cart
+        # fields = ("id", "name","image")
+        fields = '__all__'
+        # depth = 1
+
+class CartwithItemSerializer(serializers.ModelSerializer):
     cartitems = CartItemSerializer(many=True)
 
     class Meta:
         model = Cart
         # fields = ("id", "name","image")
-        fields = ['cartitems','owner','total_items','created_at','updated_at']
-        depth = 1
+        fields = ['id','cartitems' ]
+        # depth = 1
+
 
 
 
