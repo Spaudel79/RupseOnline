@@ -30,11 +30,17 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = ['id',
+            'category','brand','collection','featured',
+            'best_seller','top_rated','name',
+            'description','picture','price','size',
+            'color','quantity','availability','warranty',
+            'services',
+        ]
         # lookup_field = "slug"
         depth = 1
 
-class AddProductSerializer(serializers.ModelSerializer):
+class  AddProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
         many=True,
         queryset=Category.objects.all(),

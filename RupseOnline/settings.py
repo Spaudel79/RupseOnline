@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import environ
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,10 +24,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'i3jrp$h-yskvh6x-kio)$jf35x9gp*eg-(vg5-vgk+&ytii1!n'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = '*'
+
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, True)
+)
+
+
+
+# reading .env file
+environ.Env.read_env()
+
+# False if not in os.environ
+DEBUG = env('DEBUG')
 
 
 # Application definition
@@ -39,7 +53,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -52,10 +65,12 @@ INSTALLED_APPS = [
     'django_filters',
     'rangefilter',
     'taggit',
-
+    'ckeditor',
+    'ckeditor_uploader',
     #custom apps
     'apps.accounts',
     'apps.products',
+    'apps.orders',
 
 
 
@@ -64,6 +79,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,9 +87,29 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     # 'whitenoise.middleware.WhiteNoiseMiddleware',
+
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = (
+#
+#     "http://localhost:3000",
+#     "http://rupseonline.aakashlabs.com",
+# )
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
 ]
 
 ROOT_URLCONF = 'RupseOnline.urls'
+
 
 TEMPLATES = [
     {
@@ -98,19 +134,12 @@ WSGI_APPLICATION = 'RupseOnline.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
-'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'rupsedb',
-            'USER': 'root',
-            'PASSWORD': '1234',
-            'HOST': 'localhost',
-            'PORT': '3306',
-        }
+   # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
+    'default': env.db(),
+    # read os.environ['SQLITE_URL']
+    'extra': env.db('SQLITE_URL', default='sqlite:////tmp/my-tmp-sqlite.db')
 }
+
 
 
 # Password validation
@@ -150,9 +179,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -166,8 +196,8 @@ AUTHENTICATION_BACKENDS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -175,6 +205,9 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'RupseOnline.core.pagination.CustomPagination',
+    'PAGE_SIZE': 15,
 }
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # ACCOUNT_EMAIL_REQUIRED = True
@@ -195,4 +228,8 @@ ACCOUNT_USERNAME_REQUIRED = False
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-REST_USE_JWT = True
+# REST_USE_JWT = True
+
+MATERIAL_ADMIN_SITE = {
+    'SHOW_COUNTS': True,
+}
