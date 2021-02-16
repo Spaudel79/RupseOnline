@@ -24,3 +24,11 @@ class CartItem(models.Model):
 
     def __str__(self):
         return self.item.name
+
+
+class WishList(models.Model):
+    owner = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    item = models.ManyToManyField(Product,blank=True, null=True)
+
+    def __str__(self):
+        return self.owner.email

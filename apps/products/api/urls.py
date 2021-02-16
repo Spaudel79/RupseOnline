@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/brand', views.BrandAPIView.as_view(), name='api-brand'),
     path('api/collection', views.CollectionAPIView.as_view(), name='api-collection'),
     path('api/products', views.ProductAPIView.as_view(), name='api-products'),
+    path('api/products/<int:pk>', views.ProductDetailAPIView.as_view(), name='api-products-detail'),
     # path('api/addcategories', views.CategoryAddAPIView.as_view(), name='api-addcategory'),
     # path('api/addbrand', views.BrandAddAPIView.as_view(), name='api-addbrand'),
     # path('api/addcollection', views.CollectionyAddAPIView.as_view(), name='api-addcollection'),

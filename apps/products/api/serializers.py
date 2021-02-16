@@ -30,7 +30,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = [
+        fields = ['id',
             'category','brand','collection','featured',
             'best_seller','top_rated','name',
             'description','picture','price','size',

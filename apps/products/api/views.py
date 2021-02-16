@@ -71,8 +71,8 @@ class ProductAPIView(ListAPIView):
                 return Product.objects.filter( category__name__in=category_values,brand__name__in=brand_values)
             else:
                 return Product.objects.filter(category__name__in=category_values)
-        else:
-            return Product.objects.all()
+
+        return Product.objects.all()
 
 
 class ProductAddAPIView(CreateAPIView):
@@ -85,7 +85,10 @@ class ProductAddAPIView(CreateAPIView):
     #     collection = get_object_or_404(Collection, pk=self.kwargs['pk'])
     #     serializer.save(brand=brand,collection=collection)
 
-
+class ProductDetailAPIView(RetrieveAPIView):
+    permission_classes = [AllowAny]
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 
