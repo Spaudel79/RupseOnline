@@ -50,7 +50,7 @@ class CustomUserManager(BaseUserManager):
 #     )
 
 class CustomUser(AbstractUser):
-    # username = models.CharField(max_length=255,)
+    # username = None
     first_name = models.CharField(max_length=255, verbose_name="First name")
     last_name = models.CharField(max_length=255, verbose_name="Last name")
     email = models.EmailField(unique=True)
@@ -92,7 +92,7 @@ class Seller(models.Model):
     address = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
-        return self.seller
+        return self.seller.email
 
 
 class Customer(models.Model):
@@ -102,4 +102,4 @@ class Customer(models.Model):
 
 
     def __str__(self):
-        return self.customer
+        return self.customer.email

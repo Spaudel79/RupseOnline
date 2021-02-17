@@ -42,7 +42,7 @@ class ProductAPIView(ListAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['availability',
     #                     'warranty', 'services'
     #                     ]
