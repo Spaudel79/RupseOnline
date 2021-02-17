@@ -73,7 +73,7 @@ class CartItemUpdateAPIView(UpdateAPIView,DestroyAPIView,):
        WishLists endpoints start....................
         """
 
-class WishListAPIView(ListCreateAPIView):
+class WishListAPIView(ListCreateAPIView,UpdateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
@@ -81,6 +81,11 @@ class WishListAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(owner=user)
+        # serializer.save()
+
+    def perform_update(self, serializer):
+        item = get_object_or_404(Product,pk=self.kwargs['pk'])
+        serializer.save(item=item)
 
 
 

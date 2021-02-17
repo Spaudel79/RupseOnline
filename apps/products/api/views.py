@@ -42,37 +42,37 @@ class ProductAPIView(ListAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['availability',
     #                     'warranty', 'services'
     #                     ]
     filterset_class = ProductFilter
     pagination_class = CustomPagination
-
-    def get_queryset(self):
-        brand = self.request.GET.get("brand", None)
-        # collection = self.request.GET.get('collection', None)
-        category = self.request.GET.get("category", None)
-        if brand is not None:
-            brand = self.request.GET.get("brand", "")
-            brand_values = brand.split(",")
-            if category is not None:
-                category=self.request.GET.get("category","")
-                category_values= category.split(",")
-                return Product.objects.filter(brand__name__in=brand_values,category__name__in=category_values)
-            else:
-                return Product.objects.filter(brand__name__in=brand_values)
-        elif category is not None:
-            category = self.request.GET.get("category", "")
-            category_values = category.split(",")
-            if brand is not None:
-                brand = self.request.GET.get("brand", "")
-                brand_values = brand.split(",")
-                return Product.objects.filter( category__name__in=category_values,brand__name__in=brand_values)
-            else:
-                return Product.objects.filter(category__name__in=category_values)
-
-        return Product.objects.all()
+    #
+    # def get_queryset(self):
+    #     brand = self.request.GET.get("brand", None)
+    #     # collection = self.request.GET.get('collection', None)
+    #     category = self.request.GET.get("category", None)
+    #     if brand is not None:
+    #         brand = self.request.GET.get("brand", "")
+    #         brand_values = brand.split(",")
+    #         if category is not None:
+    #             category=self.request.GET.get("category","")
+    #             category_values= category.split(",")
+    #             return Product.objects.filter(brand__name__in=brand_values,category__name__in=category_values)
+    #         else:
+    #             return Product.objects.filter(brand__name__in=brand_values)
+    #     elif category is not None:
+    #         category = self.request.GET.get("category", "")
+    #         category_values = category.split(",")
+    #         if brand is not None:
+    #             brand = self.request.GET.get("brand", "")
+    #             brand_values = brand.split(",")
+    #             return Product.objects.filter( category__name__in=category_values,brand__name__in=brand_values)
+    #         else:
+    #             return Product.objects.filter(category__name__in=category_values)
+    #
+    #     return Product.objects.all()
 
 
 class ProductAddAPIView(CreateAPIView):
