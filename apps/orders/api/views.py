@@ -7,8 +7,8 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from apps.products.models import Product
 from ..import models
-from ..models import CartItem, Cart, WishList
-from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
+from ..models import CartItem, Cart, WishList,WishListItems
+from rest_framework.permissions import (AllowAny,IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
 
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView)
@@ -86,6 +86,27 @@ class WishListAPIView(ListCreateAPIView,UpdateAPIView):
     def perform_update(self, serializer):
         item = get_object_or_404(Product,pk=self.kwargs['pk'])
         serializer.save(item=item)
+
+class WishListItemsAPIView(ListCreateAPIView,mixins.UpdateModelMixin):
+    permission_classes = [IsAuthenticated]
+    queryset = WishListItems.objects.all()
+    serializer_class = WishListItemsSerializer
+
+    def perform_create(self, serializer):
+        # user = self.request.user
+        wishlist = get_object_or_404(WishList, pk=self.kwargs['pk1'])
+        item = get_object_or_404(Product, pk=self.kwargs['pk2'])
+        serializer.save(wishlist=wishlist,item=item)
+
+
+
+
+
+
+
+
+
+
 
 
 
