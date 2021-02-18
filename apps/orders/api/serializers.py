@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 from ..models import Cart, CartItem,WishList,WishListItems
 from apps.products.models import Product
+from apps.accounts.models import CustomUser
+
+from apps.accounts.api.serializers import CustomUserDetailsSerializer
 
 
 class CartItemSerializer(serializers.ModelSerializer):
@@ -40,11 +43,30 @@ class WishListItemsSerializer(serializers.ModelSerializer):
 
 
 class WishListSerializer(serializers.ModelSerializer):
+    owner= CustomUserDetailsSerializer(many=False)
+    owner = serializers.IntegerField(source='owner.id')
+
+    # def validate(self, owner):
+    #     abc = WishList.objects.filter(owner=owner).exists()
+    #     if abc:
+    #         raise serializers.ValidationError('Wishlist exists.Now add items')
+    #     return owner
+
+    def create(self, validated_data):
+        user_data = validated_data.pop("owner")
+
+        owner = CustomUser.objects.filter(**user_data).first()
+        if owner is None:
+            owner = CustomUser.objects.create(**user_data)
+        validated_data.update({"owner": owner})
+        return WishList.objects.create(**validated_data)
 
     class Meta:
         model = WishList
         fields = '__all__'
         depth = 1
+
+
 
 
 

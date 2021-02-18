@@ -2,7 +2,7 @@ from rest_framework import response,status,mixins
 # from rest_framework.filters import SearchFilter, OrderingFilter
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .serializers import *
 from apps.products.models import Product
@@ -78,9 +78,11 @@ class WishListAPIView(ListCreateAPIView):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
 
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(owner=user)
+    # def perform_create(self, serializer):
+    #     user = self.request.user
+    #     serializer.save(owner=user)
+
+
 
 class WishListItemsAPIView(ListCreateAPIView,mixins.UpdateModelMixin):
     permission_classes = [IsAuthenticated]
