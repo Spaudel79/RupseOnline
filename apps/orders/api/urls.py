@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/createwishlist/<int:pk>', views.WishListAPIView.as_view(), name='api-wishlist'),
     path('api/additemwishlist/<int:pk1>/products/<int:pk2>', views.WishListItemsAPIView.as_view(), name='api-wishlistitems-add'),
 
-
+    #orders-endpoints
+    path('api/addorderitem/<int:pk>', views.AddtoOrderItemView.as_view(), name='api-wishlist'),
 
 ]
