@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Cart, CartItem,WishList,WishListItems
+from ..models import Cart, CartItem,WishList,WishListItems,OrderItem,Order
 from apps.products.models import Product
 from apps.accounts.models import CustomUser
 
@@ -65,6 +65,18 @@ class WishListSerializer(serializers.ModelSerializer):
         model = WishList
         fields = '__all__'
         depth = 1
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ['id','user','ordered','item', 'quantity']
+        depth = 1
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
 
 
 
