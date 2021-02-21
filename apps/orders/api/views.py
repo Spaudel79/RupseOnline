@@ -3,16 +3,22 @@ from rest_framework import response,status,mixins
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-import datetime
+from django.contrib.auth.decorators import login_required
+# import datetime
+# import _datetime
+from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime
 from django.shortcuts import get_object_or_404
+from django.http import Http404
 from .serializers import *
 from apps.products.models import Product
 from ..import models
 from ..models import CartItem, Cart, WishList,WishListItems
 from rest_framework.permissions import (AllowAny,IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,GenericAPIView,
-RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView)
+RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView,)
 
 class CartAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -102,20 +108,20 @@ class OrderItemView(ListAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
 
-class AddtoOrderItemView(ListCreateAPIView):
+class AddtoOrderItemView(APIView):
     permission_classes = [IsAuthenticated]
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-    #@action(detail=True, methods=['post'])
-    # def add_to_order(request, pk):
-    def post(request, pk):
+    # queryset = OrderItem.objects.all()
+    # serializer_class = OrderItemSerializer
+    # @action(detail=True, methods=['post'])
+# @login_required
+    def post(self, request, pk):
         item = get_object_or_404(Product, pk=pk)
         order_item, created = OrderItem.objects.get_or_create(
             item=item,
-            user=request.user,
+            user=self.request.user,
             ordered=False
         )
-        order_qs = Order.objects.filter(user=request.user, ordered=False)
+        order_qs = Order.objects.filter(user=self.request.user, ordered=False)
 
         if order_qs.exists():
             order = order_qs[0]
@@ -123,29 +129,42 @@ class AddtoOrderItemView(ListCreateAPIView):
             if order.items.filter(item__pk=item.pk).exists():
                 order_item.quantity += 1
                 order_item.save()
-                # messages.info(request, "Added quantity Item")
-                # return redirect("core:product", pk=pk)
-                return Response({"message":"Added quantity Item",},
-                                 status=status.HTTP_201_CREATED,
-                )
+                return Response({"message": "Quantity is added",
+                                 },
+                                status=status.HTTP_200_OK
+                                )
             else:
                 order.items.add(order_item)
-                #messages.info(request, "Item added to your cart")
-                # return redirect("core:product", pk=pk)
                 return Response({"message": " Item added to your cart", },
-                                status=status.HTTP_201_CREATED,
+                                status=status.HTTP_200_OK,
                                 )
         else:
-            ordered_date = datetime.timezone.now()
-            order = Order.objects.create(user=request.user, ordered_date=ordered_date)
+            ordered_date = datetime.now()
+            order = Order.objects.create(user=self.request.user, ordered_date=ordered_date)
             order.items.add(order_item)
-            #messages.info(request, "Item added to your cart")
-            # return redirect("core:product", pk=pk)
-            return Response({"message": "Item added to your cart", },
-                            status=status.HTTP_201_CREATED,
+            return Response({"message": "Order is created & Item added to your cart", },
+                            status=status.HTTP_200_OK,
                             )
 
 
+class DelOrderItemView(DestroyAPIView,):
+    permission_classes = [IsAuthenticated]
+    queryset = OrderItem.objects.all()
+    serializer_class = OrderItemSerializer
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+class OrderDetailView(RetrieveAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            return order
+        except ObjectDoesNotExist:
+            raise Http404("You do not have an active order")
 
 
 
