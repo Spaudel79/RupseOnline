@@ -107,7 +107,8 @@ class AddtoOrderItemView(ListCreateAPIView):
     queryset = OrderItem.objects.all()
     serializer_class = OrderItemSerializer
     #@action(detail=True, methods=['post'])
-    def add_to_order(request, pk):
+    # def add_to_order(request, pk):
+    def post(request, pk):
         item = get_object_or_404(Product, pk=pk)
         order_item, created = OrderItem.objects.get_or_create(
             item=item,
