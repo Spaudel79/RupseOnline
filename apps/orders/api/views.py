@@ -85,9 +85,20 @@ class WishListAPIView(ListCreateAPIView):
     queryset = WishList.objects.all()
     serializer_class = WishListSerializer
 
-    # def perform_create(self, serializer):
-    #     user = self.request.user
-    #     serializer.save(owner=user)
+    def perform_create(self, serializer):
+        try:
+            wishlist = WishList.objects.get(owner=self.request.user)
+            # return wishlist
+            return Response({"message": "Wishlist Already existed",
+                             "wishlist": wishlist
+                             },
+                            status=status.HTTP_200_OK
+                            )
+        except ObjectDoesNotExist:
+            user = self.request.user
+            serializer.save(owner=user)
+        # user = self.request.user
+        # serializer.save(owner=user)
 
 
 

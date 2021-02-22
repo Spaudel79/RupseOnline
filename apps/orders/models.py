@@ -58,6 +58,21 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    billing_details = models.ForeignKey('BillingDetails',on_delete=models.CASCADE,null=True,related_name="order")
 
     def __str__(self):
         return self.user.email
+
+class BillingDetails(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    first_name = models.CharField(max_length=50,blank=True,null=True)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField(max_length=50,blank=True,null=True)
+    country = models.CharField(max_length=50,blank=True,null=True)
+    city = models.CharField(max_length=50,blank=True,null=True)
+    address = models.CharField(max_length=100,blank=True,null=True)
+    postal = models.CharField(max_length=50,blank=True,null=True)
+
+    def __str__(self):
+        return self.address
