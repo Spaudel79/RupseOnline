@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Cart, CartItem,WishList,WishListItems,OrderItem,Order
+from ..models import Cart, CartItem,WishList,WishListItems,OrderItem,Order,BillingDetails
 from apps.products.models import Product
 from apps.accounts.models import CustomUser
 
@@ -43,23 +43,23 @@ class WishListItemsSerializer(serializers.ModelSerializer):
 
 
 class WishListSerializer(serializers.ModelSerializer):
-    owner= CustomUserDetailsSerializer(many=False)
-    owner = serializers.IntegerField(source='owner.id')
+    # owner= CustomUserDetailsSerializer(many=False)
+    # owner = serializers.IntegerField(source='owner.id')
 
     # def validate(self, owner):
-    #     abc = WishList.objects.filter(owner=owner).exists()
+    #     abc = WishList.objects.filter(owner=owner["owner"]).exists()
     #     if abc:
     #         raise serializers.ValidationError('Wishlist exists.Now add items')
     #     return owner
 
-    def create(self, validated_data):
-        user_data = validated_data.pop("owner")
-
-        owner = CustomUser.objects.filter(**user_data).first()
-        if owner is None:
-            owner = CustomUser.objects.create(**user_data)
-        validated_data.update({"owner": owner})
-        return WishList.objects.create(**validated_data)
+    # def create(self, validated_data):
+    #     user_data = validated_data.pop("owner")
+    #
+    #     owner = CustomUser.objects.filter(**user_data).first()
+    #     if owner is None:
+    #         owner = CustomUser.objects.create(**user_data)
+    #     validated_data.update({"owner": owner})
+    #     return WishList.objects.create(**validated_data)
 
     class Meta:
         model = WishList
@@ -78,6 +78,21 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
+class BillingDetailsSerializer(serializers.ModelSerializer):
+    order = OrderSerializer(many=True)
+
+    class Meta:
+        model = BillingDetails
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'country'
+                  'city', 'address', 'postal', 'order']
+        depth = 1
+
+    def create(self, validated_data):
+        order_data = validated_data.pop('order')
+        bill = BillingDetails.objects.create(**validated_data)
+        for order_data in order_data:
+            Order.objects.create(billing_details=bill, **order_data)
+        return bill
 
 
 
