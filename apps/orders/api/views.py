@@ -150,13 +150,17 @@ class AddtoOrderItemView(APIView):
                                 status=status.HTTP_200_OK,
                                 )
         else:
-            ordered_date = datetime.now()
-            order = Order.objects.create(user=self.request.user, ordered_date=ordered_date)
-            order.items.add(order_item)
-            return Response({"message": "Order is created & Item added to your cart", },
-                            status=status.HTTP_200_OK,
-                            )
-
+            # ordered_date = datetime.now()
+            # order = Order.objects.create(user=self.request.user, ordered_date=ordered_date)
+            # order.items.add(order_item)
+            # return Response({"message": "Order is created & Item added to your cart", },
+            #                 status=status.HTTP_200_OK,
+            #                 )
+            abc = BillingDetailsSerializer(order_qs,many=True)
+            return Response ({"message": "Order is created & Item added to your cart",
+                              "data" : abc.data},
+                             status=status.HTTP_200_OK,
+                             )
 
 class DelOrderItemView(DestroyAPIView,):
     permission_classes = [IsAuthenticated]
