@@ -23,8 +23,11 @@ urlpatterns = [
     path('api/createwishlist', views.WishListAPIView.as_view(), name='api-wishlist'),
     path('api/additemwishlist/<int:pk1>/products/<int:pk2>', views.WishListItemsAPIView.as_view(), name='api-wishlistitems-add'),
 
+    #BillingInfo-endpoints
+    path('api/createaddress', views.AddressAPIView.as_view(), name='api-address-create'),
+
     #orders-endpoints
-    path('api/addorderitem/<int:pk>', views.AddtoOrderItemView.as_view(), name='api-add-orderitem'),
+    #path('api/addorderitem/<int:pk>', views.AddtoOrderItemView.as_view(), name='api-add-orderitem'),
     path('api/orderdetail', views.OrderDetailView.as_view(), name='api-orderdetail'),
     #path('api/addorderitem/<int:pk>', views.add_to_cart(), name='api-add-orderitem'),
     path('api/delorderitem/<int:pk>', views.DelOrderItemView.as_view(), name='api-del-orderitem'),
