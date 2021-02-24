@@ -156,11 +156,17 @@ class AddtoOrderItemView(APIView):
             # return Response({"message": "Order is created & Item added to your cart", },
             #                 status=status.HTTP_200_OK,
             #                 )
-            abc = BillingDetailsSerializer(order_qs,many=True)
-            return Response ({"message": "Order is created & Item added to your cart",
-                              "data" : abc.data},
+            # abc = BillingDetailsSerializer(order_qs,many=True)
+            serializer = BillingDetailsSerializer(data=request.data)  # You probably don't want many=True unless you're creating multiple BillingDetails objects in a single call
+            if serializer.is_valid():
+                # billing_details = serializer.save()
+                serializer.save()
+                return Response ({"message": "Order is created & Item added to your cart",
+                              "data" : serializer.data},
                              status=status.HTTP_200_OK,
                              )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DelOrderItemView(DestroyAPIView,):
     permission_classes = [IsAuthenticated]

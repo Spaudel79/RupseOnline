@@ -83,7 +83,7 @@ class BillingDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BillingDetails
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'country'
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'country',
                   'city', 'address', 'postal', 'order']
         depth = 1
 
