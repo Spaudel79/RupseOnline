@@ -73,11 +73,18 @@ class OrderItemSerializer(serializers.ModelSerializer):
         depth = 1
 
 class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['id', 'items', 'start_date', 'ordered_date', 'ordered', 'order_items']
         depth = 1
 
+    def create(self, validated_data):
+        order_items=validated_data.pop('order_items')
+        order = Order.objects.create(**validated_data)
+        for order_items in order_items:
+            OrderItem.objects.create(order=order,**order_items)
+        return order
 class BillingDetailsSerializer(serializers.ModelSerializer):
     #order = OrderSerializer(many=True,required=False)
 
