@@ -149,10 +149,20 @@ class AddressAPIView(ListCreateAPIView):
 
 class AddtoOrderView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = BillingDetails.objects.all()
-    serializer_class = BillingDetailsSerializer
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
 
-    #def perform_create(self, serializer):
+    def perform_create(self, serializer):
+        user = self.request.user
+        item = get_object_or_404(Product, pk=self.kwargs['pk1'])
+        order_item, created = OrderItem.objects.get_or_create(
+            item=item,
+            user=self.request.user,
+            ordered=False
+        )
+        # item = get_object_or_404(OrderItem, pk=self.kwargs['pk1'])
+        billing_details = get_object_or_404(BillingDetails, pk=self.kwargs['pk2'])
+        serializer.save(user=user,items=order_item,billing_details=billing_details)
 
 
 
