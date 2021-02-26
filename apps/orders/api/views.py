@@ -158,7 +158,7 @@ class AddtoOrderView(ListCreateAPIView):
 
 class AddtoOrderItemView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = OrderItemSerializer
+    queryset = OrderItem.objects.all()
     serializer_class = OrderSerializer
 
     # def post(self, request, pk):
@@ -190,7 +190,7 @@ class DelOrderItemView(DestroyAPIView,):
         instance.delete()
 
 class OrderDetailView(RetrieveAPIView):
-    serializer_class = OrderSerializer
+    serializer_class = OrderDetailSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
