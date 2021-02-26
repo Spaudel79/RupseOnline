@@ -85,6 +85,8 @@ class OrderSerializer(serializers.ModelSerializer):
         for order_items in order_items:
             OrderItem.objects.create(order=order,**order_items)
         return order
+
+
 class BillingDetailsSerializer(serializers.ModelSerializer):
     #order = OrderSerializer(many=True,required=False)
 
