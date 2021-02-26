@@ -72,19 +72,39 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['id','user','ordered','item', 'quantity']
         depth = 1
 
+        # def save(self):
+        #     instance = self.save(commit=False)
+        #     instance.user = self.context['request'].user  # the request is added by default to the context
+        #     instance.save()
+        #     return instance
+
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id', 'items', 'start_date', 'ordered_date', 'ordered', 'order_items']
-        depth = 1
+        fields = ['id','user','start_date', 'ordered_date', 'ordered', 'order_items']
+        # depth = 1
+
+    # def save(self, **kwargs):
+    #     instance = self.save(commit=False)
+    #     instance.user = self.context['request'].user  # the request is added by default to the context
+    #     instance.save()
+    #     return instance
 
     def create(self, validated_data):
-        order_items=validated_data.pop('order_items')
+        # user = self.context['request'].user
+        order_items = validated_data.pop('order_items')
         order = Order.objects.create(**validated_data)
         for order_items in order_items:
             OrderItem.objects.create(order=order,**order_items)
         return order
+
+class OrderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+        depth = 1
 
 
 class BillingDetailsSerializer(serializers.ModelSerializer):
