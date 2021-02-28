@@ -131,7 +131,7 @@ class SellerLoginSerializer(serializers.ModelSerializer):
             if not user.check_password(password):
                 raise serializers.ValidationError("Incorrect password")
             if not user.is_seller:
-                raise serializers.ValidationError("This is not lol seller account")
+                raise serializers.ValidationError("This is not a seller account")
 
         data['user'] = user
 

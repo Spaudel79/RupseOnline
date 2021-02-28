@@ -1,6 +1,6 @@
 from rest_framework import generics
 from django_filters import rest_framework as filters
-from ..models import Product
+from ..models import *
 
 
 class ProductFilter(filters.FilterSet):
@@ -9,6 +9,7 @@ class ProductFilter(filters.FilterSet):
    class Meta:
       model = Product
       fields = ['price','availability',
-                       'warranty', 'services']
+                       'warranty', 'services',
+                'brand__id','category__id','collection__id']
 
 

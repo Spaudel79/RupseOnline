@@ -65,15 +65,18 @@ INSTALLED_APPS = [
     'django_filters',
     'rangefilter',
     'taggit',
+    'ckeditor',
+    'ckeditor_uploader',
     #custom apps
     'apps.accounts',
     'apps.products',
+    'apps.orders',
 
 
 
 ]
 
-# SITE_ID = 1
+SITE_ID = 1
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -88,13 +91,13 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ORIGIN_ALLOW_ALL =False
+CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = (
-
-    "http://localhost:3000",
-    "http://rupseonline.aakashlabs.com",
-)
+# CORS_ORIGIN_WHITELIST = (
+#
+#     "http://localhost:3000",
+#     "http://rupseonline.aakashlabs.com",
+# )
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -179,6 +182,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -191,6 +195,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': (
+            'rest_framework.parsers.JSONParser',
+            'rest_framework.parsers.FormParser',
+        ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
         # 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -201,6 +209,9 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'RupseOnline.core.pagination.CustomPagination',
+    'PAGE_SIZE': 15,
 }
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # ACCOUNT_EMAIL_REQUIRED = True
@@ -222,3 +233,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # REST_USE_JWT = True
+
+MATERIAL_ADMIN_SITE = {
+    'SHOW_COUNTS': True,
+}
