@@ -69,17 +69,24 @@ class WishListSerializer(serializers.ModelSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['id','user','ordered','item', 'quantity']
+        fields = ['id','order','item', 'quantity']
+        # depth = 1
+
+
+class BillingDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BillingDetails
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'country',
+                  'city', 'address', 'postal', ]
         depth = 1
 
-
-
 class OrderSerializer(serializers.ModelSerializer):
+
     order_items = OrderItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id','user','start_date', 'ordered_date', 'ordered', 'order_items']
+        fields = ['id','user','start_date', 'ordered_date', 'ordered', 'order_items',]
         # depth = 1
 
     # def save(self, **kwargs):
@@ -89,36 +96,47 @@ class OrderSerializer(serializers.ModelSerializer):
     #     return instance
 
     def create(self, validated_data):
-        # user = self.context['request'].user
+        user = self.context['request'].user
         order_items = validated_data.pop('order_items')
-        order = Order.objects.create(**validated_data)
+        order = Order.objects.create(user=user,**validated_data)
+        # billing_details = BillingDetails.objects.create()
         for order_items in order_items:
             OrderItem.objects.create(order=order,**order_items)
         return order
 
 class OrderDetailSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(many=True)
+    billing_details = BillingDetailsSerializer()
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Order
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ['id', 'user', 'start_date', 'ordered_date', 'ordered', 'order_items','billing_details']
         depth = 1
 
+class OrderBillingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['id', 'user', 'start_date', 'ordered_date', 'ordered', 'order_items', 'billing_details']
 
-class BillingDetailsSerializer(serializers.ModelSerializer):
-    #order = OrderSerializer(many=True,required=False)
+
+class BillingCreateSerializer(serializers.ModelSerializer):
+    order = OrderBillingSerializer()
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = BillingDetails
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'country',
-                  'city', 'address', 'postal',]
-        depth = 1
+        fields= ['id', 'user', 'order', 'first_name','last_name','email','phone','country','city','address','postal']
 
-    # def create(self, validated_data):
-    #     order_data = validated_data.pop('order')
-    #     bill = BillingDetails.objects.create(**validated_data)
-    #     for order_data in order_data:
-    #         Order.objects.create(billing_details=bill, **order_data)
-    #     return bill
 
+
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        order_data = validated_data.pop('order')
+        order = instance.order_data
+        instance.billing_details = validated_data.get('billing_details', instance.order)
+        billing_details = BillingDetails.objects.create(user=user,**validated_data)
+        return billing_details
 
 
 

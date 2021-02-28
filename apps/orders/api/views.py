@@ -187,17 +187,23 @@ class DelOrderItemView(DestroyAPIView,):
     def perform_destroy(self, instance):
         instance.delete()
 
-class OrderDetailView(RetrieveAPIView):
+class OrderDetailView(ListAPIView):
     serializer_class = OrderDetailSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_object(self):
+    # def get_object(self):
+    #     try:
+    #         order = Order.objects.get(user=self.request.user, ordered=False)
+    #         return order
+    #     except ObjectDoesNotExist:
+    #         raise Http404("You do not have an active order")
+
+    def get_queryset(self):
         try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            return order
+            abc = Order.objects.filter(user=self.request.user)
+            return abc
         except ObjectDoesNotExist:
             raise Http404("You do not have an active order")
-
 
 
 
