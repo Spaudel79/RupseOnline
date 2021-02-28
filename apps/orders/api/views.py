@@ -154,8 +154,6 @@ class AddtoOrderView(ListCreateAPIView):
 
     # def perform_create(self, serializer):
 
-
-
 class AddtoOrderItemView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = OrderItem.objects.all()

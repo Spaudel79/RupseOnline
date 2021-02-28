@@ -72,11 +72,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['id','user','ordered','item', 'quantity']
         depth = 1
 
-        # def save(self):
-        #     instance = self.save(commit=False)
-        #     instance.user = self.context['request'].user  # the request is added by default to the context
-        #     instance.save()
-        #     return instance
+
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
