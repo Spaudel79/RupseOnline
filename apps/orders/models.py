@@ -42,29 +42,34 @@ class WishListItems(models.Model):
     def __str__(self):
         return self.item.name
 
-class OrderItem(models.Model) :
-    user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True)
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    #items = models.ManyToManyField(OrderItem,blank=True, null=True,related_name="order_items")
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
+
+    def __str__(self):
+        return self.user.email
+
+
+
+class OrderItem(models.Model):
+    #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     quantity = models.IntegerField(default=1)
 
 
     def __str__(self):
-        return f"{self.quantity} items of {self.item} of {self.user.email}"
+        return f"{self.quantity} items of {self.item} of {self.order.user}"
 
-class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
-    items = models.ManyToManyField(OrderItem,blank=True, null=True,related_name="order_items")
-    start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date = models.DateTimeField()
-    ordered = models.BooleanField(default=False)
-    #billing_details = models.ForeignKey('BillingDetails',on_delete=models.CASCADE,null=True,related_name="order")
-
-    def __str__(self):
-        return self.user.email
 
 class BillingDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
+    #order = models.OneToOneField(Order, on_delete=models.CASCADE, blank=True, null=True, related_name='billing_details')
     first_name = models.CharField(max_length=50,blank=True,null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
