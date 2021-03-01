@@ -5,7 +5,9 @@ from apps.products.models import Product
 from apps.accounts.models import CustomUser
 
 from apps.accounts.api.serializers import CustomUserDetailsSerializer
-
+from rest_framework.response import Response
+from django.http import Http404
+from rest_framework import status
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,7 +43,6 @@ class WishListItemsSerializer(serializers.ModelSerializer):
         fields = ['id','wishlist','item']
         depth = 1
 
-
 class WishListSerializer(serializers.ModelSerializer):
     # owner= CustomUserDetailsSerializer(many=False)
     # owner = serializers.IntegerField(source='owner.id')
@@ -74,19 +75,21 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class BillingDetailsSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    order = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = BillingDetails
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'country',
+        fields = ['id','user', 'order', 'first_name', 'last_name', 'email', 'phone', 'country',
                   'city', 'address', 'postal', ]
         depth = 1
 
 class OrderSerializer(serializers.ModelSerializer):
-
+    billing_details = BillingDetailsSerializer()
     order_items = OrderItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id','user','start_date', 'ordered_date', 'ordered', 'order_items',]
+        fields = ['id','user','start_date', 'ordered_date', 'ordered', 'order_items','billing_details']
         # depth = 1
 
     # def save(self, **kwargs):
@@ -95,13 +98,27 @@ class OrderSerializer(serializers.ModelSerializer):
     #     instance.save()
     #     return instance
 
+    # def create(self, validated_data):
+    #     user = self.context['request'].user
+    #     order_items = validated_data.pop('order_items')
+    #     order = Order.objects.create(user=user,**validated_data)
+    #     for order_items in order_items:
+    #         OrderItem.objects.create(order=order,**order_items)
+    #     return order
+
     def create(self, validated_data):
         user = self.context['request'].user
         order_items = validated_data.pop('order_items')
+        billing_details = validated_data.pop('billing_details')
         order = Order.objects.create(user=user,**validated_data)
-        # billing_details = BillingDetails.objects.create()
+        BillingDetails.objects.create(user=user,order=order,**billing_details)
         for order_items in order_items:
             OrderItem.objects.create(order=order,**order_items)
+        # return Response ({"order": order,
+        #                     "billing_details":billing_details
+        #                      },
+        #                     status=status.HTTP_201_CREATED
+        #                     )
         return order
 
 class OrderDetailSerializer(serializers.ModelSerializer):
@@ -120,7 +137,7 @@ class OrderBillingSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'start_date', 'ordered_date', 'ordered', 'order_items', 'billing_details']
 
 
-class BillingCreateSerializer(serializers.ModelSerializer):
+class BillingInfoSerializer(serializers.ModelSerializer):
     order = OrderBillingSerializer()
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -130,13 +147,13 @@ class BillingCreateSerializer(serializers.ModelSerializer):
 
 
 
-    def update(self, instance, validated_data):
-        user = self.context['request'].user
-        order_data = validated_data.pop('order')
-        order = instance.order_data
-        instance.billing_details = validated_data.get('billing_details', instance.order)
-        billing_details = BillingDetails.objects.create(user=user,**validated_data)
-        return billing_details
+    # def update(self, instance, validated_data):
+    #     user = self.context['request'].user
+    #     order_data = validated_data.pop('order')
+    #     order = instance.order_data
+    #     instance.billing_details = validated_data.get('billing_details', instance.order)
+    #     billing_details = BillingDetails.objects.create(user=user,**validated_data)
+    #     return billing_details
 
 
 
