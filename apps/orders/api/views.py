@@ -187,6 +187,11 @@ class DelOrderItemView(DestroyAPIView,):
     def perform_destroy(self, instance):
         instance.delete()
 
+class AddBillingDetailsView(ListCreateAPIView,mixins.UpdateModelMixin):
+    permission_classes = [IsAuthenticated]
+    queryset = Order.objects.all()
+    serializer_class = BillingCreateSerializer
+
 class OrderDetailView(ListAPIView):
     serializer_class = OrderDetailSerializer
     permission_classes = (IsAuthenticated,)
