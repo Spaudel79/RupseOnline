@@ -207,6 +207,17 @@ class OrderDetailView(ListAPIView):
         except ObjectDoesNotExist:
             raise Http404("You do not have an active order")
 
+class BillingInfoView(ListAPIView,DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = BillingDetails.objects.all()
+    serializer_class = BillingInfoSerializer
+
+    def get_queryset(self):
+        return BillingDetails.objects.filter(user=self.request.user
+                                             )
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 

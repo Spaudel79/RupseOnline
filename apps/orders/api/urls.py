@@ -32,5 +32,7 @@ urlpatterns = [
     #path('api/addorderitem/<int:pk>', views.add_to_cart(), name='api-add-orderitem'),
     path('api/delorderitem/<int:pk>', views.DelOrderItemView.as_view(), name='api-del-orderitem'),
 
+    #billing-endpoints
+    path('api/billinginfo',views.BillingInfoView.as_view(),name='api-billinginfo')
 
 ]

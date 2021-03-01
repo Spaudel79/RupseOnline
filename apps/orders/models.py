@@ -49,12 +49,10 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
-    billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
+    #billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
 
     def __str__(self):
         return self.user.email
-
-
 
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True)
@@ -69,7 +67,7 @@ class OrderItem(models.Model):
 
 class BillingDetails(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
-    #order = models.OneToOneField(Order, on_delete=models.CASCADE, blank=True, null=True, related_name='billing_details')
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, blank=True, null=True, related_name='billing_details')
     first_name = models.CharField(max_length=50,blank=True,null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
