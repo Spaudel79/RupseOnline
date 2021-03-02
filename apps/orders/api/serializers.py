@@ -36,6 +36,13 @@ class CartwithItemSerializer(serializers.ModelSerializer):
                WishLists serializers start....................
         """
 
+class WishListItemsTestSerializer(serializers.ModelSerializer):
+    wishlist = serializers.PrimaryKeyRelatedField(read_only=True)
+    class Meta:
+        model = WishListItems
+        fields = ['id','wishlist','item']
+        depth = 1
+
 class WishListItemsSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -44,6 +51,8 @@ class WishListItemsSerializer(serializers.ModelSerializer):
         depth = 1
 
 class WishListSerializer(serializers.ModelSerializer):
+    wishlistitems = WishListItemsSerializer(many=True)
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
     # owner= CustomUserDetailsSerializer(many=False)
     # owner = serializers.IntegerField(source='owner.id')
 
@@ -64,7 +73,7 @@ class WishListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WishList
-        fields = '__all__'
+        fields = ['id','owner','wishlistitems']
         depth = 1
 
 class OrderItemSerializer(serializers.ModelSerializer):
@@ -80,7 +89,7 @@ class BillingDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillingDetails
         fields = ['id','user', 'order', 'first_name', 'last_name', 'email', 'phone', 'country',
-                  'city', 'address', 'postal', ]
+                  'city', 'address', 'postal', 'payment_type' ]
         depth = 1
 
 class OrderSerializer(serializers.ModelSerializer):

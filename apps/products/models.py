@@ -41,7 +41,8 @@ class Collection(models.Model):
     def __str__(self):
         return self.name
 
-
+class ImageBucket(models.Model):
+    pic = models.ImageField(upload_to="products/images", null=True, blank=True)
 
 
 class Product(models.Model):
@@ -76,7 +77,8 @@ class Product(models.Model):
     # slug = models.SlugField(max_length=200)
     # description = models.TextField(max_length=500, default="Empty description.")
     description = RichTextField(blank=True)
-    picture = models.ImageField(upload_to="products/images", null=True, blank=True)
+    #picture = models.ImageField(upload_to="products/images", null=True, blank=True)
+    picture = models.ManyToManyField(ImageBucket,null=True,blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=20, default=0)
     size = models.CharField(max_length=50, choices=SIZE, default='not applicable')
     color = models.CharField(max_length=70, default="not applicable")

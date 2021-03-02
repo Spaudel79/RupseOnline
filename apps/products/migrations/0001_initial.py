@@ -57,7 +57,6 @@ class Migration(migrations.Migration):
                 ('top_rated', models.BooleanField(default=False)),
                 ('name', models.CharField(max_length=150)),
                 ('description', ckeditor.fields.RichTextField(blank=True)),
-                ('picture', models.ImageField(blank=True, null=True, upload_to='products/images')),
                 ('price', models.DecimalField(decimal_places=2, default=0, max_digits=20)),
                 ('size', models.CharField(choices=[('not applicable', 'not applicable'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra Large')], default='not applicable', max_length=50)),
                 ('color', models.CharField(default='not applicable', max_length=70)),
