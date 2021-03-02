@@ -88,12 +88,12 @@ class WishListAPIView(ListCreateAPIView):
     def perform_create(self, serializer):
         try:
             wishlist = WishList.objects.get(owner=self.request.user)
-            # return wishlist
-            return Response({"message": "Wishlist Already existed",
-                             "wishlist": wishlist
-                             },
-                            status=status.HTTP_200_OK
-                            )
+            return wishlist
+            # return Response({"message": "Wishlist Already existed",
+            #                  "wishlist": wishlist
+            #                  },
+            #                 status=status.HTTP_200_OK
+            #                 )
         except ObjectDoesNotExist:
             user = self.request.user
             serializer.save(owner=user)
@@ -102,10 +102,10 @@ class WishListAPIView(ListCreateAPIView):
 
 
 
-class WishListItemsAPIView(ListCreateAPIView,mixins.UpdateModelMixin):
+class WishListItemsAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = WishListItems.objects.all()
-    serializer_class = WishListItemsSerializer
+    serializer_class = WishListItemsTestSerializer
 
     def perform_create(self, serializer):
         # user = self.request.user
@@ -114,47 +114,13 @@ class WishListItemsAPIView(ListCreateAPIView,mixins.UpdateModelMixin):
         serializer.save(wishlist=wishlist,item=item)
 
 
-class OrderItemView(ListAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-
-class AddressAPIView(ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = BillingDetails.objects.all()
-    serializer_class = BillingDetailsSerializer
-
-    def get_queryset(self):
-        abc = BillingDetails.objects.filter(user=self.request.user)
-        return abc
-
-    # def perform_create(self, serializer):
-    #     try:
-    #         abc = BillingDetails.objects.(user=self.request.user)
-    #         # return wishlist
-    #         return Response({"message": "Wishlist Already existed",
-    #                          "wishlist": abc
-    #                          },
-    #                         status=status.HTTP_200_OK
-    #                         )
-    #
-    #     except ObjectDoesNotExist:
-    #         user = self.request.user
-    #         serializer.save(user=user)
-
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
 
-
-class AddtoOrderView(ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = BillingDetails.objects.all()
-    serializer_class = BillingDetailsSerializer
-
-    # def perform_create(self, serializer):
-
-
+        """
+       Orders endpoints start....................
+        """
 
 class AddtoOrderItemView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -181,13 +147,7 @@ class AddtoOrderItemView(ListCreateAPIView):
     #             item.save()
 
 
-class DelOrderItemView(DestroyAPIView,):
-    permission_classes = [IsAuthenticated]
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
 
-    def perform_destroy(self, instance):
-        instance.delete()
 
 class OrderDetailView(ListAPIView):
     serializer_class = OrderDetailSerializer
@@ -196,9 +156,6 @@ class OrderDetailView(ListAPIView):
     # def get_object(self):
     #     try:
     #         order = Order.objects.get(user=self.request.user, ordered=False)
-    #         return order
-    #     except ObjectDoesNotExist:
-    #         raise Http404("You do not have an active order")
 
     def get_queryset(self):
         try:
@@ -207,18 +164,10 @@ class OrderDetailView(ListAPIView):
         except ObjectDoesNotExist:
             raise Http404("You do not have an active order")
 
-class BillingInfoView(ListAPIView,DestroyAPIView):
+class BillingInfoView(ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = BillingDetails.objects.all()
     serializer_class = BillingInfoSerializer
-
-    def get_queryset(self):
-        return BillingDetails.objects.filter(user=self.request.user
-                                             )
-
-    def perform_destroy(self, instance):
-        instance.delete()
-
 
 
 
