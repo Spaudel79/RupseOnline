@@ -134,17 +134,17 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 class OrderBillingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ['id', 'user', 'start_date', 'ordered_date', 'ordered', 'order_items', 'billing_details']
+        fields = ['id', 'user', 'start_date', 'ordered_date', 'ordered', 'order_items',]
 
 
 class BillingInfoSerializer(serializers.ModelSerializer):
-    order = OrderBillingSerializer()
+    order = OrderDetailSerializer()
     user = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = BillingDetails
-        fields= ['id', 'user', 'order', 'first_name','last_name','email','phone','country','city','address','postal']
-
+        fields = ['id', 'user', 'order', 'first_name','last_name','email','phone','country','city','address','postal']
+        # depth = 1
 
 
     # def update(self, instance, validated_data):

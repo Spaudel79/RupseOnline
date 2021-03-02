@@ -187,10 +187,7 @@ class DelOrderItemView(DestroyAPIView,):
     def perform_destroy(self, instance):
         instance.delete()
 
-class AddBillingDetailsView(ListCreateAPIView,mixins.UpdateModelMixin):
-    permission_classes = [IsAuthenticated]
-    queryset = Order.objects.all()
-    serializer_class = BillingCreateSerializer
+
 
 class OrderDetailView(ListAPIView):
     serializer_class = OrderDetailSerializer
@@ -210,17 +207,26 @@ class OrderDetailView(ListAPIView):
         except ObjectDoesNotExist:
             raise Http404("You do not have an active order")
 
-class BillingInfoView(ListAPIView,DestroyAPIView):
+# class BillingInfoView(ListAPIView,DestroyAPIView):
+#     permission_classes = [IsAuthenticated]
+#     queryset = BillingDetails.objects.all()
+#     serializer_class = BillingInfoSerializer
+#
+#     def get_queryset(self):
+#         return BillingDetails.objects.filter(user=self.request.user)
+#
+#     def perform_destroy(self, instance):
+#         instance.delete()
+
+class BillingInfoView(ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = BillingDetails.objects.all()
     serializer_class = BillingInfoSerializer
 
     def get_queryset(self):
-        return BillingDetails.objects.filter(user=self.request.user
-                                             )
+        order=Order.
 
-    def perform_destroy(self, instance):
-        instance.delete()
+
 
 
 
