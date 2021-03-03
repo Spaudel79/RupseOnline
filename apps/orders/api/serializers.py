@@ -36,12 +36,7 @@ class CartwithItemSerializer(serializers.ModelSerializer):
                WishLists serializers start....................
         """
 
-class WishListItemsTestSerializer(serializers.ModelSerializer):
-    wishlist = serializers.PrimaryKeyRelatedField(read_only=True)
-    class Meta:
-        model = WishListItems
-        fields = ['id','wishlist','item']
-        depth = 1
+
 
 class WishListItemsSerializer(serializers.ModelSerializer):
 
@@ -49,6 +44,14 @@ class WishListItemsSerializer(serializers.ModelSerializer):
         model = WishListItems
         fields = ['id','wishlist','item']
         depth = 1
+
+        # def create(self, validated_data):
+    #     user = self.context['request'].user
+    #     order_items = validated_data.pop('order_items')
+    #     order = Order.objects.create(user=user,**validated_data)
+    #     for order_items in order_items:
+    #         OrderItem.objects.create(order=order,**order_items)
+    #     return order
 
 class WishListSerializer(serializers.ModelSerializer):
     wishlistitems = WishListItemsSerializer(many=True)
@@ -75,6 +78,14 @@ class WishListSerializer(serializers.ModelSerializer):
         model = WishList
         fields = ['id','owner','wishlistitems']
         depth = 1
+
+class WishListItemsTestSerializer(serializers.ModelSerializer):
+
+    #wishlist = serializers.PrimaryKeyRelatedField(read_only=True,queryset=WishList.objects.filter(owner=serializers.CurrentUserDefault),default=serializers.CurrentUserDefault())
+    class Meta:
+        model = WishListItems
+        fields = ['id','item']
+        # depth = 1
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:

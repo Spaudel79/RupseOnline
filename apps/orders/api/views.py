@@ -108,15 +108,11 @@ class WishListItemsAPIView(ListCreateAPIView):
     serializer_class = WishListItemsTestSerializer
 
     def perform_create(self, serializer):
-        # user = self.request.user
-        wishlist = get_object_or_404(WishList, pk=self.kwargs['pk1'])
+        user = self.request.user
+        #wishlist = get_object_or_404(WishList, pk=self.kwargs['pk1'])
+        wishlist = WishList.objects.get(owner=user)
         item = get_object_or_404(Product, pk=self.kwargs['pk2'])
         serializer.save(wishlist=wishlist,item=item)
-
-
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
 
         """
        Orders endpoints start....................

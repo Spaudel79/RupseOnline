@@ -6,8 +6,8 @@ from django.utils.html import format_html
 
 
 
-admin.site.register(Cart)
-admin.site.register(CartItem)
+# admin.site.register(Cart)
+# admin.site.register(CartItem)
 admin.site.register(WishList)
 admin.site.register(WishListItems)
 admin.site.register(OrderItem)
