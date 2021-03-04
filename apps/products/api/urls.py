@@ -20,4 +20,8 @@ urlpatterns = [
     # path('api/addcollection', views.CollectionyAddAPIView.as_view(), name='api-addcollection'),
     path('api/addproducts', views.ProductAddAPIView.as_view(), name='api-addproducts'),
 
+    #review-products-endpoints
+    path('api/getcreatedellreview/<int:pk>', views.GetCreateReviewAPIView.as_view(),name='api-addreview')
+
+
 ]

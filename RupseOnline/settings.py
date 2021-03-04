@@ -195,10 +195,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 REST_FRAMEWORK = {
-    'DEFAULT_PARSER_CLASSES': (
-            'rest_framework.parsers.JSONParser',
-            'rest_framework.parsers.FormParser',
-        ),
+    # 'DEFAULT_PARSER_CLASSES': (
+    #         'rest_framework.parsers.JSONParser',
+    #         'rest_framework.parsers.FormParser',
+    #     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
         # 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
