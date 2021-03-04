@@ -115,6 +115,33 @@ class WishListItemsAPIView(ListCreateAPIView):
         serializer.save(wishlist=wishlist,item=item)
 
         """
+            Updated WishLists endpoints start....................
+               """
+
+class AddtoWishListItemsView(CreateAPIView,DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = WishListItems.objects.all()
+    serializer_class = WishListItemsTestSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        item = get_object_or_404(Product, pk=self.kwargs['pk'])
+        serializer.save(owner=user, item=item)
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+class WishListItemsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = WishListItemsTestSerializer
+
+    def get_queryset(self):
+        user=self.request.user
+        return WishListItems.objects.filter(owner=user)
+
+
+
+    """
        Orders endpoints start....................
         """
 

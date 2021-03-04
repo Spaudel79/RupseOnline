@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Product, Category, Brand, Collection
+from ..models import Product, Category, Brand, Collection,Review
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -60,3 +60,10 @@ class  AddProductSerializer(serializers.ModelSerializer):
         fields = ['category','brand', 'collection','featured', 'top_rated','name','description', 'picture',
                   'price', 'size', 'color','availability','warranty','services','quantity']
         # depth = 1
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(read_only=True)
+    class Meta:
+        model = Review
+        fields = ['id','user', 'product','user_rating','full_name','email','review','created_at']

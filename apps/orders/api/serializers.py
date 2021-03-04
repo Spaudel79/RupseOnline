@@ -85,7 +85,7 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishListItems
         fields = ['id','item']
-        # depth = 1
+        depth = 1
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:

@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .pagination import *
 from ..import models
-from ..models import Category, Brand, Collection, Product
+from ..models import Category, Brand, Collection, Product,Review
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
 
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
@@ -186,9 +186,22 @@ class ProductDetailAPIView(RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        product = get_object_or_404(Product,pk=self.kwargs['pk'])
+        serializer.save(user=user,product=product)
 
+    def get_queryset(self):
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        return Review.objects.filter(product=product)
 
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 

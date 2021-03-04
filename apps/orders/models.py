@@ -35,12 +35,16 @@ class WishList(models.Model):
         return self.owner.email
 
 class WishListItems(models.Model):
-    wishlist = models.ForeignKey(WishList,on_delete=models.CASCADE, related_name='wishlistitems')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE,blank=True)
+    #wishlist = models.ForeignKey(WishList,on_delete=models.CASCADE, related_name='wishlistitems')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
 
 
     def __str__(self):
-        return self.item.name
+        return f"{self.item.name} of {self.owner.email}"
+
+    class Meta:
+        verbose_name_plural= "WishList"
 
 
 class Order(models.Model):
@@ -54,6 +58,9 @@ class Order(models.Model):
     def __str__(self):
         return self.user.email
 
+    class Meta:
+        verbose_name_plural= "Orders"
+
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True)
     order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
@@ -64,7 +71,8 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.quantity} items of {self.item} of {self.order.user}"
 
-
+    class Meta:
+        verbose_name_plural= "Cart Items"
 
 
 class BillingDetails(models.Model):
@@ -87,3 +95,6 @@ class BillingDetails(models.Model):
     payment_type = models.CharField(max_length=50,blank=True,null=True,choices=PAYMENT_TYPE,default='cash_on-delivery')
     def __str__(self):
         return self.address
+
+    class Meta:
+        verbose_name_plural= "Shipping Address"
