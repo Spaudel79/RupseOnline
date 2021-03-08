@@ -85,7 +85,7 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = WishListItems
         fields = ['id','item']
-        depth = 1
+        depth = 2
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -128,18 +128,21 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        order_items = validated_data.pop('order_items')
-        billing_details = validated_data.pop('billing_details')
-        order = Order.objects.create(user=user,**validated_data)
-        BillingDetails.objects.create(user=user,order=order,**billing_details)
-        for order_items in order_items:
-            OrderItem.objects.create(order=order,**order_items)
-        # return Response ({"order": order,
-        #                     "billing_details":billing_details
-        #                      },
-        #                     status=status.HTTP_201_CREATED
-        #                     )
-        return order
+        if not user.is_seller:
+            order_items = validated_data.pop('order_items')
+            billing_details = validated_data.pop('billing_details')
+            order = Order.objects.create(user=user,**validated_data)
+            BillingDetails.objects.create(user=user,order=order,**billing_details)
+            for order_items in order_items:
+                OrderItem.objects.create(order=order,**order_items)
+            # return Response ({"order": order,
+            #                     "billing_details":billing_details
+            #                      },
+            #                     status=status.HTTP_201_CREATED
+            #                     )
+            return order
+        else:
+            raise serializers.ValidationError("This is not a customer account.Please login as customer.")
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)

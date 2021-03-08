@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-# from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import CustomPagination
@@ -46,6 +46,7 @@ class ProductAPIView(ListAPIView):
     # filterset_fields = ['availability',
     #                     'warranty', 'services'
     #                     ]
+
     filterset_class = ProductFilter
     pagination_class = CustomPagination
 
@@ -170,6 +171,17 @@ class ProductAPIView(ListAPIView):
         return Product.objects.all()
 
 # Actual Filtering Ends
+
+class PrdouctSearchAPIView(ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter]
+    #search_fields = ['name','brand__name','brand__brand_category', 'description',
+                     #'collection__name','category__name',]
+    search_fields = ['name','brand__name','collection__name',
+                     'category__name','description','variants__color']
+    pagination_class = CustomPagination
 
 class ProductAddAPIView(CreateAPIView):
     permission_classes = [AllowAny]

@@ -49,6 +49,29 @@ class ImageBucket(models.Model):
     class Meta:
         verbose_name_plural = "Image Gallery"
 
+
+class Variants(models.Model):
+    SIZE = (
+        ('not applicable', 'not applicable',),
+        ('S', 'Small',),
+        ('M', 'Medium',),
+        ('L', 'Large',),
+        ('XL', 'Extra Large',),
+    )
+    AVAILABILITY = (
+        ('available', 'Available',),
+        ('not_available', 'Not Available',),
+    )
+    price = models.DecimalField(decimal_places=2, max_digits=20,blank=True,null=True)
+    size = models.CharField(max_length=50, choices=SIZE, default='not applicable',blank=True,null=True)
+    color = models.CharField(max_length=70, default="not applicable",blank=True,null=True)
+    quantity = models.IntegerField(default=10,blank=True,null=True)  # available quantity of given product
+    vairant_availability = models.CharField(max_length=70, choices=AVAILABILITY, default='available')
+
+    class Meta:
+        verbose_name_plural = "Variants"
+
+
 class Product(models.Model):
     AVAILABILITY = (
         ('in_stock', 'In Stock',),
@@ -83,13 +106,10 @@ class Product(models.Model):
     description = RichTextField(blank=True)
     #picture = models.ImageField(upload_to="products/images", null=True, blank=True)
     picture = models.ManyToManyField(ImageBucket,null=True,blank=True)
-    price = models.DecimalField(decimal_places=2, max_digits=20, default=0)
-    size = models.CharField(max_length=50, choices=SIZE, default='not applicable')
-    color = models.CharField(max_length=70, default="not applicable")
-    quantity = models.IntegerField(default=10)  # available quantity of given product
     availability = models.CharField(max_length=70, choices=AVAILABILITY, default='in_stock')
     warranty = models.CharField(max_length=100, choices=WARRANTY, default='no_warranty')
     services = models.CharField(max_length=100, choices=SERVICES, default='cash_on_delivery')
+    variants = models.ManyToManyField(Variants,blank=True,null=True,related_name='products')
 
 
 

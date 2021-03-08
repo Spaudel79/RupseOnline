@@ -125,8 +125,16 @@ class AddtoWishListItemsView(CreateAPIView,DestroyAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        item = get_object_or_404(Product, pk=self.kwargs['pk'])
-        serializer.save(owner=user, item=item)
+        if not user.is_seller:
+            item = get_object_or_404(Product, pk=self.kwargs['pk'])
+            serializer.save(owner=user, item=item)
+        else:
+            # return Response({
+            #     "message":"This is not a customer account.Please login as customer.",},
+            #     status = status.HTTP_200_OK
+            # )
+            raise serializers.ValidationError("This is not a customer account.Please login as customer.")
+
 
     def perform_destroy(self, instance):
         instance.delete()
