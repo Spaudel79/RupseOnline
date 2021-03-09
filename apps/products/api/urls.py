@@ -18,6 +18,15 @@ urlpatterns = [
     # path('api/addcategories', views.CategoryAddAPIView.as_view(), name='api-addcategory'),
     # path('api/addbrand', views.BrandAddAPIView.as_view(), name='api-addbrand'),
     # path('api/addcollection', views.CollectionyAddAPIView.as_view(), name='api-addcollection'),
+
+    #Merchant-endpoints
     path('api/addproducts', views.ProductAddAPIView.as_view(), name='api-addproducts'),
+
+    #search-filter-endpoints
+    path('api/productsearch',views.PrdouctSearchAPIView.as_view(),name='api-productsearch'),
+
+    #review-products-endpoints
+    path('api/getcreatedellreview/<int:pk>', views.GetCreateReviewAPIView.as_view(),name='api-addreview')
+
 
 ]

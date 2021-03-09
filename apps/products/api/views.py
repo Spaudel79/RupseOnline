@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-# from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import CustomPagination
@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .pagination import *
 from ..import models
-from ..models import Category, Brand, Collection, Product
+from ..models import Category, Brand, Collection, Product,Review
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
 
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
@@ -46,9 +46,10 @@ class ProductAPIView(ListAPIView):
     # filterset_fields = ['availability',
     #                     'warranty', 'services'
     #                     ]
+
     filterset_class = ProductFilter
     pagination_class = CustomPagination
-    #
+
     # def get_queryset(self):
     #     brand = self.request.GET.get("brand", None)
     #     # collection = self.request.GET.get('collection', None)
@@ -74,6 +75,113 @@ class ProductAPIView(ListAPIView):
     #
     #     return Product.objects.all()
 
+#Actual Filtering starts
+    def get_queryset(self):
+        brand = self.request.GET.get('brand',None)
+        category = self.request.GET.get("category",None)
+        warranty = self.request.GET.get("warranty", None)
+        if brand is not None:
+            brand = self.request.GET.get('brand', "")
+            brand_values = brand.split(",")
+            if category is not None:
+                    category = self.request.GET.get("category", "")
+                    category_values = category.split(",")
+                    if warranty is not None:
+                        warranty = self.request.GET.get("warranty", "")
+                        warranty_values = warranty.split(",")
+                        return Product.objects.filter(brand__name__in=brand_values,
+                                              category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+                    else:
+                        return Product.objects.filter(brand__name__in=brand_values,
+                                                  category__name__in=category_values,)
+            elif warranty is not None:
+                    warranty = self.request.GET.get("warranty", "")
+                    warranty_values = warranty.split(",")
+                    if category is not None:
+                        category = self.request.GET.get("category", "")
+                        category_values = category.split(",")
+                        return Product.objects.filter(brand__name__in=brand_values,
+                                                      category__name__in=category_values,
+                                                      warranty__in=warranty_values)
+                    else:
+                        return Product.objects.filter(brand__name__in=brand_values,
+                                                      warranty__in=warranty_values)
+            else:
+                    return Product.objects.filter(brand__name__in=brand_values,)
+
+        elif category is not None:
+            category = self.request.GET.get("category", "")
+            category_values = category.split(",")
+            if warranty is not None:
+                warranty = self.request.GET.get("warranty", "")
+                warranty_values = warranty.split(",")
+                if brand is not None:
+                    brand = self.request.GET.get('brand', "")
+                    brand_values = brand.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+            elif brand is not None:
+                brand = self.request.GET.get('brand', "")
+                brand_values = brand.split(",")
+                if warranty is not None:
+                    warranty = self.request.GET.get("warranty", "")
+                    warranty_values = warranty.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(category__name__in=category_values,
+                                                  brand__name__in=brand_values,)
+            else:
+                return Product.objects.filter(category__name__in=category_values,)
+        elif warranty is not None:
+            warranty = self.request.GET.get("warranty", "")
+            warranty_values = warranty.split(",")
+            if brand is not None:
+                brand = self.request.GET.get('brand', "")
+                brand_values = brand.split(",")
+                if category is not None:
+                    category = self.request.GET.get("category", "")
+                    category_values = category.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  warranty__in=warranty_values)
+            elif category is not None:
+                category = self.request.GET.get("category", "")
+                category_values = category.split(",")
+                if brand is not None:
+                    brand = self.request.GET.get('brand', "")
+                    brand_values = brand.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(category__name__in=category_values,
+                                                  warranty__in=warranty_values)
+            else:
+                return Product.objects.filter(warranty__in=warranty_values)
+        return Product.objects.all()
+
+# Actual Filtering Ends
+
+class PrdouctSearchAPIView(ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter]
+    #search_fields = ['name','brand__name','brand__brand_category', 'description',
+                     #'collection__name','category__name',]
+    search_fields = ['name','brand__name','collection__name',
+                     'category__name','description','variants__color']
+    pagination_class = CustomPagination
 
 class ProductAddAPIView(CreateAPIView):
     permission_classes = [AllowAny]
@@ -90,9 +198,22 @@ class ProductDetailAPIView(RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
 
+    def perform_create(self, serializer):
+        user = self.request.user
+        product = get_object_or_404(Product,pk=self.kwargs['pk'])
+        serializer.save(user=user,product=product)
 
+    def get_queryset(self):
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        return Review.objects.filter(product=product)
 
+    def perform_destroy(self, instance):
+        instance.delete()
 
 
 

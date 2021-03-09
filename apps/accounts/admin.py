@@ -2,8 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.sites.models import Site
 from taggit.admin import Tag
-from allauth.account.models import EmailAddress,EmailConfirmation
-from allauth.account.admin import EmailAddressAdmin,EmailConfirmationAdmin
+from django.utils.html import format_html
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import *
 
@@ -30,14 +29,38 @@ class CustomUserAdmin(UserAdmin):
     )
     search_fields = ("first_name", "last_name", "email")
     ordering = ("first_name", "last_name", "email")
+    icon_name = 'tag_faces'
+
+class CustomerProfileAdmin(admin.ModelAdmin):
+
+    def edit(self, obj):
+        return format_html('<a class="btn-btn" href="/admin/accounts/customer/{}/change/">Change</a>', obj.id)
+
+    def delete(self, obj):
+        return format_html('<a class="btn-btn" href="/admin/accounts/customer/{}/delete/">Delete</a>', obj.id)
+
+    list_display = ('customer', 'full_name', 'phone_num', 'edit','delete' )
+    list_display_links = ('customer', )
+    icon_name = 'people'
+
+class SellerProfileAdmin(admin.ModelAdmin):
+
+    def edit(self, obj):
+        return format_html('<a class="btn-btn" href="/admin/accounts/seller/{}/change/">Change</a>', obj.id)
+
+    def delete(self, obj):
+        return format_html('<a class="btn-btn" href="/admin/accounts/seller/{}/delete/">Delete</a>', obj.id)
+
+    list_display = ('seller', 'full_name', 'business_name','phone_num', 'edit','delete' )
+    list_display_links = ('seller', )
+    icon_name = 'people_outline'
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
-admin.site.register(Seller)
-admin.site.register(Customer)
+admin.site.register(Seller,SellerProfileAdmin)
+admin.site.register(Customer,CustomerProfileAdmin)
 # admin.site.register(UserType)
 # admin.site.unregister(CustomUserAdmin)
 admin.site.unregister(Site)
 admin.site.unregister(Tag)
-# admin.site.unregister(EmailAddress)
-# admin.site.unregister(EmailConfirmation)
+# admin.site.unregister(Emailaddress)

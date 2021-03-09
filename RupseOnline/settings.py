@@ -38,6 +38,7 @@ env = environ.Env(
 # reading .env file
 environ.Env.read_env()
 
+
 # False if not in os.environ
 DEBUG = env('DEBUG')
 
@@ -71,9 +72,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.products',
     'apps.orders',
-
-
-
+    'apps.contacts',
 ]
 
 SITE_ID = 1
@@ -237,3 +236,4 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 MATERIAL_ADMIN_SITE = {
     'SHOW_COUNTS': True,
 }
+

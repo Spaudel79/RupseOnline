@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Product, Category, Brand, Collection
+from ..models import Product, Category, Brand, Collection,Review,Variants
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -27,18 +27,23 @@ class CollectionSerializer(serializers.ModelSerializer):
         # fields = ("id", "name","image")
         fields = '__all__'
 
+class VariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Variants
+        fields = ['id','price','size','color','quantity','variant_availability']
+
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Product
-        # fields = ['id',
-        #     'category','brand','collection','featured',
-        #     'best_seller','top_rated','name',
-        #     'description','picture','price','size',
-        #     'color','quantity','availability','warranty',
-        #     'services',
-        # ]
+        fields = ['id',
+            'category','brand','collection','featured',
+            'best_seller','top_rated','name',
+            'description','picture',
+            'availability','warranty',
+            'services','variants'
+        ]
         # lookup_field = "slug"
-        fields = '__all__'
         depth = 1
 
 class  AddProductSerializer(serializers.ModelSerializer):
@@ -59,5 +64,15 @@ class  AddProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['category','brand', 'collection','featured', 'top_rated','name','description', 'picture',
-                  'price', 'size', 'color','availability','warranty','services','quantity']
+                  'availability','warranty','services','variants']
         # depth = 1
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(read_only=True)
+    class Meta:
+        model = Review
+        fields = ['id','user','product','user_rating','full_name','email','review','created_at']
+
+class Test(serializers.Serializer):
+    pass
