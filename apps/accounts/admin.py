@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.sites.models import Site
 from taggit.admin import Tag
-
+from allauth.account.models import EmailAddress,EmailConfirmation
+from allauth.account.admin import EmailAddressAdmin,EmailConfirmationAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 from .models import *
 
@@ -38,4 +39,5 @@ admin.site.register(Customer)
 # admin.site.unregister(CustomUserAdmin)
 admin.site.unregister(Site)
 admin.site.unregister(Tag)
-# admin.site.unregister(Emailaddress)
+# admin.site.unregister(EmailAddress)
+# admin.site.unregister(EmailConfirmation)
