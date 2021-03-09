@@ -62,7 +62,7 @@ class Variants(models.Model):
         ('available', 'Available',),
         ('not_available', 'Not Available',),
     )
-    price = models.DecimalField(decimal_places=2, max_digits=20,blank=True,null=True)
+    price = models.DecimalField(decimal_places=2, max_digits=20,default=500)
     size = models.CharField(max_length=50, choices=SIZE, default='not applicable',blank=True,null=True)
     color = models.CharField(max_length=70, default="not applicable",blank=True,null=True)
     quantity = models.IntegerField(default=10,blank=True,null=True)  # available quantity of given product
@@ -86,13 +86,7 @@ class Product(models.Model):
         ('cash_on_delivery', 'Cash On Delivery',),
         ('free_shipping', 'Free Shipping',),
     )
-    SIZE = (
-        ('not applicable', 'not applicable',),
-        ('S', 'Small',),
-        ('M', 'Medium',),
-        ('L', 'Large',),
-        ('XL', 'Extra Large',),
-    )
+
     category = models.ManyToManyField(Category, blank=False)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
@@ -109,7 +103,7 @@ class Product(models.Model):
     availability = models.CharField(max_length=70, choices=AVAILABILITY, default='in_stock')
     warranty = models.CharField(max_length=100, choices=WARRANTY, default='no_warranty')
     services = models.CharField(max_length=100, choices=SERVICES, default='cash_on_delivery')
-    variants = models.ManyToManyField(Variants,blank=True,null=True,related_name='products')
+    variants = models.ManyToManyField(Variants,related_name='products')
 
 
 

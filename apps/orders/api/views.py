@@ -11,7 +11,7 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from .serializers import *
-from apps.products.models import Product
+from apps.products.models import Product,Variants
 from ..import models
 from ..models import CartItem, Cart, WishList,WishListItems
 from rest_framework.permissions import (AllowAny,IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
@@ -83,7 +83,7 @@ class CartItemUpdateAPIView(UpdateAPIView,DestroyAPIView,):
 class WishListAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = WishList.objects.all()
-    serializer_class = WishListSerializer
+    serializer_class = WishListItemsTestSerializer
 
     def perform_create(self, serializer):
         try:
@@ -121,13 +121,14 @@ class WishListItemsAPIView(ListCreateAPIView):
 class AddtoWishListItemsView(CreateAPIView,DestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = WishListItems.objects.all()
-    serializer_class = WishListItemsTestSerializer
+    serializer_class = WishListItemsCreateSerializer
 
     def perform_create(self, serializer):
         user = self.request.user
         if not user.is_seller:
-            item = get_object_or_404(Product, pk=self.kwargs['pk'])
-            serializer.save(owner=user, item=item)
+            item = get_object_or_404(Product, pk=self.kwargs['pk1'])
+            variants = get_object_or_404(Variants,pk=self.kwargs['pk2'])
+            serializer.save(owner=user, item=item,wish_variants=variants)
         else:
             # return Response({
             #     "message":"This is not a customer account.Please login as customer.",},
@@ -151,7 +152,7 @@ class WishListItemsView(ListAPIView):
 
     """
        Orders endpoints start....................
-        """
+    """
 
 class AddtoOrderItemView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]

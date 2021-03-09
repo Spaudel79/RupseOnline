@@ -1,13 +1,14 @@
 from rest_framework import serializers
 
 from ..models import Cart, CartItem,WishList,WishListItems,OrderItem,Order,BillingDetails
-from apps.products.models import Product
+from apps.products.models import Product,Variants
 from apps.accounts.models import CustomUser
 
 from apps.accounts.api.serializers import CustomUserDetailsSerializer
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import status
+from apps.products.api.serializers import VariantSerializer
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,58 +37,32 @@ class CartwithItemSerializer(serializers.ModelSerializer):
                WishLists serializers start....................
         """
 
+class VariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Variants
+        fields = ['id','price','size','color','quantity','variant_availability']
 
-
-class WishListItemsSerializer(serializers.ModelSerializer):
-
+class WishListItemsCreateSerializer(serializers.ModelSerializer):
+    # item = serializers.PrimaryKeyRelatedField(read_only=True)
+    # variants = VariantSerializer(read_only=True)
     class Meta:
         model = WishListItems
-        fields = ['id','wishlist','item']
-        depth = 1
+        #fields = ['id', 'item', 'variants']
+        fields = '__all__'
+        # depth = 1
 
-        # def create(self, validated_data):
-    #     user = self.context['request'].user
-    #     order_items = validated_data.pop('order_items')
-    #     order = Order.objects.create(user=user,**validated_data)
-    #     for order_items in order_items:
-    #         OrderItem.objects.create(order=order,**order_items)
-    #     return order
 
-class WishListSerializer(serializers.ModelSerializer):
-    wishlistitems = WishListItemsSerializer(many=True)
-    owner = serializers.PrimaryKeyRelatedField(read_only=True)
-    # owner= CustomUserDetailsSerializer(many=False)
-    # owner = serializers.IntegerField(source='owner.id')
-
-    # def validate(self, owner):
-    #     abc = WishList.objects.filter(owner=owner["owner"]).exists()
-    #     if abc:
-    #         raise serializers.ValidationError('Wishlist exists.Now add items')
-    #     return owner
-
-    # def create(self, validated_data):
-    #     user_data = validated_data.pop("owner")
-    #
-    #     owner = CustomUser.objects.filter(**user_data).first()
-    #     if owner is None:
-    #         owner = CustomUser.objects.create(**user_data)
-    #     validated_data.update({"owner": owner})
-    #     return WishList.objects.create(**validated_data)
-
-    class Meta:
-        model = WishList
-        fields = ['id','owner','wishlistitems']
-        depth = 1
 
 class WishListItemsTestSerializer(serializers.ModelSerializer):
 
     #wishlist = serializers.PrimaryKeyRelatedField(read_only=True,queryset=WishList.objects.filter(owner=serializers.CurrentUserDefault),default=serializers.CurrentUserDefault())
     class Meta:
         model = WishListItems
-        fields = ['id','item']
+        fields = ['id','item',]
         depth = 2
 
 class OrderItemSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = OrderItem
         fields = ['id','order','item', 'quantity']

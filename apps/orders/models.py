@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from apps.products.models import Product
+from apps.products.models import Product,Variants
 # import settings
 
 # Create your models here.
@@ -38,6 +38,7 @@ class WishListItems(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE,blank=True)
     #wishlist = models.ForeignKey(WishList,on_delete=models.CASCADE, related_name='wishlistitems')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
+    wish_variants = models.OneToOneField(Variants,on_delete=models.CASCADE, related_name='wishitems')
 
 
     def __str__(self):
