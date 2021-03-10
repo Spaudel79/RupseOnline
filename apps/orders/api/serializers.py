@@ -58,14 +58,15 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
     #wishlist = serializers.PrimaryKeyRelatedField(read_only=True,queryset=WishList.objects.filter(owner=serializers.CurrentUserDefault),default=serializers.CurrentUserDefault())
     class Meta:
         model = WishListItems
-        fields = ['id','item',]
-        depth = 2
+        fields = '__all__'
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
-
+    #order_variants = VariantSerializer(read_only=True)
+    #order_variants =VariantSerializer()
     class Meta:
         model = OrderItem
-        fields = ['id','order','item', 'quantity']
+        fields = ['id','order','item','order_variants', 'quantity']
         # depth = 1
 
 
@@ -79,12 +80,13 @@ class BillingDetailsSerializer(serializers.ModelSerializer):
         depth = 1
 
 class OrderSerializer(serializers.ModelSerializer):
+
     billing_details = BillingDetailsSerializer()
     order_items = OrderItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id','user','start_date', 'ordered_date', 'ordered', 'order_items','billing_details']
+        fields = ['id','user','ordered_date', 'ordered', 'order_items','billing_details']
         # depth = 1
 
     # def save(self, **kwargs):
@@ -126,7 +128,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         # fields = '__all__'
-        fields = ['id', 'user', 'start_date', 'ordered_date', 'ordered', 'order_items','billing_details']
+        fields = ['id', 'user','ordered_date', 'ordered', 'order_items','billing_details']
         depth = 1
 
 class OrderBillingSerializer(serializers.ModelSerializer):

@@ -136,6 +136,10 @@ class AddtoWishListItemsView(CreateAPIView,DestroyAPIView):
             # )
             raise serializers.ValidationError("This is not a customer account.Please login as customer.")
 
+class DelWishListItemsView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = WishListItems.objects.all()
+    serializer_class = WishListItemsTestSerializer
 
     def perform_destroy(self, instance):
         instance.delete()

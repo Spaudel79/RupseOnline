@@ -27,6 +27,7 @@ urlpatterns = [
    ##new_wishlist-endpoints
     path('api/addwishlistitems/<int:pk1>/variants/<int:pk2>', views.AddtoWishListItemsView.as_view(),name='add-to-wishlist'),
     path('api/getwishlistitems', views.WishListItemsView.as_view(),name='add-to-wishlist'),
+    path('api/delwishlistitems/<int:pk>', views.DelWishListItemsView.as_view(),name='del-to-wishlist'),
 
     #orders-endpoints
     path('api/addorderitem', views.AddtoOrderItemView.as_view(), name='api-add-orderitem'),

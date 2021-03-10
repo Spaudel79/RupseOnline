@@ -46,6 +46,10 @@ class Collection(models.Model):
 
 class ImageBucket(models.Model):
     pic = models.ImageField(upload_to="products/images", null=True, blank=True)
+
+    # def __str__(self):
+    #     return self.pic
+
     class Meta:
         verbose_name_plural = "Image Gallery"
 
