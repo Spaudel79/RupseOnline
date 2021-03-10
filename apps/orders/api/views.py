@@ -142,7 +142,7 @@ class AddtoWishListItemsView(CreateAPIView,DestroyAPIView):
 
 class WishListItemsView(ListAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = WishListItemsTestSerializer
+    serializer_class = WishListItemsCreateSerializer
 
     def get_queryset(self):
         user=self.request.user

@@ -40,16 +40,16 @@ class CartwithItemSerializer(serializers.ModelSerializer):
 class VariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variants
-        fields = ['id','price','size','color','quantity','variant_availability']
+        fields = ['id','price','size','color','quantity','vairant_availability']
 
 class WishListItemsCreateSerializer(serializers.ModelSerializer):
     # item = serializers.PrimaryKeyRelatedField(read_only=True)
-    # variants = VariantSerializer(read_only=True)
+    wish_variants = VariantSerializer(read_only=True)
     class Meta:
         model = WishListItems
-        #fields = ['id', 'item', 'variants']
-        fields = '__all__'
-        # depth = 1
+        fields = ['id', 'item', 'wish_variants']
+        #fields = '__all__'
+        depth = 1
 
 
 
