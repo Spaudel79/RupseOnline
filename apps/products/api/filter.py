@@ -4,11 +4,11 @@ from ..models import *
 
 
 class ProductFilter(filters.FilterSet):
-   price = filters.RangeFilter()
+   variants__price = filters.RangeFilter()
 
    class Meta:
       model = Product
-      fields = ['price','availability',
+      fields = ['variants__price','availability',
                        'services','featured','best_seller','top_rated',
                 'brand__id','category__id','collection__id','collection__name']
 
