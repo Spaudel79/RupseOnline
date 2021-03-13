@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from apps.products.models import Product
+from apps.products.models import Product,Variants
 # import settings
 
 # Create your models here.
@@ -38,6 +38,7 @@ class WishListItems(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE,blank=True)
     #wishlist = models.ForeignKey(WishList,on_delete=models.CASCADE, related_name='wishlistitems')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
+    wish_variants = models.ForeignKey(Variants,on_delete=models.CASCADE, related_name='wishitems')
 
 
     def __str__(self):
@@ -50,8 +51,8 @@ class WishListItems(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     #items = models.ManyToManyField(OrderItem,blank=True, null=True,related_name="order_items")
-    start_date = models.DateTimeField(auto_now_add=True)
-    ordered_date = models.DateTimeField()
+    #start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
     #billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
 
@@ -59,12 +60,13 @@ class Order(models.Model):
         return self.user.email
 
     class Meta:
-        verbose_name_plural= "Orders"
+        verbose_name_plural = "Orders"
 
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True)
     order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
+    order_variants = models.ForeignKey(Variants,on_delete=models.CASCADE,blank=True,null=True)
     quantity = models.IntegerField(default=1)
 
 

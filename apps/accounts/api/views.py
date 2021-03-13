@@ -49,8 +49,12 @@ class LoginUserView(LoginView):
                                   "serializer.data": serializer.data},
                                    status=status.HTTP_200_OK)
 
-class SellerRegisterView(RegisterView):
+class SellerRegisterView(RegisterUserView):
     serializer_class = SellerRegisterSerializer
+
+    # def create(self, validated_data):
+    #     seller = Seller.objects.create(seller=self.request.user,
+    #                                phone_num=self.cleaned_data.get('phone_num'))
 
 
 

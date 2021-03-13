@@ -3,6 +3,18 @@ from .models import *
 from django.utils.html import format_html
 
 
+class VariantsAdmin(admin.ModelAdmin):
+
+    def edit(self, obj):
+        return format_html('<a class="btn-btn" href="/admin/products/variants/{}/change/">Change</a>', obj.id)
+
+    def delete(self, obj):
+        return format_html('<a class="btn-btn" href="/admin/products/variants/{}/delete/">Delete</a>', obj.id)
+
+    list_display = ('color','size', 'price','quantity','vairant_availability', 'edit','delete')
+    #list_display_links = ('name', )
+    icon_name = 'assignment'
+
 class ProductAdmin(admin.ModelAdmin):
     # list_display = ('name', 'price', 'quantity', 'featured', )
     # list_filter = ('name', 'price', 'quantity', 'featured', )
@@ -17,7 +29,7 @@ class ProductAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/product/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('name', 'featured', 'availability', 'price','edit', 'delete')
+    list_display = ('name', 'featured', 'availability','edit', 'delete')
     icon_name = 'personal_video'
 
 
@@ -82,6 +94,7 @@ class ReviewAdmin(admin.ModelAdmin):
     icon_name = 'create'
 
 admin.site.register(Product, ProductAdmin)
+admin.site.register(Variants, VariantsAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Collection, CollectionAdmin)
 admin.site.register(Category, CategoryAdmin)

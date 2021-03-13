@@ -19,10 +19,10 @@ class WishListItemsAdmin(admin.ModelAdmin):
 class OrdersAdmin(admin.ModelAdmin):
 
     def edit(self, obj):
-        return format_html('<a class="btn-btn" href="/admin/orders/orders/{}/change/">Change</a>', obj.id)
+        return format_html('<a class="btn-btn" href="/admin/orders/order/{}/change/">Change</a>', obj.id)
 
     def delete(self, obj):
-        return format_html('<a class="btn-btn" href="/admin/orders/orders/{}/delete/">Delete</a>', obj.id)
+        return format_html('<a class="btn-btn" href="/admin/orders/order/{}/delete/">Delete</a>', obj.id)
 
     list_display = ('user', 'ordered_date', 'edit','delete')
     list_display_links = ('user', )

@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.products',
     'apps.orders',
+    'apps.contacts',
 ]
 
 SITE_ID = 1
@@ -208,7 +209,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    # 'DEFAULT_PAGINATION_CLASS': 'RupseOnline.core.pagination.CustomPagination',
+    # # 'DEFAULT_PAGINATION_CLASS': 'RupseOnline.core.pagination.CustomPagination',
     'PAGE_SIZE': 15,
 }
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
