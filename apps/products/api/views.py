@@ -215,5 +215,14 @@ class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
     def perform_destroy(self, instance):
         instance.delete()
 
+class GetReviewAPIView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Review.objects.filter(user=user)
+
+
 
 

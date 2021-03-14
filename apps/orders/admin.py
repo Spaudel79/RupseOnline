@@ -31,13 +31,17 @@ class OrdersAdmin(admin.ModelAdmin):
 class OrderItemsAdmin(admin.ModelAdmin):
 
     def edit(self, obj):
-        return format_html('<a class="btn-btn" href="/admin/orders/orderitems/{}/change/">Change</a>', obj.id)
+        return format_html('<a class="btn-btn" href="/admin/orders/orderitem/{}/change/">Change</a>', obj.id)
 
     def delete(self, obj):
-        return format_html('<a class="btn-btn" href="/admin/orders/orderitems/{}/delete/">Delete</a>', obj.id)
+        return format_html('<a class="btn-btn" href="/admin/orders/orderitem/{}/delete/">Delete</a>', obj.id)
 
+    list_filter = ['order','item']
+    list_display = ['order','item','quantity','order_variants','edit','delete']
     # list_display = ('user', 'ordered_date', 'edit','delete')
     # list_display_links = ('user', )
+
+    #search_fields = ('order','item')
     icon_name = 'add_shopping_cart'
 
 class BillingDetailsAdmin(admin.ModelAdmin):

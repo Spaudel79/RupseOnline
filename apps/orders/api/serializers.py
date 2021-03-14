@@ -40,7 +40,7 @@ class CartwithItemSerializer(serializers.ModelSerializer):
 class VariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variants
-        fields = ['id','price','size','color','quantity','vairant_availability']
+        fields = ['id','product_id','price','size','color','quantity','vairant_availability']
 
 class WishListItemsCreateSerializer(serializers.ModelSerializer):
     # item = serializers.PrimaryKeyRelatedField(read_only=True)

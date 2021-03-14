@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',  # can be used later
     'allauth',
     'allauth.account',
-    # 'allauth.socialaccount', #can be used later
+    'allauth.socialaccount', #can be used later
     'rest_auth.registration',
     'django_filters',
     'rangefilter',
