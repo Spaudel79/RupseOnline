@@ -38,10 +38,10 @@ def upload(uploaded_file):
         'parents': [{
             'kind': 'drive#fileLink',
             'driveId': '0AFAVeVVNelebUk9PVA',
-            'id': "1XUV_zo2enIse7N17oOKfNEv7FNNrtBrM"
+            'id': "12JiHXlRSFMgwfzrgxn6HZojiu3fYVmQI"
         }]
     })
-    f.SetContentFile(uploaded_file+".gz")
+    f.SetContentFile(uploaded_file)
     f.Upload(param={'supportsTeamDrives': True})
 
 
@@ -87,10 +87,13 @@ else:
         TODAYBACKUPPATH) + "/" + db + ".sql"
     os.system(dumpcmd)
     gzipcmd = "gzip " + pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql"
+    gzipFiles = "tar cvfz " +  pipes.quote(TODAYBACKUPPATH) + "/media.tar.gz media"
     os.system(gzipcmd)
+    os.system(gzipFiles)
 
 print("")
 print("Backup script completed")
 print("Your backups have been created in '" + TODAYBACKUPPATH + "' directory")
 
-upload(pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql")
+upload(pipes.quote(TODAYBACKUPPATH) + "/" + db + ".sql.gz")
+upload(pipes.quote(TODAYBACKUPPATH) + "/media.tar.gz")
