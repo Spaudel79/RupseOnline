@@ -17,6 +17,11 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from allauth.socialaccount.models import SocialToken, SocialAccount, SocialApp
+from allauth.account.models import EmailAddress
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import Group
+
 
 urlpatterns = [
 
@@ -24,6 +29,7 @@ urlpatterns = [
     path('', include('apps.products.api.urls')),
     path('', include('apps.accounts.api.urls')),
     path('', include('apps.orders.api.urls')),
+    path('', include('apps.contacts.api.urls')),
     # path('test/', TemplateView.as_view(template_name='base.html'), name='index'),
     # path('api', include('api.urls')),
     path('admin/', admin.site.urls),
@@ -35,3 +41,10 @@ if settings.DEBUG:
                           document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+
+admin.site.unregister(SocialToken)
+admin.site.unregister(SocialAccount)
+admin.site.unregister(SocialApp)
+admin.site.unregister(EmailAddress)
+admin.site.unregister(Group)

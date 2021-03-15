@@ -11,7 +11,7 @@ class VariantsAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/variants/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('color','size', 'price','quantity','vairant_availability', 'edit','delete')
+    list_display = ('product_id','color','size', 'price','quantity','vairant_availability', 'edit','delete')
     #list_display_links = ('name', )
     icon_name = 'assignment'
 

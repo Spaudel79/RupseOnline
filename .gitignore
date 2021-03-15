@@ -1,4 +1,5 @@
 static/
+media/
 .idea/
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -68,3 +69,4 @@ ruponline
 client_secrets.json
 credentials.json
 settings.yaml
+RupseOnline/.env

@@ -61,6 +61,7 @@ class Order(models.Model):
 
     class Meta:
         verbose_name_plural = "Orders"
+        ordering = ('-id',)
 
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True)
@@ -75,7 +76,7 @@ class OrderItem(models.Model):
 
     class Meta:
         verbose_name_plural= "Cart Items"
-
+        ordering = ('-id',)
 
 class BillingDetails(models.Model):
     PAYMENT_TYPE = (

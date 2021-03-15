@@ -66,6 +66,7 @@ class Variants(models.Model):
         ('available', 'Available',),
         ('not_available', 'Not Available',),
     )
+    product_id = models.CharField(max_length=70,default='OAXWRTZ_12C',blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=20,default=500)
     size = models.CharField(max_length=50, choices=SIZE, default='not applicable',blank=True,null=True)
     color = models.CharField(max_length=70, default="not applicable",blank=True,null=True)
@@ -75,6 +76,8 @@ class Variants(models.Model):
     class Meta:
         verbose_name_plural = "Variants"
 
+    def __str__(self):
+        return self.product_id
 
 class Product(models.Model):
     AVAILABILITY = (
@@ -104,6 +107,12 @@ class Product(models.Model):
     description = RichTextField(blank=True)
     #picture = models.ImageField(upload_to="products/images", null=True, blank=True)
     picture = models.ManyToManyField(ImageBucket,null=True,blank=True)
+    rating = models.IntegerField(choices=((1, 1),
+                                               (2, 2),
+                                               (3, 3),
+                                               (4, 4),
+                                               (5, 5))
+                                      )
     availability = models.CharField(max_length=70, choices=AVAILABILITY, default='in_stock')
     warranty = models.CharField(max_length=100, choices=WARRANTY, default='no_warranty')
     services = models.CharField(max_length=100, choices=SERVICES, default='cash_on_delivery')
