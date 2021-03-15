@@ -22,7 +22,8 @@ deploy:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - hostname -I
   script:
     - scp -o StrictHostKeyChecking=no -p 2209 public.zip aakashlabs@202.166.194.143:/home/aakashlabs/rupseonline
-    - ssh -p 2209 -o StrictHostKeyChecking=no aakashlabs@202.166.194.143 "hostname -I; cd /home/aakashlabs/rupseonline; unzip -o public.zip"
+    - ssh -p 2209 -o StrictHostKeyChecking=no aakashlabs@202.166.194.143 "cd /home/aakashlabs/rupseonline; unzip -o public.zip"
     - ssh -p 2209 -o StrictHostKeyChecking=no aakashlabs@202.166.194.143 "sudo systemctl restart gunicorn.service; sudo systemctl daemon-reload; sudo rm /home/aakashlabs/rupseonline/public.zip"
