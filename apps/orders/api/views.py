@@ -207,7 +207,15 @@ class BillingInfoView(ListAPIView):
 
 
 
+ # """
+ #       Payment endpoints start....................
+ #    """
 
+# class PaymentAPIView(APIView):
+#
+#     def get(self,request,*args,**kwargs):
+#         order_id = request.GET.get
+#         total_amt =
 
 
 
