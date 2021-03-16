@@ -16,12 +16,41 @@ except ImportError:
 User = get_user_model()
 
 
+class CustomerProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        # depth = 1
+
+
+class CustomerUpdateSerializer(serializers.ModelSerializer):
+    customer = CustomerProfileSerializer()
+    class Meta:
+        model = User
+        fields = ('id', "first_name", "last_name",'customer')
+
+    def update(self,request, instance, validated_data):
+        user = self.request.user
+        instance.user.first_name=user.get('first_name')
+        instance.user.last_name = user.get('last_name')
+        instance.user.save()
+        customer_data = validated_data.pop('customer',None)
+        if customer_data is not None:
+            instance.customer.region = customer_data['region']
+            instance.customer.city = customer_data['city']
+            instance.customer.area = customer_data['area']
+            instance.customer.address = customer_data['address']
+            instance.customer.save()
+        return super().update(instance,validated_data)
+
+
+
+
+
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        # fields = ("id", "first_name", "last_name", "email")
         fields = '__all__'
-
 
 class SellerRegisterSerializer(RegisterSerializer):
     seller = serializers.PrimaryKeyRelatedField(read_only=True,)
@@ -200,11 +229,23 @@ class CustomerLoginSerializer(serializers.ModelSerializer):
 
         return data
 
-class CustomerProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer
-        fields = '__all__'
-        depth = 1
+# class CustomerProfileSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Customer
+#         fields = '__all__'
+#         depth = 1
+#
+#     def update(self, instance, validated_data):
+#         instance.full_name= validated_data.get('full_name',instance.full_name)
+#         instance.phone_num = validated_data.get('phone_num', instance.phone_num)
+#         instance.region = validated_data.get('region',instance.region)
+#         instance.city = validated_data.get('city', instance.city)
+#         instance.area = validated_data.get('area', instance.area)
+#         instance.address = validated_data.get('address', instance.address)
+#         instance.save()
+#         return instance
+
+
 
 
 class CustomLoginSerializer(LoginSerializer):

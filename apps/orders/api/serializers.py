@@ -49,7 +49,7 @@ class WishListItemsCreateSerializer(serializers.ModelSerializer):
         model = WishListItems
         fields = ['id', 'item', 'wish_variants']
         #fields = '__all__'
-        depth = 1
+        depth = 2
 
 
 
@@ -86,7 +86,7 @@ class OrderSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     class Meta:
         model = Order
-        fields = ['id','user','ordered_date', 'ordered', 'order_items','billing_details']
+        fields = ['id','user','ordered_date','order_status', 'ordered', 'order_items', 'total_price','billing_details']
         # depth = 1
 
     # def save(self, **kwargs):
@@ -128,7 +128,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         # fields = '__all__'
-        fields = ['id', 'user','ordered_date', 'ordered', 'order_items','billing_details']
+        fields = ['id', 'user','ordered_date', 'order_status','ordered', 'order_items', 'total_price','billing_details']
         depth = 1
 
 class OrderBillingSerializer(serializers.ModelSerializer):

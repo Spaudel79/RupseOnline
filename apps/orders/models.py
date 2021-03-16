@@ -49,11 +49,20 @@ class WishListItems(models.Model):
 
 
 class Order(models.Model):
+    ORDER_STATUS = (
+        ('To_Ship', 'To Ship',),
+        ('Shipped', 'Shipped',),
+        ('Delivered', 'Delivered',),
+        ('Cancelled', 'Cancelled',),
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
     #items = models.ManyToManyField(OrderItem,blank=True, null=True,related_name="order_items")
     #start_date = models.DateTimeField(auto_now_add=True)
+    order_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
+
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
+    total_price = models.CharField(max_length=50,blank=True,null=True)
     #billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
 
     def __str__(self):
@@ -69,6 +78,7 @@ class OrderItem(models.Model):
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     order_variants = models.ForeignKey(Variants,on_delete=models.CASCADE,blank=True,null=True)
     quantity = models.IntegerField(default=1)
+    total_item_price = models.CharField(max_length=50,blank=True,null=True)
 
 
     def __str__(self):

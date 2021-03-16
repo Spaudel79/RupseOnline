@@ -130,6 +130,11 @@ class CustomerProfileView(ListAPIView):
         queryset = Customer.objects.filter(customer=self.request.user)
         return queryset
 
+class CustomerUpdateView(UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Customer.objects.all()
+    serializer_class = CustomerUpdateSerializer
+
 class CustomerTokenView(ListAPIView):
     def get(self, request, *args, **kwargs):
         serializer = CustomUserDetailsSerializer(request.user)

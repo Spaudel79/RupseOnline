@@ -131,6 +131,7 @@ class AddtoWishListItemsView(CreateAPIView,DestroyAPIView):
             serializer.save(owner=user, item=item,wish_variants=variants)
         else:
             # return Response({
+
             #     "message":"This is not a customer account.Please login as customer.",},
             #     status = status.HTTP_200_OK
             # )
