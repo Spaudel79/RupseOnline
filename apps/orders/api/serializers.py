@@ -8,7 +8,7 @@ from apps.accounts.api.serializers import CustomUserDetailsSerializer
 from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import status
-from apps.products.api.serializers import VariantSerializer
+from apps.products.api.serializers import VariantSerializer,ProductSerializer
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,6 +42,20 @@ class VariantSerializer(serializers.ModelSerializer):
         model = Variants
         fields = ['id','product_id','price','size','color','quantity','vairant_availability']
 
+class ProductSerializer(serializers.ModelSerializer):
+    # variants = VariantSerializer(read_only=True)
+    class Meta:
+        model = Product
+        fields = ['id',
+            'category','brand','collection','featured',
+            'best_seller','top_rated','name','main_product_image',
+            'description','picture','rating',
+            'availability','warranty',
+            'services','variants'
+        ]
+        # lookup_field = "slug"
+        #depth = 1
+
 class WishListItemsCreateSerializer(serializers.ModelSerializer):
     # item = serializers.PrimaryKeyRelatedField(read_only=True)
     wish_variants = VariantSerializer(read_only=True)
@@ -62,8 +76,9 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    #order_variants = VariantSerializer(read_only=True)
+    order_variants = VariantSerializer(read_only=True)
     #order_variants =VariantSerializer()
+    item = ProductSerializer(read_only=True)
     class Meta:
         model = OrderItem
         fields = ['id','order','item','order_variants', 'quantity']

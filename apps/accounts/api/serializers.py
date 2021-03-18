@@ -24,16 +24,18 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
 
 
 class CustomerUpdateSerializer(serializers.ModelSerializer):
-    customer = CustomerProfileSerializer()
+    customer = CustomerProfileSerializer(many=False)
     class Meta:
         model = User
-        fields = ('id', "first_name", "last_name",'customer')
+        fields = ('id', "first_name", "last_name","email",'customer')
+        depth = 1
 
-    def update(self,request, instance, validated_data):
-        user = self.request.user
-        instance.user.first_name=user.get('first_name')
-        instance.user.last_name = user.get('last_name')
-        instance.user.save()
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
+        user.first_name = validated_data.get('first_name')
+        user.last_name = validated_data.get('last_name')
+        user.email = validated_data.get('email')
+        user.save()
         customer_data = validated_data.pop('customer',None)
         if customer_data is not None:
             instance.customer.region = customer_data['region']
@@ -43,14 +45,26 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
             instance.customer.save()
         return super().update(instance,validated_data)
 
-
-
-
+    # def update(self,request, instance, validated_data):
+    #     customer_data = validated_data.pop('customer')
+    #     user = self.request.user
+    #     user.first_name = user.get('first_name')
+    #     user.last_name = user.get('last_name')
+    #     customer = instance.customer
+    #     # instance.first_name = validated_data.get('first_name',instance.first_name)
+    #     # instance.last_name = validated_data.get('last_name', instance.last_name)
+    #
+    #     instance.save()
+    #     customer.region = customer_data.get('region',customer.region)
+    #     customer.save()
+    #     return instance
 
 class CustomUserDetailsSerializer(serializers.ModelSerializer):
+    customer = CustomerProfileSerializer()
     class Meta:
         model = User
-        fields = '__all__'
+        #fields = '__all__'
+        fields = ('id', 'password','email','is_seller','is_customer', 'customer')
 
 class SellerRegisterSerializer(RegisterSerializer):
     seller = serializers.PrimaryKeyRelatedField(read_only=True,)
@@ -131,6 +145,39 @@ class SellerProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
+class SellerProfileUpdateSerializer(serializers.ModelSerializer):
+    seller = SellerProfileSerializer()
+    class Meta:
+        model = User
+        fields = ['id', "first_name", "last_name","email",'seller']
+
+    def update(self,request, instance, validated_data):
+        user = self.request.user
+        user.first_name = validated_data.get('first_name')
+        user.last_name = validated_data.get('last_name')
+        user.email = validated_data.get('email')
+        seller_data = validated_data.pop('seller',None)
+        if seller_data is not None:
+            instance.seller.business_name = seller_data['business_name']
+            instance.seller.phone_num = seller_data['phone_num']
+            instance.seller.legal_name = seller_data['legal_name ']
+            instance.seller.company_registration_name = seller_data['company_registration_name']
+            instance.seller.business_registration_no = seller_data['business_registration_no']
+            instance.seller.business_email = seller_data['business_email']
+            instance.seller.docs = seller_data['docs']
+            instance.seller.first_name = seller_data['first_name']
+            instance.seller.last_name = seller_data['last_name']
+            instance.seller.mob_num = seller_data['mob_num']
+            instance.seller.state = seller_data['state']
+            instance.seller.district = seller_data['district']
+            instance.seller.vdc = seller_data['vdc']
+            instance.seller.address = seller_data['address']
+            instance.seller.save()
+        return super().update(instance,validated_data)
+
+
+
+
 class SellerLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(label='Email Address')
 
@@ -170,13 +217,15 @@ class CustomerRegisterSerializer(RegisterSerializer):
     customer = serializers.PrimaryKeyRelatedField(read_only=True,)
     phone_num = serializers.CharField(required=False)
     username = None
-    full_name = serializers.CharField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
 
     def get_cleaned_data(self):
         data = super(CustomerRegisterSerializer, self).get_cleaned_data()
         extra_data = {
             'phone_num': self.validated_data.get('phone_num', ''),
-            'full_name': self.validated_data.get('full_name', ''),
+            'first_name': self.validated_data.get('first_name', ''),
+            'last_name': self.validated_data.get('last_name', ''),
         }
         data.update(extra_data)
         return data
@@ -188,7 +237,9 @@ class CustomerRegisterSerializer(RegisterSerializer):
         user.save()
         customer = Customer(customer=user,
                         phone_num=self.cleaned_data.get('phone_num'),
-                        full_name=self.cleaned_data.get('full_name'),
+                        first_name=self.cleaned_data.get('first_name'),
+                        last_name=self.cleaned_data.get('last_name'),
+
                         )
 
         customer.save()

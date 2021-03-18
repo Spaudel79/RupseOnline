@@ -84,7 +84,9 @@ class Seller(models.Model):
     business_registration_no = models.CharField(max_length=50, blank=True)
     business_email = models.EmailField()
     docs = models.FileField(blank=True, null=True)
-    full_name = models.CharField(max_length=100, blank=True)
+    #full_name = models.CharField(max_length=100, blank=True)
+    first_name = models.CharField(max_length=100,blank=True,null=True)
+    last_name = models.CharField(max_length=100,blank=True,null=True)
     mob_num = models.CharField(max_length=50, blank=True)
     state = models.CharField(max_length=50, blank=True)
     district = models.CharField(max_length=50, blank=True)
@@ -97,7 +99,9 @@ class Seller(models.Model):
 
 class Customer(models.Model):
     customer = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-    full_name = models.CharField(max_length=100, blank=True)
+    #full_name = models.CharField(max_length=100, blank=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
     phone_num = models.CharField(max_length=50, blank=True)
     #dob = models.CharField(max_length=255,blank=True,null=True)
     region = models.CharField(max_length=255, blank=True,null=True)

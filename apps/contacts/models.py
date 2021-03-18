@@ -1,10 +1,22 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 # Create your models here.
+#from upload_validator import FileTypeValidator
+
+# validator = FileTypeValidator(
+#     =['application/msword'],
+#     allowed_extensions=['.doc', '.docx']
+# )
+
 
 class Choose(models.Model):
     title= models.CharField(max_length=100,blank=True)
-    icon = models.ImageField(blank=True,null=True,verbose_name="Icon Image")
+    icon = models.FileField(blank=True,null=True,verbose_name="IconImage(.svg)",)
+
+    # def validate_svg(file, valid):
+    #     if not is_svg(file):
+    #         raise ValidationError("File not svg")
+
     description= models.TextField(blank=True)
 
     class Meta:
@@ -35,3 +47,22 @@ class Contact(models.Model):
 
     class Meta:
         verbose_name_plural = 'Customer Messages'
+
+class ContactInfo(models.Model):
+    location_1 = models.CharField(max_length=255,blank=True)
+    location_2 = models.CharField(max_length=255, blank=True)
+    phone_1 = models.CharField(max_length=55,blank=True)
+    phone_2 = models.CharField(max_length=55, blank=True)
+    email_1 = models.EmailField(blank=True)
+    email_2 = models.EmailField(blank=True)
+    web_url = models.CharField(max_length=50,blank=True)
+
+    def __str__(self):
+        return self.web_url
+
+    class Meta:
+        verbose_name_plural = "RupseOnline Info"
+
+
+
+
