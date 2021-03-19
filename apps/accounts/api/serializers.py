@@ -20,14 +20,29 @@ class CustomerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+
+class CustomerTestProfileSerializer(serializers.ModelSerializer):
+    # customer = serializers.PrimaryKeyRelatedField()
+    # first_name = serializers.CharField(required=False,read_only=True)
+    # last_name = serializers.CharField(required=False,read_only=True)
+    # phone_num = serializers.CharField(required=False,read_only=True)
+    # region = serializers.CharField(required=False,read_only=True)
+    # city = serializers.CharField(required=False,read_only=True)
+    # area = serializers.CharField(required=False,read_only=True)
+    # address = serializers.CharField(required=False,read_only=True)
+    class Meta:
+        model = Customer
+        #fields = '__all__'
+        fields = ['customer','first_name','last_name','phone_num','region','city','area','address']
         # depth = 1
 
 
 class CustomerUpdateSerializer(serializers.ModelSerializer):
-    customer = CustomerProfileSerializer(many=False)
+    customer = CustomerProfileSerializer()
+    email = serializers.EmailField(required=False)
     class Meta:
         model = User
-        fields = ('id', "first_name", "last_name","email",'customer')
+        fields = ('id', "first_name", "last_name",'email','customer')
         depth = 1
 
     def update(self, instance, validated_data):
@@ -35,9 +50,23 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
         user.first_name = validated_data.get('first_name')
         user.last_name = validated_data.get('last_name')
         user.email = validated_data.get('email')
-        user.save()
+        # test = validated_data.get('email')
+        # print(test)
+        # # if user.email == test:
+        # #     pass
+        # # else:
+        # #     user.email = validated_data.get('email')
+        # # if user.email != validated_data.get('email'):
+        # #     print(user.email)
+        # #     user.email = validated_data.get('email')
+        # # else:
+        # #     pass
+        # user.save()
         customer_data = validated_data.pop('customer',None)
         if customer_data is not None:
+            instance.customer.first_name = customer_data['first_name']
+            instance.customer.last_name = customer_data['last_name']
+            instance.customer.phone_num = customer_data['phone_num']
             instance.customer.region = customer_data['region']
             instance.customer.city = customer_data['city']
             instance.customer.area = customer_data['area']
@@ -76,7 +105,8 @@ class SellerRegisterSerializer(RegisterSerializer):
     business_registration_no = serializers.CharField(required=False)
     business_email = serializers.EmailField(required=False)
     docs = serializers.FileField(required=False)
-    full_name = serializers.CharField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
     mob_num = serializers.CharField(required=False)
     state = serializers.CharField(required=False)
     district = serializers.CharField(required=False)
@@ -99,7 +129,8 @@ class SellerRegisterSerializer(RegisterSerializer):
             'business_registration_no': self.validated_data.get('business_registration_no', ''),
             'business_email': self.validated_data.get('business_email', ''),
             'docs': self.validated_data.get('docs', ''),
-            'full_name': self.validated_data.get('full_name', ''),
+            'first_name': self.validated_data.get('first_name', ''),
+            'last_name': self.validated_data.get('last_name', ''),
             'mob_num': self.validated_data.get('mob_num', ''),
             'state': self.validated_data.get('state', ''),
             'district': self.validated_data.get('district', ''),
@@ -125,14 +156,15 @@ class SellerRegisterSerializer(RegisterSerializer):
                         business_registration_no=self.cleaned_data.get('business_registration_no'),
                         business_email=self.cleaned_data.get('business_email'),
                         docs =self.cleaned_data.get('docs'),
-                        full_name=self.cleaned_data.get('full_name'),
+                        first_name=self.cleaned_data.get('first_name'),
+                        last_name=self.cleaned_data.get('last_name'),
                         mob_num=self.cleaned_data.get('mob_num'),
                         state=self.cleaned_data.get('state'),
                         district=self.cleaned_data.get('district'),
                         vdc=self.cleaned_data.get('vdc'),
                         address=self.cleaned_data.get('address'),)
 
-        seller.save()
+        seller.save(request)
         # content ={
         #     "seller":seller,
         #     "user": user

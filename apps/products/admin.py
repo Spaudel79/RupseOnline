@@ -38,7 +38,7 @@ class ProductAdmin(admin.ModelAdmin):
     image_display.short_description = 'Main Product Image'
     readonly_fields = ['image_display']
 
-    list_display = ('image_display','name', 'featured', 'availability','edit', 'delete')
+    list_display = ('image_display','name','merchant', 'featured', 'availability','edit', 'delete')
     icon_name = 'personal_video'
 
 

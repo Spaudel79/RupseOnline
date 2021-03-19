@@ -224,5 +224,12 @@ class GetReviewAPIView(ListAPIView):
         return Review.objects.filter(user=user)
 
 
+    #MerchantAPis Starts Here
 
+# class SellerProductsAPIView(ListAPIView):
+#     permission_classes = [IsAuthenticated]
+#     serializer_class = ProductSerializer
+#
+#     def get_queryset(self):
+#         return Product.objects.filter()
 

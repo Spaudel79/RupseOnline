@@ -5,6 +5,7 @@ from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from apps.accounts.models import Seller
 
 # Create your models here.
 User = get_user_model()
@@ -105,7 +106,7 @@ class Product(models.Model):
         ('cash_on_delivery', 'Cash On Delivery',),
         ('free_shipping', 'Free Shipping',),
     )
-
+    merchant = models.ForeignKey(Seller,on_delete=models.CASCADE,blank=True,null=True)
     category = models.ManyToManyField(Category, blank=False)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
