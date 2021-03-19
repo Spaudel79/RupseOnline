@@ -39,7 +39,7 @@ class CustomerProfileAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/accounts/customer/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('customer', 'full_name', 'phone_num', 'edit','delete' )
+    list_display = ('customer', 'first_name','last_name', 'phone_num', 'edit','delete' )
     list_display_links = ('customer', )
     icon_name = 'people'
 
@@ -51,7 +51,7 @@ class SellerProfileAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/accounts/seller/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('seller', 'full_name', 'business_name','phone_num', 'edit','delete' )
+    list_display = ('seller', 'first_name','last_name', 'business_name','phone_num', 'edit','delete' )
     list_display_links = ('seller', )
     icon_name = 'people_outline'
 

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import *
 from django.utils.html import format_html
+from imagekit.admin import AdminThumbnail
 
 
 class VariantsAdmin(admin.ModelAdmin):
@@ -11,7 +12,11 @@ class VariantsAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/variants/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('product_id','color','size', 'price','quantity','vairant_availability', 'edit','delete')
+    image_display = AdminThumbnail(image_field='thumbnail')
+    image_display.short_description = 'Variant Image'
+    readonly_fields = ['image_display']
+
+    list_display = ('product_id','image_display','color','size', 'price','quantity','vairant_availability', 'edit','delete')
     #list_display_links = ('name', )
     icon_name = 'assignment'
 
@@ -29,7 +34,11 @@ class ProductAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/product/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('name', 'featured', 'availability','edit', 'delete')
+    image_display = AdminThumbnail(image_field='thumbnail')
+    image_display.short_description = 'Main Product Image'
+    readonly_fields = ['image_display']
+
+    list_display = ('image_display','name','merchant', 'featured', 'availability','edit', 'delete')
     icon_name = 'personal_video'
 
 
@@ -77,9 +86,14 @@ class ImageBucketAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/imagebucket/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('pic', 'edit', 'delete')
+    image_display = AdminThumbnail(image_field='thumbnail')
+    image_display.short_description = 'Image'
+    readonly_fields = ['image_display']
 
+    list_display = ('image_display', 'pic_name', 'edit', 'delete')
     icon_name = 'camera_alt'
+
+
 
 class ReviewAdmin(admin.ModelAdmin):
 

@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'taggit',
     'ckeditor',
     'ckeditor_uploader',
+    'imagekit',
     #custom apps
     'apps.accounts',
     'apps.products',
@@ -181,7 +182,18 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+#ckeditor configs # todo
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'width': 1000,
+        'height': 400
+    },
+}
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 

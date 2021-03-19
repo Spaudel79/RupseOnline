@@ -63,9 +63,8 @@ var/
 */*/__pycache__/
 
 */__pycache__/
-
+requirements.txt
 .env
-ruponline
 client_secrets.json
 credentials.json
 settings.yaml

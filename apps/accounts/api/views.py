@@ -27,7 +27,7 @@ class RegisterUserView(GenericAPIView):
         user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(request)
         user_data = serializer.data
 
         return response.Response(user_data, status=status.HTTP_201_CREATED)
@@ -87,13 +87,13 @@ class SellerProfileView(ListAPIView):
 
 class SellerUpdateProfileView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Seller.objects.all()
+    queryset = User.objects.all()
     serializer_class = SellerProfileSerializer
 
-    def perform_update(self, serializer):
-        user = self.request.user
-        seller = get_object_or_404(Seller, pk=self.kwargs['pk'])
-        serializer.save(user=user, seller=seller)
+    # def perform_update(self, serializer):
+    #     user = self.request.user
+    #     seller = get_object_or_404(Seller, pk=self.kwargs['pk'])
+    #     serializer.save(user=user, seller=seller)
 
 class SellerTokenView(ListAPIView):
     def get(self, request, *args, **kwargs):
@@ -129,6 +129,11 @@ class CustomerProfileView(ListAPIView):
     def get_queryset(self):
         queryset = Customer.objects.filter(customer=self.request.user)
         return queryset
+
+class CustomerUpdateView(UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = CustomerUpdateSerializer
 
 class CustomerTokenView(ListAPIView):
     def get(self, request, *args, **kwargs):
