@@ -21,7 +21,7 @@ urlpatterns = [
 
     #Merchant-endpoints
     path('api/addproducts', views.ProductAddAPIView.as_view(), name='api-addproducts'),
-    #path('api/seller/products', views.SellerProductAPIView.as_view(), name='api-seller-products'),
+    path('api/seller/products/<int:pk>', views.SellerProductsAPIView.as_view(), name='api-seller-products'),
 
 
     #search-filter-endpoints

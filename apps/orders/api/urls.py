@@ -36,6 +36,9 @@ urlpatterns = [
 
 
     #billing-endpoints
-    path('api/billinginfo',views.BillingInfoView.as_view(),name='api-billinginfo')
+    path('api/billinginfo',views.BillingInfoView.as_view(),name='api-billinginfo'),
+
+    #merchant-apis
+    path('api/merchantorders/<int:pk>',views.SellerOrderView.as_view(),name='api-sellerorder')
 
 ]

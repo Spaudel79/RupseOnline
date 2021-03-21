@@ -16,7 +16,7 @@ class VariantsAdmin(admin.ModelAdmin):
     image_display.short_description = 'Variant Image'
     readonly_fields = ['image_display']
 
-    list_display = ('product_id','image_display','color','size', 'price','quantity','vairant_availability', 'edit','delete')
+    list_display = ('product_id','image_display','color','size', 'price','quantity','variant_availability', 'edit','delete')
     #list_display_links = ('name', )
     icon_name = 'assignment'
 

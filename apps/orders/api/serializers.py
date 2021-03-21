@@ -44,6 +44,7 @@ class VariantSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     # variants = VariantSerializer(read_only=True)
+    #merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Product
         fields = ['id', 'merchant',
@@ -81,8 +82,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
     item = ProductSerializer(read_only=True)
     class Meta:
         model = OrderItem
-        fields = ['id','order','item','order_variants', 'quantity']
-        # depth = 1
+        fields = ['id','order','item','order_variants', 'quantity','total_item_price']
+        depth = 1
 
 
 class BillingDetailsSerializer(serializers.ModelSerializer):
@@ -143,7 +144,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         # fields = '__all__'
-        fields = ['id', 'user','ordered_date', 'order_status','ordered', 'order_items', 'total_price','billing_details']
+        fields = ['id', 'user', 'ordered_date', 'order_status','ordered', 'order_items', 'total_price','billing_details']
         depth = 1
 
 class OrderBillingSerializer(serializers.ModelSerializer):

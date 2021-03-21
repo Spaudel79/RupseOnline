@@ -84,7 +84,7 @@ class Variants(models.Model):
                                format='JPEG',
                                options={'quality': 60})
     quantity = models.IntegerField(default=10,blank=True,null=True)  # available quantity of given product
-    vairant_availability = models.CharField(max_length=70, choices=AVAILABILITY, default='available')
+    variant_availability = models.CharField(max_length=70, choices=AVAILABILITY, default='available')
 
     class Meta:
         verbose_name_plural = "Variants"
