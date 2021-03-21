@@ -19,6 +19,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,GenericAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView,)
+from apps.accounts.models import Seller
+
 
 class CartAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -207,6 +209,14 @@ class BillingInfoView(ListAPIView):
     serializer_class = BillingInfoSerializer
 
 
+
+class SellerOrderAPIView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = OrderItemSerializer
+
+    def get_queryset(self):
+        merchant = get_object_or_404(Seller,self.kwargs['pk'])
+        return OrderItem.objects.filter(item__merchant=merchant)
 
  # """
  #       Payment endpoints start....................

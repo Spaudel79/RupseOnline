@@ -27,6 +27,7 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+    list_display_links = ('email', )
     search_fields = ("first_name", "last_name", "email")
     ordering = ("first_name", "last_name", "email")
     icon_name = 'tag_faces'

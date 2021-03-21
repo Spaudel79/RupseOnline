@@ -10,7 +10,7 @@ from .pagination import *
 from ..import models
 from ..models import Category, Brand, Collection, Product,Review
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
-
+from apps.accounts.models import Seller
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView)
 
@@ -226,10 +226,14 @@ class GetReviewAPIView(ListAPIView):
 
     #MerchantAPis Starts Here
 
-# class SellerProductsAPIView(ListAPIView):
-#     permission_classes = [IsAuthenticated]
-#     serializer_class = ProductSerializer
-#
-#     def get_queryset(self):
-#         return Product.objects.filter()
+class SellerProductsAPIView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+    def get_queryset(self):
+        merchant = get_object_or_404(Seller,pk=self.kwargs['pk'])
+        return Product.objects.filter(merchant=merchant)
+
+
 

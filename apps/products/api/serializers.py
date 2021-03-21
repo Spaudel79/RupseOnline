@@ -33,7 +33,7 @@ class VariantSerializer(serializers.ModelSerializer):
         fields = ['id','price','size','color','quantity','variant_availability']
 
 class ProductSerializer(serializers.ModelSerializer):
-
+    merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Product
         fields = ['id','merchant',
