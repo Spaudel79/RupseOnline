@@ -78,7 +78,10 @@ class OrderItem(models.Model):
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     order_variants = models.ForeignKey(Variants,on_delete=models.CASCADE,blank=True,null=True)
     quantity = models.IntegerField(default=1)
-    total_item_price = models.CharField(max_length=50,blank=True,null=True)
+    # def price(self):
+    #     total_item_price = self.quantity * self.item.varaints.price
+    #     return total_item_price
+    total_item_price = models.PositiveIntegerField(blank=True,null=True,)
 
 
     def __str__(self):

@@ -208,7 +208,13 @@ class BillingInfoView(ListAPIView):
     queryset = BillingDetails.objects.all()
     serializer_class = BillingInfoSerializer
 
+class SellerOrderView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = OrderDetailSerializer
 
+    def get_queryset(self):
+        #return Order.objects.filter(item__merchant=self.kwargs['pk'])
+        return Order.objects.filter(order_items__item__merchant=self.kwargs['pk'])
 
 class SellerOrderAPIView(ListAPIView):
     permission_classes = [AllowAny]

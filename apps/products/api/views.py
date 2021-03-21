@@ -10,7 +10,8 @@ from .pagination import *
 from ..import models
 from ..models import Category, Brand, Collection, Product,Review
 from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
-from apps.accounts.models import Seller
+from apps.accounts.models import Seller,Customer
+
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView)
 
@@ -205,8 +206,8 @@ class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        product = get_object_or_404(Product,pk=self.kwargs['pk'])
-        serializer.save(user=user,product=product)
+        product = get_object_or_404(Product, pk=self.kwargs['pk'])
+        serializer.save(user=user, product=product)
 
     def get_queryset(self):
         product = get_object_or_404(Product, pk=self.kwargs['pk'])
@@ -229,11 +230,8 @@ class GetReviewAPIView(ListAPIView):
 class SellerProductsAPIView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = ProductSerializer
-    queryset = Product.objects.all()
 
     def get_queryset(self):
-        merchant = get_object_or_404(Seller,pk=self.kwargs['pk'])
-        return Product.objects.filter(merchant=merchant)
-
-
+        seller = get_object_or_404(Seller,pk=self.kwargs['pk'])
+        return Product.objects.filter(merchant=seller)
 

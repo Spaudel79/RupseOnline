@@ -47,26 +47,40 @@ class ProductSerializer(serializers.ModelSerializer):
         depth = 1
 
 class  AddProductSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(
-        many=True,
-        queryset=Category.objects.all(),
-        slug_field='name'
-    )
-    brand = serializers.SlugRelatedField(
-        queryset=Brand.objects.all(),
-        slug_field='name'
-    )
-    collection = serializers.SlugRelatedField(
-        queryset=Collection.objects.all(),
-        slug_field='name'
-    )
-
+    #category = CategorySerializer(many=True,required=True)
+    #brand = BrandSerializer(required=True)
+    #collection = CollectionSerializer(required=True)
+    merchant = serializers.PrimaryKeyRelatedField(read_only=True)
+    #variants = VariantSerializer(many=True,required=True)
     class Meta:
         model = Product
-        fields = ['category','brand', 'collection','featured', 'top_rated','name','description', 'picture',
-                  'availability','warranty','services','variants']
+        fields = ['id','merchant','category','brand', 'collection','featured', 'top_rated',
+                  'name','description', 'picture','main_product_image','best_seller',
+                  'rating','availability','warranty','services','variants']
         # depth = 1
 
+    def create(self, validated_data):
+         #user = self.context['request'].user
+         # category_data = validated_data.pop('category',None)
+         # brand_data = validated_data.pop('brand',None)
+         # collection_data = validated_data.pop('collection',None)
+         product = Product.objects.create()
+         return product
+
+
+ # category = serializers.SlugRelatedField(
+    #     many=True,
+    #     queryset=Category.objects.all(),
+    #     slug_field='name'
+    # )
+    # brand = serializers.SlugRelatedField(
+    #     queryset=Brand.objects.all(),
+    #     slug_field='name'
+    # )
+    # collection = serializers.SlugRelatedField(
+    #     queryset=Collection.objects.all(),
+    #     slug_field='name'
+    # )
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     product = serializers.PrimaryKeyRelatedField(read_only=True)
