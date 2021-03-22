@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from apps.products.models import Product,Variants
+from apps.products.models import Product, Variants
 # import settings
 
 # Create your models here.
