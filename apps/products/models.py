@@ -21,8 +21,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-    def get_absolute_url(self):
-        return reverse("products:category", kwargs={"name": self.name})
+    #def get_absolute_url(self):
+        #return reverse("products:category", kwargs={"name": self.name})
 
 
 class Brand(models.Model):
