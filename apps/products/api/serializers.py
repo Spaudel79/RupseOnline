@@ -69,15 +69,34 @@ class  AddProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['merchant','featured', 'top_rated','category','brand','collection',
-                  'name','description', 'picture','main_product_image','best_seller',
+                  'name','description', 'main_product_image','best_seller',
                   'rating','availability','warranty','services',]
         # depth = 1
 
     def create(self, validated_data):
          #user = self.context['request'].user
          category_data = validated_data.get('category')
-         category_data = Category.objects.filter(category__id__in=category_data)
-         product = Product.objects.create(**validated_data)
+         featured = validated_data.get('featured')
+         top_rated = validated_data.get('top_rated')
+         brand = validated_data.get('brand')
+         collection = validated_data.get('collection')
+         name = validated_data.get('name')
+         description = validated_data.get('description')
+         main_product_image = validated_data.get('main_product_image')
+         best_seller = validated_data.get('category')
+         rating = validated_data.get('rating')
+         availability = validated_data.get('availability')
+         warranty = validated_data.get('warranty')
+         services = validated_data.get('services')
+
+         category_data = Category.objects.filter(category__in=category_data)
+         product = Product.objects.create(featured=featured,top_rated=top_rated,
+                                          brand=brand,collection=collection,
+                                          name=name,description=description,
+                                          main_product_image=main_product_image,
+                                          best_seller=best_seller,rating=rating,
+                                          availability=availability,warranty=warranty,
+                                          services=services)
          product.category.set(category_data)
          # for abc in variants_data:
          #     #product.variants.set(['variants'])
