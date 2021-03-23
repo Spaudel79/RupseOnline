@@ -184,15 +184,8 @@ class PrdouctSearchAPIView(ListAPIView):
                      'category__name','description','variants__color']
     pagination_class = CustomPagination
 
-class ProductAddAPIView(CreateAPIView):
-    permission_classes = [AllowAny]
-    queryset = Product.objects.all()
-    serializer_class = AddProductSerializer
 
-    # def perform_create(self, serializer):
-    #     brand = get_object_or_404(Brand, pk=self.kwargs['pk'])
-    #     collection = get_object_or_404(Collection, pk=self.kwargs['pk'])
-    #     serializer.save(brand=brand,collection=collection)
+
 
 class ProductDetailAPIView(RetrieveAPIView):
     permission_classes = [AllowAny]
@@ -228,10 +221,34 @@ class GetReviewAPIView(ListAPIView):
     #MerchantAPis Starts Here
 
 class SellerProductsAPIView(ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = ProductSerializer
 
     def get_queryset(self):
         seller = get_object_or_404(Seller,pk=self.kwargs['pk'])
         return Product.objects.filter(merchant=seller)
+
+class ProductAddAPIView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Product.objects.all()
+    serializer_class = AddProductSerializer
+
+    # def perform_create(self, serializer):
+    #     brand = get_object_or_404(Brand, pk=self.kwargs['pk'])
+    #     collection = get_object_or_404(Collection, pk=self.kwargs['pk'])
+    #     serializer.save(brand=brand,collection=collection)
+
+
+class ProductDeleteView(DestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+class ProductUpdateView(UpdateAPIView):
+    permission_classes = [AllowAny]
+    queryset = Product.objects.all()
+    serializer_class = ProductUpdateSerializer
 
