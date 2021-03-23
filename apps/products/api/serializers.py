@@ -75,7 +75,6 @@ class  AddProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
          #user = self.context['request'].user
-         category_data = validated_data.get('category')
          featured = validated_data.get('featured')
          top_rated = validated_data.get('top_rated')
          brand = validated_data.get('brand')
@@ -88,8 +87,6 @@ class  AddProductSerializer(serializers.ModelSerializer):
          availability = validated_data.get('availability')
          warranty = validated_data.get('warranty')
          services = validated_data.get('services')
-
-         category_data = Category.objects.filter(category__in=category_data)
          product = Product.objects.create(featured=featured,top_rated=top_rated,
                                           brand=brand,collection=collection,
                                           name=name,description=description,
@@ -97,14 +94,14 @@ class  AddProductSerializer(serializers.ModelSerializer):
                                           best_seller=best_seller,rating=rating,
                                           availability=availability,warranty=warranty,
                                           services=services)
+         product.save()
+         category_data = validated_data.get('category')
+         category_data = Category.objects.filter(category__in=category_data)
          product.category.set(category_data)
          # for abc in variants_data:
          #     #product.variants.set(['variants'])
          #     product.variants.add(abc)
          #product.variants.set(variants_data)
-
-
-
          return product
 
 
