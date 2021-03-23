@@ -74,7 +74,7 @@ class Variants(models.Model):
         ('available', 'Available',),
         ('not_available', 'Not Available',),
     )
-    product_id = models.CharField(max_length=70,default='OAXWRTZ_12C',blank=True)
+    product_id = models.CharField(max_length=70, default='OAXWRTZ_12C',blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=20,default=500)
     size = models.CharField(max_length=50, choices=SIZE, default='not applicable',blank=True,null=True)
     color = models.CharField(max_length=70, default="not applicable",blank=True,null=True)
