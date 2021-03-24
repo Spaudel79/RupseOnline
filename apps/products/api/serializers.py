@@ -27,9 +27,10 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class VariantSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Variants
-        fields = ['id','product_id','price','size','color','quantity','variant_availability']
+        fields = ['id','product_id','price','variant_image','size','color','quantity','variant_availability']
 
 class ProductSerializer(serializers.ModelSerializer):
     merchant = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -109,6 +110,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
          product.category.set(category_data)
          for picture_data in picture_data:
             product.picture.add(picture_data)
+
          for variants_data in variants_data:
              abc = Variants.objects.create(**variants_data)
              product.variants.add(abc)
@@ -120,11 +122,12 @@ class  AddProductSerializer(serializers.ModelSerializer):
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):
+    variants = VariantSerializer(many=True)
     class Meta:
         model = Product
-        fields = ['id','featured', 'top_rated','brand','collection',
+        fields = ['id','category','featured', 'top_rated','brand','collection',
                   'name','description', 'main_product_image','best_seller',
-                  'rating','availability','warranty','services',]
+                  'rating','availability','warranty','services','variants']
 
     def update(self, instance, validated_data):
         instance.featured = validated_data.get('featured',instance.featured)
@@ -140,10 +143,38 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         instance.warranty = validated_data.get('warranty', instance.warranty)
         instance.services = validated_data.get('services', instance.services)
 
+        instance.save()
+
         #category_logic
         category_data = validated_data.pop('category')
-        for category_data in category_data:
-            pass
+        instance.category.set(category_data)
+        instance.save()
+
+        variants_data = self.validated_data.get('variants')
+        instance.variants.clear()
+        #variants_data.validated_data_set.all()
+        for variants_data in variants_data:
+            abc = Variants.objects.create(**variants_data)
+            instance.variants.add(abc)
+
+        #for variants_data in variants_data:
+             #instance.variants.id = variants_data['id']
+             # instance.variants.product_id = variants_data['product_id']
+             # instance.abc = variants_data['price']
+             # instance.variants.size= variants_data['size']
+             # instance.variants.color = variants_data['color']
+             # #instance.variants.variant_image = variants_data['variant_image']
+             # instance.variants.quantity = variants_data['quantity']
+             # instance.variants.variant_availability = variants_data['variant_availability']
+             #instance.variants.(**variants_data)
+        #category_data = instance.category
+        #new_category = validated_data.pop('category')
+        # for category_data in category_data:
+        #     product = Product.objects.filter(category__id=category_data['id'])
+        #     category = Category.objects.filter(id=category_data['id'])
+        # for category_data in category_data:
+        #     product.category.remove(category)
+        #     product.category.add(category_data)
 
         instance.save()
         return instance
