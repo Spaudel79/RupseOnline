@@ -151,11 +151,12 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         instance.save()
 
         variants_data = self.validated_data.get('variants')
-        instance.variants.clear()
-        #variants_data.validated_data_set.all()
-        for variants_data in variants_data:
-            abc = Variants.objects.create(**variants_data)
-            instance.variants.add(abc)
+        instance.variants.set(variants_data)
+        # instance.variants.clear()
+        # variants_data.validated_data_set.all()
+        # for variants_data in variants_data:
+        #     abc = Variants.objects.create(**variants_data)
+        #     instance.variants.add(abc)
 
         #for variants_data in variants_data:
              #instance.variants.id = variants_data['id']
