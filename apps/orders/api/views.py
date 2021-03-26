@@ -150,7 +150,7 @@ class WishListItemsView(ListAPIView):
     serializer_class = WishListItemsCreateSerializer
 
     def get_queryset(self):
-        user=self.request.user
+        user = self.request.user
         return WishListItems.objects.filter(owner=user)
 
 
@@ -214,6 +214,11 @@ class SellerOrderView(ListAPIView):
         #return Order.objects.filter(item__merchant=self.kwargs['pk'])
         return Order.objects.filter(order_items__item__merchant=self.kwargs['pk'])
 
+
+class UpdateOrderView(UpdateAPIView):
+    permission_classes = [AllowAny]
+    queryset = Order.objects.all()
+    serializer_class = OrderUpdateSerializer
 
 
 

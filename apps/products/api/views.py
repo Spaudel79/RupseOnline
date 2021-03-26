@@ -9,11 +9,12 @@ from .serializers import *
 from .pagination import *
 from ..import models
 from ..models import Category, Brand, Collection, Product,Review
-from rest_framework.permissions import (AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAdminUser, IsAuthenticatedOrReadOnly)
 from apps.accounts.models import Seller,Customer
 
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
-RetrieveUpdateAPIView, RetrieveAPIView)
+RetrieveUpdateAPIView, RetrieveAPIView, mixins)
 
 # class ProductViewSet(viewsets.ModelViewSet):
 #     queryset = Product.objects.all()
@@ -251,4 +252,16 @@ class ProductUpdateView(UpdateAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductUpdateSerializer
+
+class VariantsUpdateDeleteView(DestroyAPIView,
+                                UpdateAPIView,):
+    permission_classes = [AllowAny]
+    queryset = Variants.objects.all()
+    serializer_class = VariantSerializer
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+
+
 

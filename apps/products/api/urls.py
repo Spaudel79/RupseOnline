@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/seller/products/<int:pk>', views.SellerProductsAPIView.as_view(), name='api-seller-products'),
     path('api/delproducts/<int:pk>', views.ProductDeleteView.as_view(), name='api-delproducts'),
     path('api/updateproducts/<int:pk>', views.ProductUpdateView.as_view(), name = 'api-updateproducts'),
+    path('api/updatedelvariants/<int:pk>',views.VariantsUpdateDeleteView.as_view(),name = 'api-updatevariants'),
 
     #search-filter-endpoints
     path('api/productsearch',views.PrdouctSearchAPIView.as_view(),name='api-productsearch'),

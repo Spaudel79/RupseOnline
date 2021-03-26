@@ -82,13 +82,20 @@ class OrderItem(models.Model):
     #     total_item_price = self.quantity * self.item.varaints.price
     #     return total_item_price
     total_item_price = models.PositiveIntegerField(blank=True,null=True,)
+    ORDER_STATUS = (
+        ('To_Ship', 'To Ship',),
+        ('Shipped', 'Shipped',),
+        ('Delivered', 'Delivered',),
+        ('Cancelled', 'Cancelled',),
+    )
+    order_item_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
 
 
     def __str__(self):
         return f"{self.quantity} items of {self.item} of {self.order.user}"
 
     class Meta:
-        verbose_name_plural= "Cart Items"
+        verbose_name_plural = "Cart Items"
         ordering = ('-id',)
 
 class BillingDetails(models.Model):

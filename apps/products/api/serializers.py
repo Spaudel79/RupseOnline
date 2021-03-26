@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Product, Category, Brand, Collection,Review,Variants
+from ..models import Product, Category, Brand, Collection,Review,Variants,ImageBucket
 
 class CategorySerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
@@ -31,6 +31,17 @@ class VariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variants
         fields = ['id','product_id','price','variant_image','size','color','quantity','variant_availability']
+
+    def update(self, instance, validated_data):
+         instance.product_id = validated_data.get('product_id',instance.product_id)
+         instance.price = validated_data.get('price',instance.price)
+         instance.variant_image = validated_data.get('size',instance.size)
+         instance.size = validated_data.get('size', instance.size)
+         instance.color = validated_data.get('color', instance.color)
+         instance.quantity = validated_data.get('quantity', instance.quantity)
+         instance.variant_availability = validated_data.get('variant_availability', instance.variant_availability)
+         instance.save()
+         return instance
 
 class ProductSerializer(serializers.ModelSerializer):
     merchant = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -109,8 +120,10 @@ class  AddProductSerializer(serializers.ModelSerializer):
          #category_data = Category.objects.filter(category__in=category_data)
          product.category.set(category_data)
          for picture_data in picture_data:
-            product.picture.add(picture_data)
+            xyz = ImageBucket.objects.create(**picture_data)
+            product.picture.add(xyz)
 
+         product.save()
          for variants_data in variants_data:
              abc = Variants.objects.create(**variants_data)
              product.variants.add(abc)
@@ -118,6 +131,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
          #     #product.variants.set(['variants'])
          #     product.variants.add(abc)
          #product.variants.set(variants_data)
+         product.save()
          return product
 
 
@@ -126,7 +140,7 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id','category','featured', 'top_rated','brand','collection',
-                  'name','description', 'main_product_image','best_seller',
+                  'name','description', 'main_product_image','best_seller','picture',
                   'rating','availability','warranty','services','variants']
 
     def update(self, instance, validated_data):
@@ -144,29 +158,40 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         instance.services = validated_data.get('services', instance.services)
 
         instance.save()
-
+        #
         #category_logic
         category_data = validated_data.pop('category')
         instance.category.set(category_data)
         instance.save()
 
-        variants_data = self.validated_data.get('variants')
+        #picture_logic
+        picture_data = validated_data.get('picture')
         instance.variants.clear()
+        for picture_data in picture_data:
+            msn = ImageBucket.objects.create(**picture_data)
+            instance.picture.add(msn)
+
+        #variants_logic
+        instance.variants.clear()
+        variants_data = validated_data.get('variants')
+        #instance.variants.set(variants_data)
+
         #variants_data.validated_data_set.all()
         for variants_data in variants_data:
             abc = Variants.objects.create(**variants_data)
             instance.variants.add(abc)
 
         #for variants_data in variants_data:
-             #instance.variants.id = variants_data['id']
-             # instance.variants.product_id = variants_data['product_id']
-             # instance.abc = variants_data['price']
-             # instance.variants.size= variants_data['size']
-             # instance.variants.color = variants_data['color']
-             # #instance.variants.variant_image = variants_data['variant_image']
-             # instance.variants.quantity = variants_data['quantity']
-             # instance.variants.variant_availability = variants_data['variant_availability']
-             #instance.variants.(**variants_data)
+        # instance.variants.id = variants_data['id']
+        # instance.variants__product_id = validated_data.get('product_id',instance.variants__product_id)
+        # instance.abc = variants_data['price']
+        # instance.variants.size = variants_data['size']
+        # instance.variants.color = variants_data['color']
+        # # instance.variants.variant_image = variants_data['variant_image']
+        # instance.variants.quantity = variants_data['quantity']
+        # instance.variants.variant_availability = variants_data['variant_availability']
+        # # instance.variants.(variants_data)
+        # instance.save()
         #category_data = instance.category
         #new_category = validated_data.pop('category')
         # for category_data in category_data:
@@ -178,6 +203,7 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
 
 
