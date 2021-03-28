@@ -40,11 +40,11 @@ class CartwithItemSerializer(serializers.ModelSerializer):
 class VariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Variants
-        fields = ['id','product_id','price','size','color','quantity','vairant_availability']
+        fields = ['id','product_id','price','size','color','quantity','variant_availability']
 
 class ProductSerializer(serializers.ModelSerializer):
     # variants = VariantSerializer(read_only=True)
-    #merchant = serializers.PrimaryKeyRelatedField(read_only=True)
+    merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Product
         fields = ['id', 'merchant',
@@ -77,12 +77,24 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    order_variants = VariantSerializer(read_only=True)
+    #order_variants = VariantSerializer()
     #order_variants =VariantSerializer()
-    item = ProductSerializer(read_only=True)
+    #item = ProductSerializer()
+    # item = serializers.PrimaryKeyRelatedField()
+    order = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = OrderItem
-        fields = ['id','order','item','order_variants', 'quantity','total_item_price']
+        fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
+        depth = 1
+
+
+class OrderItemUpdateSerializer(serializers.ModelSerializer):
+    #order_variants = VariantSerializer(read_only=True)
+    #order_variants =VariantSerializer()
+    #item = ProductSerializer(read_only=True)
+    class Meta:
+        model = OrderItem
+        fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
         depth = 1
 
 
@@ -172,7 +184,44 @@ class BillingInfoSerializer(serializers.ModelSerializer):
     #     return billing_details
 
 
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    order_items = OrderItemUpdateSerializer(many=True)
+    billing_details = BillingDetailsSerializer()
 
+    class Meta:
+        model = Order
+        fields = ['id','ordered','order_status','order_items','billing_details']
+
+
+    def update(self, instance, validated_data):
+        instance.order_status = validated_data.get('order_status')
+        instance.ordered = validated_data.get('ordered')
+
+        #billing_details_logic
+
+        billing_details_data = validated_data.pop('billing_details',None)
+        if billing_details_data is not None:
+            instance.billing_details.address = billing_details_data['address']
+            instance.billing_details.save()
+
+
+        #order_items_logic
+        instance.save()
+
+        order_items_data = validated_data.pop('order_items')
+        # print(order_items_data)
+        #instance.order_items.clear()
+        for order_items_data in order_items_data:
+            instance.order_items.quantity= order_items_data['quantity']
+            instance.order_items.order_item_status = order_items_data['order_item_status']
+            instance.order_items.first().save()
+            # msn = OrderItem.objects.create(**order_items_data)
+            # instance.order_items.add(msn)
+            #uper(OrderUpdateSerializer, self).update(instance.order_items,validated_data).save()
+        #super().save()
+        #super().save()
+
+        return super().update(instance,validated_data)
 
 
 

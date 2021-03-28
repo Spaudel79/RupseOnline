@@ -19,8 +19,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,GenericAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView,)
-from apps.accounts.models import Seller
-
 
 class CartAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -152,7 +150,7 @@ class WishListItemsView(ListAPIView):
     serializer_class = WishListItemsCreateSerializer
 
     def get_queryset(self):
-        user=self.request.user
+        user = self.request.user
         return WishListItems.objects.filter(owner=user)
 
 
@@ -216,23 +214,12 @@ class SellerOrderView(ListAPIView):
         #return Order.objects.filter(item__merchant=self.kwargs['pk'])
         return Order.objects.filter(order_items__item__merchant=self.kwargs['pk'])
 
-class SellerOrderAPIView(ListAPIView):
+
+class UpdateOrderView(UpdateAPIView):
     permission_classes = [AllowAny]
-    serializer_class = OrderItemSerializer
+    queryset = Order.objects.all()
+    serializer_class = OrderUpdateSerializer
 
-    def get_queryset(self):
-        merchant = get_object_or_404(Seller,self.kwargs['pk'])
-        return OrderItem.objects.filter(item__merchant=merchant)
-
- # """
- #       Payment endpoints start....................
- #    """
-
-# class PaymentAPIView(APIView):
-#
-#     def get(self,request,*args,**kwargs):
-#         order_id = request.GET.get
-#         total_amt =
 
 
 
