@@ -85,18 +85,36 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
-        depth = 1
+        # depth = 1
 
 
 class OrderItemUpdateSerializer(serializers.ModelSerializer):
     #order_variants = VariantSerializer(read_only=True)
     #order_variants =VariantSerializer()
     #item = ProductSerializer(read_only=True)
+    #id = serializers.PrimaryKeyRelatedField(read_only=True)
+    # id = serializers.IntegerField(read_only=True)
+    # order = serializers.PrimaryKeyRelatedField(read_only=True)
+    # order_variants = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = OrderItem
         fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
-        depth = 1
+        # depth = 1
 
+
+    # def update(self, instance, validated_data):
+    #     order_items_data = validated_data.pop('')
+    #
+    #     for order_item_data in order_items_data:
+    #         oi, created = OrderItem.objects.update_or_create(
+    #             id = order_item_data['id'],
+    #             defaults={
+    #
+    #                 'quantity' : order_item_data['quantity'],
+    #                 'order_item_status': order_item_data['order_item_status']
+    #
+    #             }
+    #         )
 
 class BillingDetailsSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
@@ -208,20 +226,34 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         #order_items_logic
         instance.save()
 
+        instance.order_items.clear()
         order_items_data = validated_data.pop('order_items')
-        # print(order_items_data)
-        #instance.order_items.clear()
+        print(order_items_data)
+
         for order_items_data in order_items_data:
-            instance.order_items.quantity= order_items_data['quantity']
-            instance.order_items.order_item_status = order_items_data['order_item_status']
-            instance.order_items.first().save()
+            abc = OrderItem.objects.create(**order_items_data)
+            instance.order_items.add(abc)
+        # for order_item_data in order_items_data:
+        #     oi, created = OrderItem.objects.update_or_create(
+        #         id = order_item_data['id'],
+        #         defaults={
+        #
+        #             'quantity' : order_item_data['quantity'],
+        #             'order_item_status': order_item_data['order_item_status']
+        #
+        #         }
+        #     )
+            # instance.order_items.quantity = order_items_data['quantity']
+            # instance.order_items.order_item_status = order_items_data['order_item_status']
+            # instance.order_items.first().save()
             # msn = OrderItem.objects.create(**order_items_data)
             # instance.order_items.add(msn)
             #uper(OrderUpdateSerializer, self).update(instance.order_items,validated_data).save()
         #super().save()
         #super().save()
-
+        instance.save()
         return super().update(instance,validated_data)
+
 
 
 
