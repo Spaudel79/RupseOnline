@@ -84,7 +84,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = OrderItem
-        fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
+        fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','total_item_price']
         # depth = 1
 
 
