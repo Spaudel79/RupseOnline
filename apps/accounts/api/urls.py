@@ -9,7 +9,7 @@ urlpatterns = [
     path("api/seller/register/",SellerRegisterView.as_view(), name='api-registerseller'),
     path("api/seller/login/", views.SellerLoginUserView.as_view(), name='api-seller-login' ),
     path("api/seller/profile/", views.SellerProfileView.as_view(), name='api-seller-profile' ),
-    path("api/seller/profile/update", views.SellerUpdateProfileView.as_view(), name='api-seller-update' ),
+    path("api/seller/profile/update/<int:pk>", views.SellerUpdateProfileView.as_view(), name='api-seller-update' ),
     path('api/seller/token', views.SellerTokenView.as_view(), name='api-seller-token'),
 
     path("api/customer/register/",CustomerRegisterView.as_view(), name='api-registercustomer'),

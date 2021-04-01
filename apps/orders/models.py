@@ -3,7 +3,9 @@ from django.contrib.auth import get_user_model
 from apps.products.models import Product, Variants
 # import settings
 from django.utils.crypto import get_random_string
+#from python_utils import *
 from utils import create_new_ref_number
+import uuid
 # Create your models here.
 
 User = get_user_model()
@@ -75,7 +77,8 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True
-    orderItem_ID = models.CharField(max_length=12)
+    orderItem_ID = models.UUIDField(max_length=12, editable=False,default=str(uuid.uuid4()))
+    #orderItem_ID = models.CharField(max_length=12,unique=True, editable=False, default=create_new_ref_number())
     order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     order_variants = models.ForeignKey(Variants,on_delete=models.CASCADE,blank=True,null=True)

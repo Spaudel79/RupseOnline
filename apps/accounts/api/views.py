@@ -88,7 +88,7 @@ class SellerProfileView(ListAPIView):
 class SellerUpdateProfileView(UpdateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
-    serializer_class = SellerProfileSerializer
+    serializer_class = SellerProfileUpdateSerializer
 
     # def perform_update(self, serializer):
     #     user = self.request.user
