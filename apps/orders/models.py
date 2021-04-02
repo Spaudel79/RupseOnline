@@ -6,7 +6,12 @@ from django.utils.crypto import get_random_string
 #from python_utils import *
 from utils import create_new_ref_number
 import uuid
+import random
+import string
 # Create your models here.
+
+def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
+   return ''.join(random.choice(chars) for _ in range(size))
 
 User = get_user_model()
 
@@ -77,8 +82,8 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True
-    orderItem_ID = models.UUIDField(max_length=12, editable=False,default=str(uuid.uuid4()))
-    #orderItem_ID = models.CharField(max_length=12,unique=True, editable=False, default=create_new_ref_number())
+    #orderItem_ID = models.UUIDField(max_length=12, editable=False,default=str(uuid.uuid4()))
+    orderItem_ID = models.CharField(max_length=12, editable=False, default=id_generator)
     order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     order_variants = models.ForeignKey(Variants,on_delete=models.CASCADE,blank=True,null=True)
