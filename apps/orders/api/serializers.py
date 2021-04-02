@@ -3,7 +3,7 @@ from rest_framework import serializers
 from ..models import Cart, CartItem,WishList,WishListItems,OrderItem,Order,BillingDetails
 from apps.products.models import Product,Variants
 from apps.accounts.models import CustomUser
-
+from django.db.models import F
 from apps.accounts.api.serializers import CustomUserDetailsSerializer
 from rest_framework.response import Response
 from django.http import Http404
@@ -87,6 +87,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','total_item_price']
         # depth = 1
 
+    #OrderItem.objects.annotate(total_item_price=F('quantity') * F('item.variants.price'))
 
 class OrderItemUpdateSerializer(serializers.ModelSerializer):
     #order_variants = VariantSerializer(read_only=True)
@@ -158,6 +159,7 @@ class OrderSerializer(serializers.ModelSerializer):
             BillingDetails.objects.create(user=user,order=order,**billing_details)
             for order_items in order_items:
                 OrderItem.objects.create(order=order,**order_items)
+
             # return Response ({"order": order,
             #                     "billing_details":billing_details
             #                      },

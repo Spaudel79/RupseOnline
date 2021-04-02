@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from apps.products.models import Product, Variants
+
 # import settings
 from django.utils.crypto import get_random_string
 #from python_utils import *
@@ -80,6 +81,8 @@ class Order(models.Model):
         verbose_name_plural = "Orders"
         ordering = ('-id',)
 
+
+
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True
     #orderItem_ID = models.UUIDField(max_length=12, editable=False,default=str(uuid.uuid4()))
@@ -91,7 +94,7 @@ class OrderItem(models.Model):
     # def price(self):
     #     total_item_price = self.quantity * self.item.varaints.price
     #     return total_item_price
-    total_item_price = models.PositiveIntegerField(blank=True,null=True,)
+    total_item_price = models.PositiveIntegerField(blank=True,null=True,default=0)
     ORDER_STATUS = (
         ('To_Ship', 'To Ship',),
         ('Shipped', 'Shipped',),
@@ -99,6 +102,7 @@ class OrderItem(models.Model):
         ('Cancelled', 'Cancelled',),
     )
     order_item_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
+
 
 
     def __str__(self):
