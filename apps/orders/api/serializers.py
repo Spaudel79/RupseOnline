@@ -82,10 +82,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
     #item = ProductSerializer()
     # item = serializers.PrimaryKeyRelatedField()
     order = serializers.PrimaryKeyRelatedField(read_only=True)
+    price = serializers.ReadOnlyField()
     class Meta:
         model = OrderItem
-        fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','total_item_price']
+        fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','price']
         # depth = 1
+
+        # def get_price(self):
+        #     return self. _price()
 
     #OrderItem.objects.annotate(total_item_price=F('quantity') * F('item.variants.price'))
 
@@ -99,7 +103,7 @@ class OrderItemUpdateSerializer(serializers.ModelSerializer):
     # order_variants = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = OrderItem
-        fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
+        fields = ['id','order','item','order_variants', 'quantity','order_item_status']
         # depth = 1
 
 
@@ -127,7 +131,6 @@ class BillingDetailsSerializer(serializers.ModelSerializer):
         depth = 1
 
 class OrderSerializer(serializers.ModelSerializer):
-
     billing_details = BillingDetailsSerializer()
     order_items = OrderItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())

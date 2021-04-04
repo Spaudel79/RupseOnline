@@ -81,7 +81,9 @@ class Order(models.Model):
         verbose_name_plural = "Orders"
         ordering = ('-id',)
 
-
+# def price(self):
+#     total_item_price = self.quantity * self.item.varaints.price
+#     return total_item_price
 
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True
@@ -89,12 +91,13 @@ class OrderItem(models.Model):
     orderItem_ID = models.CharField(max_length=12, editable=False, default=id_generator)
     order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
-    order_variants = models.ForeignKey(Variants,on_delete=models.CASCADE,blank=True,null=True)
+    order_variants = models.ForeignKey(Variants, on_delete=models.CASCADE,blank=True,null=True)
     quantity = models.IntegerField(default=1)
-    # def price(self):
-    #     total_item_price = self.quantity * self.item.varaints.price
-    #     return total_item_price
-    total_item_price = models.PositiveIntegerField(blank=True,null=True,default=0)
+
+
+
+    #total_item_price = models.PositiveIntegerField(blank=True,null=True,default=0)
+
     ORDER_STATUS = (
         ('To_Ship', 'To Ship',),
         ('Shipped', 'Shipped',),
@@ -103,7 +106,18 @@ class OrderItem(models.Model):
     )
     order_item_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
 
+    @property
+    def price(self):
+        return self.quantity * self.item.varaints.price
+        # return total_item_price
 
+
+    # def save(self,*args,**kwargs):
+    #     quantity = self.quantity
+    #     price = self.get_price()
+    #     self.total_item_price = quantity*price
+    #     # return total_item_price
+    #     super(OrderItem,self).save(*args,**kwargs)
 
     def __str__(self):
         return f"{self.quantity} items of {self.item} of {self.order.user}"

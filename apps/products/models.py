@@ -13,7 +13,7 @@ User = get_user_model()
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(null=True, blank=True)
-
+    featured = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -28,6 +28,7 @@ class Category(models.Model):
 class Brand(models.Model):
     brand_category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True)
     name = models.CharField(max_length=100, unique=True)
+    featured = models.BooleanField(default=False)
     image = models.ImageField(null=True, blank=True)
 
     class Meta:
@@ -142,6 +143,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    # @property
+    # def get_price(self):
+    #     return self.variants.price
 
     @property
     def is_featured(self):
