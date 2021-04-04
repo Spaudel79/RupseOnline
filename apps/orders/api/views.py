@@ -161,12 +161,8 @@ class WishListItemsView(ListAPIView):
 
 class AddtoOrderItemView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    # queryset = OrderItem.objects.all()
+    #queryset = OrderItem.objects.all()
     serializer_class = OrderSerializer
-
-    # def perform_create(self, serializer):
-    #     serializer.save()
-
 
     # def post(self, request, pk):
     #     item = get_object_or_404(Product, pk=pk)
@@ -221,6 +217,7 @@ class SellerOrderView(ListAPIView):
 
 class UpdateOrderView(UpdateAPIView):
     permission_classes = [AllowAny]
+    #queryset = Order.objects.prefetch_related('order_items').all()
     queryset = Order.objects.all()
     serializer_class = OrderUpdateSerializer
 

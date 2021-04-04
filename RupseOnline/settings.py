@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'imagekit',
+
     #custom apps
     'apps.accounts',
     'apps.products',

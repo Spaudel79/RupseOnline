@@ -175,16 +175,18 @@ class SellerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model= Seller
         fields = '__all__'
-        depth = 1
+        # depth = 1
 
 class SellerProfileUpdateSerializer(serializers.ModelSerializer):
     seller = SellerProfileSerializer()
+    email = serializers.EmailField(required=False)
     class Meta:
         model = User
         fields = ['id', "first_name", "last_name","email",'seller']
+        depth = 1
 
-    def update(self,request, instance, validated_data):
-        user = self.request.user
+    def update(self, instance, validated_data):
+        user = self.context['request'].user
         user.first_name = validated_data.get('first_name')
         user.last_name = validated_data.get('last_name')
         user.email = validated_data.get('email')
@@ -192,7 +194,7 @@ class SellerProfileUpdateSerializer(serializers.ModelSerializer):
         if seller_data is not None:
             instance.seller.business_name = seller_data['business_name']
             instance.seller.phone_num = seller_data['phone_num']
-            instance.seller.legal_name = seller_data['legal_name ']
+            instance.seller.legal_name = seller_data['legal_name']
             instance.seller.company_registration_name = seller_data['company_registration_name']
             instance.seller.business_registration_no = seller_data['business_registration_no']
             instance.seller.business_email = seller_data['business_email']

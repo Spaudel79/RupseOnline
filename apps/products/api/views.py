@@ -11,7 +11,7 @@ from ..import models
 from ..models import Category, Brand, Collection, Product,Review
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAdminUser, IsAuthenticatedOrReadOnly)
-from apps.accounts.models import Seller,Customer
+from apps.accounts.models import Seller, Customer
 
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, mixins)

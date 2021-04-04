@@ -181,6 +181,22 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
             abc = Variants.objects.create(**variants_data)
             instance.variants.add(abc)
 
+        # for variant_data in variants_data:
+        #      Variants.objects.update_or_create(
+        #         id = variant_data['id'],
+        #         defaults={
+        #
+        #             'price': variant_data['price'],
+        #             'size': variant_data['size'],
+        #             'color': variant_data['color'],
+        #             'quantity': variant_data['quantity'],
+        #             'variant_availability': variant_data['variant_availability'],
+        #         }
+        #     )
+
+
+
+
         #for variants_data in variants_data:
         # instance.variants.id = variants_data['id']
         # instance.variants__product_id = validated_data.get('product_id',instance.variants__product_id)
