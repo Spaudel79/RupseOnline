@@ -44,7 +44,7 @@ class VariantSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     # variants = VariantSerializer(read_only=True)
-    merchant = serializers.PrimaryKeyRelatedField(read_only=True)
+    #merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Product
         fields = ['id', 'merchant',
@@ -77,15 +77,15 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    #order_variants = VariantSerializer()
+    #order_variants = VariantSerializer(read_only=True)
     #order_variants =VariantSerializer()
-    #item = ProductSerializer()
-    # item = serializers.PrimaryKeyRelatedField()
+    #item = ProductSerializer(read_only=True)
+    #item = serializers.PrimaryKeyRelatedField(read_only=True)
     order = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = OrderItem
-        fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
-        depth = 1
+        fields = ['id','item','order_variants','order', 'quantity','order_item_status','total_item_price']
+        # depth = 1
 
 
 class OrderItemUpdateSerializer(serializers.ModelSerializer):
@@ -95,7 +95,7 @@ class OrderItemUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ['id','order','item','order_variants', 'quantity','order_item_status','total_item_price']
-        depth = 1
+        #depth = 1
 
 
 class BillingDetailsSerializer(serializers.ModelSerializer):
@@ -115,7 +115,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id','user','ordered_date','order_status', 'ordered', 'order_items', 'total_price','billing_details']
-        # depth = 1
+        depth = 1
 
     # def save(self, **kwargs):
     #     instance = self.save(commit=False)
@@ -140,6 +140,7 @@ class OrderSerializer(serializers.ModelSerializer):
             BillingDetails.objects.create(user=user,order=order,**billing_details)
             for order_items in order_items:
                 OrderItem.objects.create(order=order,**order_items)
+            #order_items.set()
             # return Response ({"order": order,
             #                     "billing_details":billing_details
             #                      },
