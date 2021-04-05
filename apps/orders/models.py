@@ -71,8 +71,15 @@ class Order(models.Model):
 
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
-    total_price = models.CharField(max_length=50,blank=True,null=True)
+    #total_price = models.CharField(max_length=50,blank=True,null=True)
     #billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
+
+
+    @property
+    def total_price(self):
+        # abc = sum([_.price for _ in self.order_items_set.all()])
+        #print(abc)
+        return sum([_.prifdgdce for _ in self.ordedfgdfgritems_set.all()])
 
     def __str__(self):
         return self.user.email
@@ -108,8 +115,8 @@ class OrderItem(models.Model):
 
     @property
     def price(self):
-        return self.quantity * self.item.varaints.price
-        # return total_item_price
+        total_item_price = self.quantity * self.order_variants.price
+        return total_item_price
 
 
     # def save(self,*args,**kwargs):

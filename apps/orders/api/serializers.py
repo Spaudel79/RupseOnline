@@ -82,7 +82,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     #item = ProductSerializer()
     # item = serializers.PrimaryKeyRelatedField()
     order = serializers.PrimaryKeyRelatedField(read_only=True)
-    price = serializers.ReadOnlyField()
+    price = serializers.FloatField(read_only=True)
     class Meta:
         model = OrderItem
         fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','price']
@@ -134,9 +134,10 @@ class OrderSerializer(serializers.ModelSerializer):
     billing_details = BillingDetailsSerializer()
     order_items = OrderItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+    #total_price = serializers.SerializerMethodField(source='get_total_price')
     class Meta:
         model = Order
-        fields = ['id','user','ordered_date','order_status', 'ordered', 'order_items', 'total_price','billing_details']
+        fields = ['id','user','ordered_date','order_status', 'ordered','total_price', 'order_items', 'billing_details']
         # depth = 1
 
     # def save(self, **kwargs):
@@ -171,6 +172,10 @@ class OrderSerializer(serializers.ModelSerializer):
             return order
         else:
             raise serializers.ValidationError("This is not a customer account.Please login as customer.")
+
+
+    def get_total_price(self):
+        return sum([_.price for _ in self.order_items_set.all()])
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
