@@ -5,7 +5,7 @@ from apps.products.models import Product, Variants
 # import settings
 from django.utils.crypto import get_random_string
 #from python_utils import *
-from utils import create_new_ref_number
+#from utils import create_new_ref_number
 import uuid
 import random
 import string
@@ -77,9 +77,9 @@ class Order(models.Model):
 
     @property
     def total_price(self):
-        # abc = sum([_.price for _ in self.order_items_set.all()])
-        #print(abc)
-        return sum([_.prifdgdce for _ in self.ordedfgdfgritems_set.all()])
+        # abc = sum([_.price for _ in self.order_items.all()])
+        # print(abc)
+        return sum([_.price for _ in self.order_items.all()])
 
     def __str__(self):
         return self.user.email
