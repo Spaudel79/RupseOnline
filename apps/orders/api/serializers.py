@@ -97,8 +97,8 @@ class OrderItemUpdateSerializer(serializers.ModelSerializer):
     #order_variants = VariantSerializer(read_only=True)
     #order_variants =VariantSerializer()
     #item = ProductSerializer(read_only=True)
-    #id = serializers.PrimaryKeyRelatedField(read_only=True)
-    # id = serializers.IntegerField(read_only=True)
+    #id = serializers.PrimaryKeyRelatedField(read_only=False)
+    id = serializers.IntegerField()
     # order = serializers.PrimaryKeyRelatedField(read_only=True)
     # order_variants = serializers.PrimaryKeyRelatedField(read_only=True)
     #orderItem_ID=serializers.ReadOnlyField()
@@ -246,7 +246,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         #     instance.order_items.add(abc)
         for order_item_data in order_items_data:
             oi, created = OrderItem.objects.update_or_create(
-                order = order_item_data['order'],
+                id = order_item_data['id'],
                 defaults={        #
                     'quantity' : order_item_data['quantity'],
                     'order_item_status': order_item_data['order_item_status']        #
@@ -262,6 +262,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         #super().save()
         instance.save()
         return super().update(instance,validated_data)
+
 
 
 
