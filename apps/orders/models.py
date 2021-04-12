@@ -5,7 +5,7 @@ from apps.products.models import Product, Variants
 # import settings
 from django.utils.crypto import get_random_string
 #from python_utils import *
-from utils import create_new_ref_number
+#from utils import create_new_ref_number
 import uuid
 import random
 import string
@@ -96,7 +96,7 @@ class OrderItem(models.Model):
 
 
 
-    #total_item_price = models.PositiveIntegerField(blank=True,null=True,default=0)
+    #total_item_price = models.PositiveIntegerField(blank=True,null=True,default= 0)
 
     ORDER_STATUS = (
         ('To_Ship', 'To Ship',),
@@ -108,8 +108,8 @@ class OrderItem(models.Model):
 
     @property
     def price(self):
-        return self.quantity * self.item.varaints.price
-        # return total_item_price
+        total_item_price = self.quantity * self.order_variants.price
+        return total_item_price
 
 
     # def save(self,*args,**kwargs):

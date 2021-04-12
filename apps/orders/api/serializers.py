@@ -82,7 +82,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     #item = ProductSerializer()
     # item = serializers.PrimaryKeyRelatedField()
     order = serializers.PrimaryKeyRelatedField(read_only=True)
-    price = serializers.ReadOnlyField()
+    # price = serializers.Field()
     class Meta:
         model = OrderItem
         fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','price']
