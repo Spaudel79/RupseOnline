@@ -222,6 +222,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         fields = ['id','ordered','order_status','order_items','total_price','billing_details']
 
 
+
     def update(self, instance, validated_data):
         instance.order_status = validated_data.get('order_status')
         instance.ordered = validated_data.get('ordered')
@@ -247,11 +248,33 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         for order_item_data in order_items_data:
             oi, created = OrderItem.objects.update_or_create(
                 id = order_item_data['id'],
-                defaults={        #
+
+                defaults={
                     'quantity' : order_item_data['quantity'],
-                    'order_item_status': order_item_data['order_item_status']        #
+                    'order_item_status': order_item_data['order_item_status']
                 }
             )
+
+            # defaults = {
+            #             'quantity' : order_item_data['quantity'],
+            #             'order_item_status': order_item_data['order_item_status']
+            #         }
+            # try:
+            #     oi = OrderItem.objects.get(id = order_item_data['id']
+            #     for key, value in defaults.items():
+            #         setattr(oi, key, value)
+            #     oi.save()
+            # except OrderItem.DoesNotExist:
+            #     new_values = {}
+
+
+
+
+
+
+
+
+            # print (oi)
             # instance.order_items.quantity = order_items_data['quantity']
             # instance.order_items.order_item_status = order_items_data['order_item_status']
             # instance.order_items.first().save()

@@ -47,12 +47,13 @@
 
             #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-dictdata =     {'name': 'Bob'}
-    # {'name': 'John'}
+# dictdata =     {'name': 'Bob'}
+#     # {'name': 'John'}
+#
+#
+# # for d in dictdata :
+# #     print (d.name)
+#
+# for key,values in dictdata.items():
+#     print (key,values)
 
-
-# for d in dictdata :
-#     print (d.name)
-
-for key,values in dictdata.items():
-    print (key,values)
