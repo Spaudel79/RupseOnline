@@ -30,7 +30,7 @@ urlpatterns = [
     path('api/productsearch',views.PrdouctSearchAPIView.as_view(),name='api-productsearch'),
 
     #review-products-endpoints
-    path('api/getcreatedellreview/<int:pk>', views.GetCreateReviewAPIView.as_view(),name='api-addreview'),
+    path('api/createdellreview/<int:pk>', views.CreateReviewAPIView.as_view(),name='api-addreview'),
     path('api/getreview', views.GetReviewAPIView.as_view(),name='api-getreview'),
 
 

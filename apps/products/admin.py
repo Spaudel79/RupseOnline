@@ -93,6 +93,7 @@ class ImageBucketAdmin(admin.ModelAdmin):
     list_display = ('image_display', 'pic_name', 'edit', 'delete')
     icon_name = 'camera_alt'
 
+# class BannerAdmin(admin.ModelAdmin):
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -115,3 +116,4 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(ImageBucket,ImageBucketAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.site_header = 'Rupse Online'
+admin.site.register(Banners)

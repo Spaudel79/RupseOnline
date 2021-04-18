@@ -43,7 +43,17 @@ class VariantSerializer(serializers.ModelSerializer):
          instance.save()
          return instance
 
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    product = serializers.PrimaryKeyRelatedField(read_only=True)
+    class Meta:
+        model = Review
+        fields = ['id','user','product','user_rating','full_name','email','review','created_at']
+
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    reviews = ReviewSerializer(many=True)
     merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Product
@@ -52,7 +62,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'best_seller','top_rated','name','main_product_image',
             'description','picture','rating',
             'availability','warranty',
-            'services','variants'
+            'services','variants','reviews'
         ]
         # lookup_field = "slug"
         depth = 1
@@ -224,12 +234,6 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
 
 
 
-class ReviewSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
-    product = serializers.PrimaryKeyRelatedField(read_only=True)
-    class Meta:
-        model = Review
-        fields = ['id','user','product','user_rating','full_name','email','review','created_at']
 
 class Test(serializers.Serializer):
     pass

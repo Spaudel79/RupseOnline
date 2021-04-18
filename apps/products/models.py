@@ -176,3 +176,16 @@ class Review(models.Model):
 
     class Meta:
         ordering = ('created_at',)
+
+class Banners(models.Model):
+    banner_image_1 = models.ImageField(upload_to="banners/images", blank=True)
+    banner_image_2 = models.ImageField(upload_to="banners/images", blank=True)
+    banner_image_3 = models.ImageField(upload_to="banners/images", blank=True)
+    square_image_1 = models.ImageField(upload_to="banners/images", blank=True)
+    square_image_2 = models.ImageField(upload_to="banners/images", blank=True)
+    square_image_3 = models.ImageField(upload_to="banners/images", blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Banner Images'
+
+

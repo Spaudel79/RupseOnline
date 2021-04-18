@@ -185,15 +185,12 @@ class PrdouctSearchAPIView(ListAPIView):
                      'category__name','description','variants__color']
     pagination_class = CustomPagination
 
-
-
-
 class ProductDetailAPIView(RetrieveAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
+class CreateReviewAPIView(CreateAPIView,DestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -203,12 +200,14 @@ class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
         product = get_object_or_404(Product, pk=self.kwargs['pk'])
         serializer.save(user=user, product=product)
 
-    def get_queryset(self):
-        product = get_object_or_404(Product, pk=self.kwargs['pk'])
-        return Review.objects.filter(product=product)
+    # def get_queryset(self):
+    #     product = get_object_or_404(Product, pk=self.kwargs['pk'])
+    #     return Review.objects.filter(product=product)
 
     def perform_destroy(self, instance):
         instance.delete()
+
+
 
 class GetReviewAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
