@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rangefilter',
     'taggit',
+    'taggit_serializer',
     'ckeditor',
     'ckeditor_uploader',
     'imagekit',

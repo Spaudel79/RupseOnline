@@ -17,7 +17,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         depth = 1
 
 class CartSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Cart
         # fields = ("id", "name","image")
@@ -49,7 +48,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'merchant',
             'category','brand','collection','featured',
-            'best_seller','top_rated','name','main_product_image',
+            'best_seller','top_rated','name','slug','main_product_image',
             'description','picture','rating',
             'availability','warranty',
             'services','variants'
@@ -224,17 +223,17 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        billing_details_data = validated_data.pop('billing_details', None)
-        order_items_data = validated_data.pop('order_items')
+        # billing_details_data = validated_data.pop('billing_details', None)
+        # order_items_data = validated_data.pop('order_items')
 
         #instance = super(OrderUpdateSerializer, self).update(instance,validated_data)
-        print(instance)
+        #print(instance)
         instance.order_status = validated_data.get('order_status')
         instance.ordered = validated_data.get('ordered')
 
         #billing_details_logic
 
-        #billing_details_data = validated_data.pop('billing_details',None)
+        billing_details_data = validated_data.pop('billing_details',None)
         if billing_details_data is not None:
             instance.billing_details.address = billing_details_data['address']
             instance.billing_details.save()
@@ -245,7 +244,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         instance.save()
 
         #instance.order_items.clear()
-        #order_items_data = validated_data.pop('order_items')
+        order_items_data = validated_data.pop('order_items')
         print(order_items_data)
 
         # for order_items_data in order_items_data:
@@ -262,7 +261,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
                 }
 
             )
-            print(oi)
+            #print(oi)
             # defaults = {
             #             'quantity' : order_item_data['quantity'],
             #             'order_item_status': order_item_data['order_item_status']

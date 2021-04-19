@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from apps.accounts.models import Seller
-
+from django.utils.text import slugify
 # Create your models here.
 User = get_user_model()
 
@@ -115,13 +115,13 @@ class Product(models.Model):
     best_seller = models.BooleanField(default=False)
     top_rated = models.BooleanField(default=False)
     tags = TaggableManager(blank=True)  # tags mechanism
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150,unique=True)
     main_product_image = models.ImageField(upload_to="products/images", null=True, blank=True)
     thumbnail = ImageSpecField(source='main_product_image',
                                processors=[ResizeToFill(100, 50)],
                                format='JPEG',
                                options={'quality': 60})
-    # slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200)
     # description = models.TextField(max_length=500, default="Empty description.")
     description = RichTextField(blank=True)
     #picture = models.ImageField(upload_to="products/images", null=True, blank=True)
@@ -144,6 +144,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        # if not self.slug:
+        self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
     # @property
     # def get_price(self):
     #     return self.variants.price

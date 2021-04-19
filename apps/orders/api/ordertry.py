@@ -57,3 +57,11 @@
 # for key,values in dictdata.items():
 #     print (key,values)
 
+d= {'a':1,
+    'b':2}
+
+print(d)
+print(d.get('a'))
+print(d.get('b'))
+print(d.get('c'))
+# print(d.pop('c'))

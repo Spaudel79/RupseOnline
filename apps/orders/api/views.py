@@ -183,9 +183,6 @@ class AddtoOrderItemView(ListCreateAPIView):
     #             item.quantity = order_item.quantity
     #             item.save()
 
-
-
-
 class OrderDetailView(ListAPIView):
     serializer_class = OrderDetailSerializer
     permission_classes = (IsAuthenticated,)

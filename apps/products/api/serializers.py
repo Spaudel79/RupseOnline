@@ -1,6 +1,7 @@
 from rest_framework import serializers
-
 from ..models import Product, Category, Brand, Collection,Review,Variants,ImageBucket
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
 
 class CategorySerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
@@ -27,7 +28,9 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class VariantSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(read_only=True)
+    #id = serializers.PrimaryKeyRelatedField(read_only=True)
+    #variant_image = serializers.ImageField(required=False)
+    id = serializers.IntegerField(required=False)
     class Meta:
         model = Variants
         fields = ['id','product_id','price','variant_image','size','color','quantity','variant_availability']
@@ -35,7 +38,7 @@ class VariantSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
          instance.product_id = validated_data.get('product_id',instance.product_id)
          instance.price = validated_data.get('price',instance.price)
-         instance.variant_image = validated_data.get('size',instance.size)
+         instance.variant_image = validated_data.get('variant_image',instance.variant_image)
          instance.size = validated_data.get('size', instance.size)
          instance.color = validated_data.get('color', instance.color)
          instance.quantity = validated_data.get('quantity', instance.quantity)
@@ -52,14 +55,15 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
     merchant = serializers.PrimaryKeyRelatedField(read_only=True)
+    tags = TagListSerializerField()
     class Meta:
         model = Product
         fields = ['id','merchant',
             'category','brand','collection','featured',
-            'best_seller','top_rated','name','main_product_image',
+            'best_seller','top_rated','name','slug','main_product_image','tags',
             'description','picture','rating',
             'availability','warranty',
             'services','variants','reviews'
@@ -72,8 +76,9 @@ class  AddProductSerializer(serializers.ModelSerializer):
     #brand = BrandSerializer(required=True)
     #collection = CollectionSerializer(required=True)
     #merchant = serializers.PrimaryKeyRelatedField(read_only=True)
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
     variants = VariantSerializer(many=True)
-
+    slug = serializers.SlugField(read_only=True)
     # category = serializers.SlugRelatedField(
     #     many=True,
     #     queryset=Category.objects.all(),
@@ -90,7 +95,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id','merchant','featured', 'top_rated','category','brand','collection',
-                  'name','description', 'main_product_image','best_seller','picture',
+                  'name','slug','description', 'main_product_image','best_seller','picture',
                   'rating','availability','warranty','services','variants']
         #depth = 1
 
@@ -154,6 +159,9 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
                   'rating','availability','warranty','services','variants']
 
     def update(self, instance, validated_data):
+
+        #instance = super(ProductUpdateSerializer, self).update(instance,validated_data)
+        print(instance)
         instance.featured = validated_data.get('featured',instance.featured)
         instance.top_rated = validated_data.get('top_rated', instance.top_rated)
         instance.brand = validated_data.get('brand', instance.brand)
@@ -171,38 +179,42 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         #
         #category_logic
         category_data = validated_data.pop('category')
+        print(category_data)
         instance.category.set(category_data)
         instance.save()
 
         #picture_logic
         picture_data = validated_data.get('picture')
-        instance.variants.clear()
+        #instance.variants.clear()
         for picture_data in picture_data:
             msn = ImageBucket.objects.create(**picture_data)
             instance.picture.add(msn)
 
         #variants_logic
-        instance.variants.clear()
+        #instance.variants.clear()
         variants_data = validated_data.get('variants')
+        print(variants_data)
         #instance.variants.set(variants_data)
 
         #variants_data.validated_data_set.all()
-        for variants_data in variants_data:
-            abc = Variants.objects.create(**variants_data)
-            instance.variants.add(abc)
+        # for variants_data in variants_data:
+        #     abc = Variants.objects.create(**variants_data)
+        #     instance.variants.add(abc)
 
-        # for variant_data in variants_data:
-        #      Variants.objects.update_or_create(
-        #         id = variant_data['id'],
-        #         defaults={
-        #
-        #             'price': variant_data['price'],
-        #             'size': variant_data['size'],
-        #             'color': variant_data['color'],
-        #             'quantity': variant_data['quantity'],
-        #             'variant_availability': variant_data['variant_availability'],
-        #         }
-        #     )
+        #variants_logic_trial
+
+        for variants_data in variants_data:
+             Variants.objects.update_or_create(
+                id = variants_data['id'],
+                defaults={
+
+                    'price': variants_data['price'],
+                    'size': variants_data['size'],
+                    'color': variants_data['color'],
+                    'quantity': variants_data['quantity'],
+                    'variant_availability': variants_data['variant_availability'],
+                }
+            )
 
 
 
