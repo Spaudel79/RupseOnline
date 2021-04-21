@@ -8,13 +8,14 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .pagination import *
 from ..import models
-from ..models import Category, Brand, Collection, Product,Review
+from ..models import Category, Brand, Collection, Product,Review,Banners
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAdminUser, IsAuthenticatedOrReadOnly)
 from apps.accounts.models import Seller, Customer
 
-from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
+from rest_framework.generics import (GenericAPIView,CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, mixins)
+
 
 # class ProductViewSet(viewsets.ModelViewSet):
 #     queryset = Product.objects.all()
@@ -189,6 +190,8 @@ class ProductDetailAPIView(RetrieveAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    #lookup_url_kwarg = 'slug'
+    lookup_field = 'slug'
 
 class CreateReviewAPIView(CreateAPIView,DestroyAPIView):
     permission_classes = [IsAuthenticated]
@@ -262,5 +265,15 @@ class VariantsUpdateDeleteView(DestroyAPIView,
         instance.delete()
 
 
+#Banners_endpoints
+
+class BannersView(
+                  mixins.ListModelMixin,GenericAPIView):
+    permission_classes = [AllowAny]
+    queryset = Banners.objects.all().order_by('-id')[:1]
+    serializer_class = BannersSerializer
+
+    # def list(self, request, *args, **kwargs):
+    #     return (request,*args,**kwargs)
 
 

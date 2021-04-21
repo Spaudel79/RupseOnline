@@ -8,7 +8,7 @@ class ProductFilter(filters.FilterSet):
 
    class Meta:
       model = Product
-      fields = ['variants__price','availability',
+      fields = ['variants__price','availability','slug',
                        'services','featured','best_seller','top_rated',
                 'brand__id','category__id','collection__id','collection__name']
 

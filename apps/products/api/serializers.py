@@ -249,3 +249,7 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
 
 class Test(serializers.Serializer):
     pass
+
+class BannersSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
