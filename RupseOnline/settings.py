@@ -249,15 +249,17 @@ ACCOUNT_USERNAME_REQUIRED = False
 # }
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =1
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =10
 ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQURIED=True
 #ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 115
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400 # 1 day in seconds
 SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
 SOCIALACCOUNT_EMAIL_REQUIRED = ACCOUNT_EMAIL_REQUIRED
 SOCIALACCOUNT_STORE_TOKENS=True
-LOGIN_REDIRECT_URL = '/'
+# LOGIN_REDIRECT_URL = '/'
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
 
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
@@ -269,14 +271,14 @@ SOCIALACCOUNT_PROVIDERS = {
             'id',
             'email',
             'name',
-            'first_name',
-            'last_name',
-            'verified',
-            'locale',
-            'timezone',
-            'link',
-            'gender',
-            'updated_time',
+            # 'first_name',
+            # 'last_name',
+            # 'verified',
+            # 'locale',
+            # 'timezone',
+            # 'link',
+            # 'gender',
+            # 'updated_time',
         ],
         'EXCHANGE_TOKEN': True,
         'LOCALE_FUNC': lambda request: 'en_US',
@@ -316,3 +318,13 @@ EMAIL_PORT = 587
 #981-3488228
 #saroj.aakashlabs@gmail.com
 #2000-01-01
+
+
+# class SocialAccountAdapter(DefaultSocialAccountAdapter):
+#     def authentication_error(self, request, provider_id, error, exception, extra_context):
+#         your_log_function(
+#             'SocialAccount authentication error!',
+#             'error',
+#             request,
+#             extra_data = {'provider_id': provider_id, 'error': error.__str__(), 'exception': exception.__str__(), 'extra_context': extra_context},
+#         )

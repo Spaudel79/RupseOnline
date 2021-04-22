@@ -3,6 +3,8 @@ from .models import *
 from django.utils.html import format_html
 from imagekit.admin import AdminThumbnail
 
+class VariantInline(admin.TabularInline):
+    model = Variants
 
 class VariantsAdmin(admin.ModelAdmin):
 
@@ -40,7 +42,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     list_display = ('image_display','name','merchant', 'featured', 'availability','edit', 'delete')
     icon_name = 'personal_video'
+    #inlines = [VariantInline]
 
+class SubCategoryAdmin(admin.TabularInline):
+    model = Subcategory
 
 class CategoryAdmin(admin.ModelAdmin):
 
@@ -53,6 +58,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'edit','delete')
     list_display_links = ('name', )
     icon_name = 'assignment'
+    inlines = [SubCategoryAdmin]
+
 
 class BrandAdmin(admin.ModelAdmin):
 

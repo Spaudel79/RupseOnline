@@ -1,15 +1,20 @@
 from rest_framework import serializers
-from ..models import Product, Category, Brand, Collection,Review,Variants,ImageBucket
+from ..models import Product, Category, Brand, Collection,Review,Variants,ImageBucket,Banners,Subcategory
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Subcategory
+        fields = '__all__'
+
 class CategorySerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
-
+    subcategory = SubCategorySerializer(many=True)
     class Meta:
         model = Category
-        # fields = ("id", "name","image")
-        fields = '__all__'
+        fields = ("id", "name","image","subcategory")
+        #fields = '__all__'
 
 class BrandSerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
@@ -59,6 +64,7 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
     merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     tags = TagListSerializerField()
+    category = CategorySerializer(many=True)
     class Meta:
         model = Product
         fields = ['id','merchant',
@@ -252,4 +258,5 @@ class Test(serializers.Serializer):
 
 class BannersSerializer(serializers.ModelSerializer):
     class Meta:
+        model = Banners
         fields = '__all__'

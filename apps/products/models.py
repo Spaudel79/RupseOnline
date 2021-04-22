@@ -24,6 +24,16 @@ class Category(models.Model):
     #def get_absolute_url(self):
         #return reverse("products:category", kwargs={"name": self.name})
 
+class Subcategory(models.Model):
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True,related_name='subcategory')
+    name =  models.CharField(max_length=100, unique=True)
+    image = models.ImageField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Sub Category"
+
+    def __str__(self):
+        return self.name
 
 class Brand(models.Model):
     brand_category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True)

@@ -45,8 +45,8 @@ if settings.DEBUG:
                           document_root=settings.MEDIA_ROOT)
 
 
-admin.site.unregister(SocialToken)
-admin.site.unregister(SocialAccount)
-admin.site.unregister(SocialApp)
+# admin.site.unregister(SocialToken)
+# admin.site.unregister(SocialAccount)
+# admin.site.unregister(SocialApp)
 admin.site.unregister(EmailAddress)
 admin.site.unregister(Group)

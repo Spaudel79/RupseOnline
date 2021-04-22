@@ -182,7 +182,7 @@ class PrdouctSearchAPIView(ListAPIView):
     filter_backends = [SearchFilter]
     #search_fields = ['name','brand__name','brand__brand_category', 'description',
                      #'collection__name','category__name',]
-    search_fields = ['name','brand__name','collection__name',
+    search_fields = ['name','brand__name','collection__name','tags',
                      'category__name','description','variants__color']
     pagination_class = CustomPagination
 
@@ -268,7 +268,7 @@ class VariantsUpdateDeleteView(DestroyAPIView,
 #Banners_endpoints
 
 class BannersView(
-                  mixins.ListModelMixin,GenericAPIView):
+                  ListAPIView):
     permission_classes = [AllowAny]
     queryset = Banners.objects.all().order_by('-id')[:1]
     serializer_class = BannersSerializer
