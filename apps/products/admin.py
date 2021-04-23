@@ -3,8 +3,8 @@ from .models import *
 from django.utils.html import format_html
 from imagekit.admin import AdminThumbnail
 
-class VariantInline(admin.TabularInline):
-    model = Variants
+# class VariantInline(admin.TabularInline):
+#     model = Variants
 
 class VariantsAdmin(admin.ModelAdmin):
 
@@ -33,7 +33,10 @@ class ProductAdmin(admin.ModelAdmin):
     def edit(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/product/{}/change/">Change</a>', obj.id)
 
-    def delete(self, obj):
+    # def delete(self, obj):
+    #     return format_html('<a class="btn-btn" href="/admin/products/product/{}/delete/">Delete</a>', obj.id)
+
+    def delete(self,obj):
         return format_html('<a class="btn-btn" href="/admin/products/product/{}/delete/">Delete</a>', obj.id)
 
     image_display = AdminThumbnail(image_field='thumbnail')

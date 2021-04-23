@@ -11,6 +11,7 @@ from django.utils.text import slugify
 User = get_user_model()
 
 class Category(models.Model):
+    #parent = models.ForeignKey('self',related_name='children',on_delete=models.CASCADE,blank=True,null=True)
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(null=True, blank=True)
     featured = models.BooleanField(default=False)
@@ -119,6 +120,7 @@ class Product(models.Model):
     )
     merchant = models.ForeignKey(Seller,on_delete=models.CASCADE,blank=True,null=True)
     category = models.ManyToManyField(Category, blank=False)
+    sub_category = models.ForeignKey(Subcategory, on_delete=models.CASCADE,blank=True,null=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     featured = models.BooleanField(default=False)  # is product featured?

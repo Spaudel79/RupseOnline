@@ -182,7 +182,7 @@ class PrdouctSearchAPIView(ListAPIView):
     filter_backends = [SearchFilter]
     #search_fields = ['name','brand__name','brand__brand_category', 'description',
                      #'collection__name','category__name',]
-    search_fields = ['name','brand__name','collection__name','tags',
+    search_fields = ['name','brand__name','collection__name','sub_category',
                      'category__name','description','variants__color']
     pagination_class = CustomPagination
 

@@ -13,7 +13,7 @@ class CategorySerializer(serializers.ModelSerializer):
     subcategory = SubCategorySerializer(many=True)
     class Meta:
         model = Category
-        fields = ("id", "name","image","subcategory")
+        fields = ("id", "name","image",'subcategory')
         #fields = '__all__'
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -68,7 +68,7 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id','merchant',
-            'category','brand','collection','featured',
+            'category','brand','collection','sub_category','featured',
             'best_seller','top_rated','name','slug','main_product_image','tags',
             'description','picture','rating',
             'availability','warranty',
@@ -85,6 +85,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
     variants = VariantSerializer(many=True)
     slug = serializers.SlugField(read_only=True)
+    #category = CategorySerializer(many=True)
     # category = serializers.SlugRelatedField(
     #     many=True,
     #     queryset=Category.objects.all(),
@@ -100,7 +101,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
     # )
     class Meta:
         model = Product
-        fields = ['id','merchant','featured', 'top_rated','category','brand','collection',
+        fields = ['id','merchant','featured', 'top_rated','category','brand','collection','sub_category',
                   'name','slug','description', 'main_product_image','best_seller','picture',
                   'rating','availability','warranty','services','variants']
         #depth = 1
@@ -114,6 +115,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
          top_rated = validated_data.get('top_rated')
          brand = validated_data.get('brand')
          collection = validated_data.get('collection')
+         sub_category = validated_data.get('sub_category')
          name = validated_data.get('name')
          description = validated_data.get('description')
          main_product_image = validated_data.get('main_product_image')
@@ -131,7 +133,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
          #products-logic
 
          product = Product.objects.create(featured=featured,top_rated=top_rated,
-                                          brand=brand,collection=collection,
+                                          brand=brand,collection=collection,sub_category=sub_category,
                                           name=name,description=description,
                                           main_product_image=main_product_image,
                                           best_seller=best_seller,rating=rating,
@@ -139,6 +141,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
                                           services=services,merchant=merchant)
          product.save()
          #category_data = Category.objects.filter(category__in=category_data)
+
          product.category.set(category_data)
          for picture_data in picture_data:
             xyz = ImageBucket.objects.create(**picture_data)
