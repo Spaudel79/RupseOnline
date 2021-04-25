@@ -44,4 +44,45 @@
             #                  )
             #
             # else:
+
             #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# dictdata =     {'name': 'Bob'}
+#     # {'name': 'John'}
+#
+#
+# # for d in dictdata :
+# #     print (d.name)
+#
+# for key,values in dictdata.items():
+#     print (key,values)
+
+
+class Rectangle:
+
+    def __init__(self,length,breadth):
+        self.__length = length
+        self.__breadth = breadth
+
+    def set_para(self,length,breadth):
+        self.__length = length
+        self.__breadth = breadth
+
+    def get_para(self):
+        return self.__length
+
+rec = Rectangle(30,40)
+
+# print (rec._breadth)
+# print(rec.__length)
+
+# rec.set_para(100,20)
+# rec.__length = 50
+
+# print(rec.get_para())
+print(rec.__length)
+
+
+
+
+
