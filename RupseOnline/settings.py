@@ -61,11 +61,15 @@ INSTALLED_APPS = [
     'django.contrib.sites',  # can be used later
     'allauth',
     'allauth.account',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount', #can be used later
     'rest_auth.registration',
     'django_filters',
+    'django_extensions',
     'rangefilter',
     'taggit',
+    'taggit_serializer',
     'ckeditor',
     'ckeditor_uploader',
     'imagekit',
@@ -95,9 +99,11 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 # CORS_ORIGIN_WHITELIST = (
-#
+#     "https://localhost:3000",
 #     "http://localhost:3000",
 #     "http://rupseonline.aakashlabs.com",
+#     "https://front.rupseonline.com",
+#
 # )
 
 CORS_ALLOW_METHODS = [
@@ -128,7 +134,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'RupseOnline.wsgi.application'
+# WSGI_APPLICATION = 'RupseOnline.wsgi.application'
 
 
 # Database
@@ -243,6 +249,52 @@ ACCOUNT_USERNAME_REQUIRED = False
 # }
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =10
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQURIED=True
+#ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 115
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400 # 1 day in seconds
+SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
+SOCIALACCOUNT_EMAIL_REQUIRED = ACCOUNT_EMAIL_REQUIRED
+SOCIALACCOUNT_STORE_TOKENS=True
+LOGIN_REDIRECT_URL = '/'
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = "http"
+
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            # 'first_name',
+            # 'last_name',
+            # 'verified',
+            # 'locale',
+            # 'timezone',
+            # 'link',
+            # 'gender',
+            # 'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    },
+     'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 # REST_USE_JWT = True
 
@@ -266,3 +318,13 @@ EMAIL_PORT = 587
 #981-3488228
 #saroj.aakashlabs@gmail.com
 #2000-01-01
+
+
+# class SocialAccountAdapter(DefaultSocialAccountAdapter):
+#     def authentication_error(self, request, provider_id, error, exception, extra_context):
+#         your_log_function(
+#             'SocialAccount authentication error!',
+#             'error',
+#             request,
+#             extra_data = {'provider_id': provider_id, 'error': error.__str__(), 'exception': exception.__str__(), 'extra_context': extra_context},
+#         )

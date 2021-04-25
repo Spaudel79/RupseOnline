@@ -6,11 +6,12 @@ from django.contrib.auth import get_user_model
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from apps.accounts.models import Seller
-
+from django.utils.text import slugify
 # Create your models here.
 User = get_user_model()
 
 class Category(models.Model):
+    #parent = models.ForeignKey('self',related_name='children',on_delete=models.CASCADE,blank=True,null=True)
     name = models.CharField(max_length=100, unique=True)
     image = models.ImageField(null=True, blank=True)
     featured = models.BooleanField(default=False)
@@ -24,6 +25,16 @@ class Category(models.Model):
     #def get_absolute_url(self):
         #return reverse("products:category", kwargs={"name": self.name})
 
+class Subcategory(models.Model):
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True,related_name='subcategory')
+    name =  models.CharField(max_length=100, unique=True)
+    image = models.ImageField(null=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "Sub Category"
+
+    def __str__(self):
+        return self.name
 
 class Brand(models.Model):
     brand_category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True)
@@ -109,19 +120,20 @@ class Product(models.Model):
     )
     merchant = models.ForeignKey(Seller,on_delete=models.CASCADE,blank=True,null=True)
     category = models.ManyToManyField(Category, blank=False)
+    sub_category = models.ForeignKey(Subcategory, on_delete=models.CASCADE,blank=True,null=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     featured = models.BooleanField(default=False)  # is product featured?
     best_seller = models.BooleanField(default=False)
     top_rated = models.BooleanField(default=False)
     tags = TaggableManager(blank=True)  # tags mechanism
-    name = models.CharField(max_length=150)
+    name = models.CharField(max_length=150,unique=True)
     main_product_image = models.ImageField(upload_to="products/images", null=True, blank=True)
     thumbnail = ImageSpecField(source='main_product_image',
                                processors=[ResizeToFill(100, 50)],
                                format='JPEG',
                                options={'quality': 60})
-    # slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200)
     # description = models.TextField(max_length=500, default="Empty description.")
     description = RichTextField(blank=True)
     #picture = models.ImageField(upload_to="products/images", null=True, blank=True)
@@ -144,6 +156,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        # if not self.slug:
+        self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
     # @property
     # def get_price(self):
     #     return self.variants.price
@@ -176,3 +192,16 @@ class Review(models.Model):
 
     class Meta:
         ordering = ('created_at',)
+
+class Banners(models.Model):
+    banner_image_1 = models.ImageField(upload_to="banners/images", blank=True)
+    banner_image_2 = models.ImageField(upload_to="banners/images", blank=True)
+    banner_image_3 = models.ImageField(upload_to="banners/images", blank=True)
+    square_image_1 = models.ImageField(upload_to="banners/images", blank=True)
+    square_image_2 = models.ImageField(upload_to="banners/images", blank=True)
+    square_image_3 = models.ImageField(upload_to="banners/images", blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Banner Images'
+
+

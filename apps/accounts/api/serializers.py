@@ -63,6 +63,7 @@ class CustomerUpdateSerializer(serializers.ModelSerializer):
         # #     pass
         # user.save()
         customer_data = validated_data.pop('customer',None)
+        print(instance)
         if customer_data is not None:
             instance.customer.first_name = customer_data['first_name']
             instance.customer.last_name = customer_data['last_name']

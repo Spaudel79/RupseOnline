@@ -17,7 +17,6 @@ class CartItemSerializer(serializers.ModelSerializer):
         depth = 1
 
 class CartSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Cart
         # fields = ("id", "name","image")
@@ -49,7 +48,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = ['id', 'merchant',
             'category','brand','collection','featured',
-            'best_seller','top_rated','name','main_product_image',
+            'best_seller','top_rated','name','slug','main_product_image',
             'description','picture','rating',
             'availability','warranty',
             'services','variants'
@@ -127,7 +126,7 @@ class BillingDetailsSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = BillingDetails
-        fields = ['id','user', 'order', 'first_name', 'last_name', 'email', 'phone', 'country',
+        fields = ['id','user', 'order', 'first_name', 'last_name', 'email', 'phone', 'area',
                   'city', 'address', 'postal', 'payment_type' ]
         depth = 1
 
@@ -200,7 +199,7 @@ class BillingInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BillingDetails
-        fields = ['id', 'user', 'order', 'first_name','last_name','email','phone','country','city','address','postal']
+        fields = ['id', 'user', 'order', 'first_name','last_name','email','phone','area','city','address','postal']
         # depth = 1
 
 
@@ -224,6 +223,11 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
+        # billing_details_data = validated_data.pop('billing_details', None)
+        # order_items_data = validated_data.pop('order_items')
+
+        #instance = super(OrderUpdateSerializer, self).update(instance,validated_data)
+        #print(instance)
         instance.order_status = validated_data.get('order_status')
         instance.ordered = validated_data.get('ordered')
 
@@ -236,6 +240,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 
         #order_items_logic
+
         instance.save()
 
         #instance.order_items.clear()
@@ -245,6 +250,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         # for order_items_data in order_items_data:
         #     abc = OrderItem.objects.create(**order_items_data)
         #     instance.order_items.add(abc)
+        
         for order_item_data in order_items_data:
             oi, created = OrderItem.objects.update_or_create(
                 id = order_item_data['id'],
@@ -253,8 +259,9 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
                     'quantity' : order_item_data['quantity'],
                     'order_item_status': order_item_data['order_item_status']
                 }
-            )
 
+            )
+            #print(oi)
             # defaults = {
             #             'quantity' : order_item_data['quantity'],
             #             'order_item_status': order_item_data['order_item_status']
@@ -267,13 +274,6 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             # except OrderItem.DoesNotExist:
             #     new_values = {}
 
-
-
-
-
-
-
-
             # print (oi)
             # instance.order_items.quantity = order_items_data['quantity']
             # instance.order_items.order_item_status = order_items_data['order_item_status']
@@ -285,6 +285,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         #super().save()
         instance.save()
         return super().update(instance,validated_data)
+        #return instance
 
 
 

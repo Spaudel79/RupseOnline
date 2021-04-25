@@ -57,32 +57,11 @@
 # for key,values in dictdata.items():
 #     print (key,values)
 
+d= {'a':1,
+    'b':2}
 
-class Rectangle:
-
-    def __init__(self,length,breadth):
-        self.__length = length
-        self.__breadth = breadth
-
-    def set_para(self,length,breadth):
-        self.__length = length
-        self.__breadth = breadth
-
-    def get_para(self):
-        return self.__length
-
-rec = Rectangle(30,40)
-
-# print (rec._breadth)
-# print(rec.__length)
-
-# rec.set_para(100,20)
-# rec.__length = 50
-
-# print(rec.get_para())
-print(rec.__length)
-
-
-
-
-
+print(d)
+print(d.get('a'))
+print(d.get('b'))
+print(d.get('c'))
+# print(d.pop('c'))

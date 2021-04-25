@@ -8,13 +8,14 @@ from django.shortcuts import get_object_or_404
 from .serializers import *
 from .pagination import *
 from ..import models
-from ..models import Category, Brand, Collection, Product,Review
+from ..models import Category, Brand, Collection, Product,Review,Banners
 from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAdminUser, IsAuthenticatedOrReadOnly)
 from apps.accounts.models import Seller, Customer
 
-from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
+from rest_framework.generics import (GenericAPIView,CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, mixins)
+
 
 # class ProductViewSet(viewsets.ModelViewSet):
 #     queryset = Product.objects.all()
@@ -181,19 +182,18 @@ class PrdouctSearchAPIView(ListAPIView):
     filter_backends = [SearchFilter]
     #search_fields = ['name','brand__name','brand__brand_category', 'description',
                      #'collection__name','category__name',]
-    search_fields = ['name','brand__name','collection__name',
+    search_fields = ['name','brand__name','collection__name','sub_category',
                      'category__name','description','variants__color']
     pagination_class = CustomPagination
-
-
-
 
 class ProductDetailAPIView(RetrieveAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    #lookup_url_kwarg = 'slug'
+    lookup_field = 'slug'
 
-class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
+class CreateReviewAPIView(CreateAPIView,DestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
@@ -203,12 +203,14 @@ class GetCreateReviewAPIView(ListCreateAPIView,DestroyAPIView):
         product = get_object_or_404(Product, pk=self.kwargs['pk'])
         serializer.save(user=user, product=product)
 
-    def get_queryset(self):
-        product = get_object_or_404(Product, pk=self.kwargs['pk'])
-        return Review.objects.filter(product=product)
+    # def get_queryset(self):
+    #     product = get_object_or_404(Product, pk=self.kwargs['pk'])
+    #     return Review.objects.filter(product=product)
 
     def perform_destroy(self, instance):
         instance.delete()
+
+
 
 class GetReviewAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -263,5 +265,15 @@ class VariantsUpdateDeleteView(DestroyAPIView,
         instance.delete()
 
 
+#Banners_endpoints
+
+class BannersView(
+                  ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Banners.objects.all().order_by('-id')[:1]
+    serializer_class = BannersSerializer
+
+    # def list(self, request, *args, **kwargs):
+    #     return (request,*args,**kwargs)
 
 

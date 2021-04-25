@@ -146,7 +146,7 @@ class BillingDetails(models.Model):
     last_name = models.CharField(max_length=50, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     phone = models.CharField(max_length=50,blank=True,null=True)
-    country = models.CharField(max_length=50,blank=True,null=True)
+    area = models.CharField(max_length=50,blank=True,null=True)
     city = models.CharField(max_length=50,blank=True,null=True)
     address = models.CharField(max_length=100,blank=True,null=True)
     postal = models.CharField(max_length=50,blank=True,null=True)

@@ -34,6 +34,7 @@ urlpatterns = [
     # path('test/', TemplateView.as_view(template_name='base.html'), name='index'),
     # path('api', include('api.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/',include('allauth.urls')),
 ]
 
 # to load static/media files in development environment
@@ -44,8 +45,8 @@ if settings.DEBUG:
                           document_root=settings.MEDIA_ROOT)
 
 
-admin.site.unregister(SocialToken)
-admin.site.unregister(SocialAccount)
-admin.site.unregister(SocialApp)
+# admin.site.unregister(SocialToken)
+# admin.site.unregister(SocialAccount)
+# admin.site.unregister(SocialApp)
 admin.site.unregister(EmailAddress)
 admin.site.unregister(Group)

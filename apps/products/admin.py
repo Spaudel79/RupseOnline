@@ -3,6 +3,8 @@ from .models import *
 from django.utils.html import format_html
 from imagekit.admin import AdminThumbnail
 
+# class VariantInline(admin.TabularInline):
+#     model = Variants
 
 class VariantsAdmin(admin.ModelAdmin):
 
@@ -31,7 +33,10 @@ class ProductAdmin(admin.ModelAdmin):
     def edit(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/product/{}/change/">Change</a>', obj.id)
 
-    def delete(self, obj):
+    # def delete(self, obj):
+    #     return format_html('<a class="btn-btn" href="/admin/products/product/{}/delete/">Delete</a>', obj.id)
+
+    def delete(self,obj):
         return format_html('<a class="btn-btn" href="/admin/products/product/{}/delete/">Delete</a>', obj.id)
 
     image_display = AdminThumbnail(image_field='thumbnail')
@@ -40,7 +45,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     list_display = ('image_display','name','merchant', 'featured', 'availability','edit', 'delete')
     icon_name = 'personal_video'
+    #inlines = [VariantInline]
 
+class SubCategoryAdmin(admin.TabularInline):
+    model = Subcategory
 
 class CategoryAdmin(admin.ModelAdmin):
 
@@ -53,6 +61,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'edit','delete')
     list_display_links = ('name', )
     icon_name = 'assignment'
+    inlines = [SubCategoryAdmin]
+
 
 class BrandAdmin(admin.ModelAdmin):
 
@@ -93,6 +103,7 @@ class ImageBucketAdmin(admin.ModelAdmin):
     list_display = ('image_display', 'pic_name', 'edit', 'delete')
     icon_name = 'camera_alt'
 
+# class BannerAdmin(admin.ModelAdmin):
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -115,3 +126,4 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(ImageBucket,ImageBucketAdmin)
 admin.site.register(Review, ReviewAdmin)
 admin.site.site_header = 'Rupse Online'
+admin.site.register(Banners)
