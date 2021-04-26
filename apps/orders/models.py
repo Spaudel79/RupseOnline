@@ -68,11 +68,11 @@ class Order(models.Model):
     #items = models.ManyToManyField(OrderItem,blank=True, null=True,related_name="order_items")
     #start_date = models.DateTimeField(auto_now_add=True)
     order_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
-
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
     #total_price = models.CharField(max_length=50,blank=True,null=True)
     #billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
+
 
 
     @property

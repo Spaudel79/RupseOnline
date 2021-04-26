@@ -65,6 +65,7 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
     merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     tags = TagListSerializerField()
     category = CategorySerializer(many=True)
+    #sub_category = SubCategorySerializer(many=True)
     class Meta:
         model = Product
         fields = ['id','merchant',
