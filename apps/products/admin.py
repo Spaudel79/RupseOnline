@@ -46,6 +46,8 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('image_display','name','merchant', 'featured', 'availability','edit', 'delete')
     icon_name = 'personal_video'
     #inlines = [VariantInline]
+    list_display_links = ['name']
+    search_fields = ("name",)
 
 class SubCategoryAdmin(admin.TabularInline):
     model = Subcategory
