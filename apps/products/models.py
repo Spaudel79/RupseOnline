@@ -133,7 +133,7 @@ class Product(models.Model):
                                processors=[ResizeToFill(100, 50)],
                                format='JPEG',
                                options={'quality': 60})
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200,blank=True)
     # description = models.TextField(max_length=500, default="Empty description.")
     description = RichTextField(blank=True)
     #picture = models.ImageField(upload_to="products/images", null=True, blank=True)
@@ -151,7 +151,7 @@ class Product(models.Model):
 
 
     class Meta:
-        ordering = ("name",)
+        ordering = ("-id" ,)
 
     def __str__(self):
         return self.name

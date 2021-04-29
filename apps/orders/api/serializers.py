@@ -47,7 +47,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'merchant',
-            'category','brand','collection','featured',
+            'category','brand','collection','sub_category','featured',
             'best_seller','top_rated','name','slug','main_product_image',
             'description','picture','rating',
             'availability','warranty',
@@ -79,7 +79,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
     #order_variants = VariantSerializer()
     #order_variants =VariantSerializer()
     #item = ProductSerializer()
-    # item = serializers.PrimaryKeyRelatedField()
+    item = serializers.PrimaryKeyRelatedField(read_only=True)
     order = serializers.PrimaryKeyRelatedField(read_only=True)
     price = serializers.FloatField(read_only=True)
     class Meta:
@@ -95,7 +95,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderItemUpdateSerializer(serializers.ModelSerializer):
     #order_variants = VariantSerializer(read_only=True)
     #order_variants =VariantSerializer()
-    #item = ProductSerializer(read_only=True)
+    item = serializers.PrimaryKeyRelatedField(read_only=True)
     #id = serializers.PrimaryKeyRelatedField(read_only=False)
     id = serializers.IntegerField()
     # order = serializers.PrimaryKeyRelatedField(read_only=True)
