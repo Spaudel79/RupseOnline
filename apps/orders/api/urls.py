@@ -40,6 +40,9 @@ urlpatterns = [
 
     #merchant-apis
     path('api/merchantorders/<int:pk>',views.SellerOrderView.as_view(),name='api-sellerorder'),
-    path('api/updateorder/<int:pk>',views.UpdateOrderView.as_view(),name ='api-updateorder')
+    path('api/updateorder/<int:pk>',views.UpdateOrderView.as_view(),name ='api-updateorder'),
+
+    #points-api
+    #path('api/points',views.PointsView.as_view(),name ='api-points')
 
 ]

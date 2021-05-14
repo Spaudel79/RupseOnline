@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from apps.products.models import Product, Variants
+from django.db.models.signals import post_save
+from decimal import *
 
 # import settings
 from django.utils.crypto import get_random_string
@@ -65,21 +67,46 @@ class Order(models.Model):
         ('Cancelled', 'Cancelled',),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True)
-    #items = models.ManyToManyField(OrderItem,blank=True, null=True,related_name="order_items")
-    #start_date = models.DateTimeField(auto_now_add=True)
+    #order_items = models.ManyToManyField('OrderItem',blank=True, null=True)
     order_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
     ordered_date = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
-    #total_price = models.CharField(max_length=50,blank=True,null=True)
-    #billing_details = models.OneToOneField('BillingDetails',on_delete=models.CASCADE,null=True,blank=True,related_name="order")
+    current_points = models.FloatField(default=0)
+    total_price = models.FloatField(blank=True,null=True)
+    point_spent = models.FloatField(default=0)
 
 
+    def final_price(self):
+        total = sum([_.price for _ in self.order_items.all()])
+        total -= Decimal(self.price_of_points)
+        print(total)
+        return total
 
     @property
-    def total_price(self):
-        # abc = sum([_.price for _ in self.order_items.all()])
-        # print(abc)
-        return sum([_.price for _ in self.order_items.all()])
+    def price_of_points(self):
+        point_spent = self.point_spent
+        print(point_spent)
+        if point_spent == 0:
+            return 0.0
+        elif point_spent <= 10000.0 and point_spent >0:
+            return 10.0
+        else:
+            return 75.0
+
+    def save(self, *args, **kwargs):
+        self.total_price = self.final_price()
+        super(Order, self).save(*args, **kwargs)
+
+    # def save(self, force_insert=False, **kwargs):
+    #     created = force_insert or not self.pk
+    #     print(self.final_price())
+    #     self.total_price = self.final_price()
+    #     super(Order, self).save(force_insert=force_insert, **kwargs)
+    #     if created:
+    #         points = Points.calculate_points(self.total_price)
+    #         print(points)
+    #         Points.objects.create(user=self.user, points_gained=points)
+
 
     def __str__(self):
         return self.user.email
@@ -92,6 +119,8 @@ class Order(models.Model):
 #     total_item_price = self.quantity * self.item.varaints.price
 #     return total_item_price
 
+
+
 class OrderItem(models.Model):
     #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True
     #orderItem_ID = models.UUIDField(max_length=12, editable=False,default=str(uuid.uuid4()))
@@ -100,6 +129,8 @@ class OrderItem(models.Model):
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     order_variants = models.ForeignKey(Variants, on_delete=models.CASCADE,blank=True,null=True)
     quantity = models.IntegerField(default=1)
+    #price = models.IntegerField(blank=True,null=True)
+
 
 
 
@@ -116,8 +147,8 @@ class OrderItem(models.Model):
     @property
     def price(self):
         total_item_price = self.quantity * self.order_variants.price
+        # print(total_item_price)
         return total_item_price
-
 
     # def save(self,*args,**kwargs):
     #     quantity = self.quantity
@@ -126,8 +157,8 @@ class OrderItem(models.Model):
     #     # return total_item_price
     #     super(OrderItem,self).save(*args,**kwargs)
 
-    def __str__(self):
-        return f"{self.quantity} items of {self.item} of {self.order.user}"
+    # def __str__(self):
+    #     return f"{self.quantity} items of {self.item} of {self.order.user}"
 
     class Meta:
         verbose_name_plural = "Cart Items"
@@ -156,3 +187,35 @@ class BillingDetails(models.Model):
 
     class Meta:
         verbose_name_plural= "Shipping Address"
+
+
+class Points(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)
+    points_gained = models.FloatField(blank=True,null=True)
+
+    # @staticmethod
+    # def calculate_points(amount):
+    #     return 0.01 * amount if amount <= 10000 else 0.75 * amount
+
+    # @receiver(post_save, sender=Order)
+    def collect_points(sender, instance, created, **kwargs):
+        total_price = (instance.total_price)
+        if created == False and instance.ordered == True:
+            if total_price <= 10000.0:
+                abc = Decimal(0.01) * (total_price)
+            else:
+                abc = Decimal(0.75) * total_price
+            #new_point = Points.objects.create(user=instance.user, points_gained=abc)
+
+            try:
+                    # Check if user already has points and update if so
+                    points = Points.objects.get(user=instance.user)
+                    old_points = Decimal(points.points_gained)
+                    points.points_gained = Decimal(old_points)+abc
+                    points.save(update_fields=['points_gained'])
+            except Points.DoesNotExist:
+                    # User does not have points yet, create points
+                    Points.objects.create(user=instance.user,
+                                          points_gained=abc)
+
+    post_save.connect(collect_points, sender=Order)

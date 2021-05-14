@@ -57,11 +57,18 @@
 # for key,values in dictdata.items():
 #     print (key,values)
 
-d= {'a':1,
-    'b':2}
+# d= {'a':1,
+#     'b':2}
+#
+# print(d)
+# print(d.get('a'))
+# print(d.get('b'))
+# print(d.get('c'))
+# # print(d.pop('c'))
 
-print(d)
-print(d.get('a'))
-print(d.get('b'))
-print(d.get('c'))
-# print(d.pop('c'))
+abc = 'Here, is, the word'
+print(abc)
+print(type(abc))
+abc_new = abc.split(",")
+print(abc_new)
+print(type(abc_new))

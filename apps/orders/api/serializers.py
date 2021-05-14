@@ -76,12 +76,9 @@ class WishListItemsTestSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    #order_variants = VariantSerializer()
-    #order_variants =VariantSerializer()
-    #item = ProductSerializer()
-    item = serializers.PrimaryKeyRelatedField(read_only=True)
+
     order = serializers.PrimaryKeyRelatedField(read_only=True)
-    price = serializers.FloatField(read_only=True)
+    #price = serializers.FloatField(read_only=True)
     class Meta:
         model = OrderItem
         fields = ['id','order','orderItem_ID','item','order_variants', 'quantity','order_item_status','price']
@@ -98,12 +95,12 @@ class OrderItemUpdateSerializer(serializers.ModelSerializer):
     item = serializers.PrimaryKeyRelatedField(read_only=True)
     #id = serializers.PrimaryKeyRelatedField(read_only=False)
     id = serializers.IntegerField()
-    # order = serializers.PrimaryKeyRelatedField(read_only=True)
+    order = serializers.PrimaryKeyRelatedField(read_only=True)
     # order_variants = serializers.PrimaryKeyRelatedField(read_only=True)
     #orderItem_ID=serializers.ReadOnlyField()
     class Meta:
         model = OrderItem
-        fields = ['id','order','item','order_variants', 'quantity','order_item_status','price']
+        fields = ['id','item','order','order_variants', 'quantity','order_item_status','price']
         # depth = 1
 
 
@@ -135,9 +132,10 @@ class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
     user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
     #total_price = serializers.SerializerMethodField(source='get_total_price')
+    #point_spent = serializers.FloatField(required=False)
     class Meta:
         model = Order
-        fields = ['id','user','ordered_date','order_status', 'ordered','total_price', 'order_items', 'billing_details']
+        fields = ['id','user','ordered_date','order_status', 'ordered', 'order_items','total_price','point_spent', 'billing_details']
         # depth = 1
 
     # def save(self, **kwargs):
@@ -159,23 +157,19 @@ class OrderSerializer(serializers.ModelSerializer):
         if not user.is_seller:
             order_items = validated_data.pop('order_items')
             billing_details = validated_data.pop('billing_details')
-            order = Order.objects.create(user=user,**validated_data)
-            BillingDetails.objects.create(user=user,order=order,**billing_details)
+            order = Order.objects.create(user=user, **validated_data)
+            BillingDetails.objects.create(user=user, order=order, **billing_details)
             for order_items in order_items:
-                OrderItem.objects.create(order=order,**order_items)
-
-            # return Response ({"order": order,
-            #                     "billing_details":billing_details
-            #                      },
-            #                     status=status.HTTP_201_CREATED
-            #                     )
+                OrderItem.objects.create(order=order, **order_items)
+            ordered = validated_data.get('ordered')
+            order.ordered = True
+            order.save()
             return order
         else:
             raise serializers.ValidationError("This is not a customer account.Please login as customer.")
 
-
-    def get_total_price(self):
-        return sum([_.price for _ in self.order_items_set.all()])
+    # def get_total_price(self):
+    #     return sum([_.price for _ in self.order_items_set.all()])
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
@@ -184,7 +178,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         # fields = '__all__'
-        fields = ['id', 'user', 'ordered_date', 'order_status','ordered', 'order_items', 'total_price','billing_details']
+        fields = ['id', 'user', 'ordered_date', 'order_status','ordered', 'order_items', 'total_price','point_spent','billing_details']
         depth = 1
 
 class OrderBillingSerializer(serializers.ModelSerializer):

@@ -2,4 +2,7 @@ from django.apps import AppConfig
 
 
 class OrdersConfig(AppConfig):
-    name = 'orders'
+    name = 'apps.orders'
+
+    def ready(self):
+        import apps.orders.signals

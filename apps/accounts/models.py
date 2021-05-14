@@ -2,6 +2,12 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
+from django.apps import apps
+#from apps.orders.models import Order,OrderItem
+#from products.models import Product,Variants
+
+
+# Order = apps.get_model('orders', 'Order')
 
 class CustomUserManager(BaseUserManager):
     """
@@ -65,6 +71,7 @@ class CustomUser(AbstractUser):
     is_seller = models.BooleanField(default=False)
     is_customer = models.BooleanField(default=False)
 
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
@@ -72,6 +79,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
 
 
 class Seller(models.Model):
@@ -112,3 +121,5 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.customer.email
+
+

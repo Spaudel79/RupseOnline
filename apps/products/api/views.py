@@ -35,6 +35,8 @@ class BrandAPIView(ListCreateAPIView):
     permission_classes = [AllowAny]
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['brand_category']
 
 class CollectionAPIView(ListCreateAPIView):
     permission_classes = [AllowAny]
@@ -52,6 +54,100 @@ class ProductAPIView(ListAPIView):
 
     filterset_class = ProductFilter
     pagination_class = CustomPagination
+
+    def get_queryset(self):
+        brand = self.request.GET.get('brand', None)
+        sub_category = self.request.GET.get("sub_category", None)
+        warranty = self.request.GET.get("warranty", None)
+        if brand is not None:
+            brand = self.request.GET.get('brand', "")
+            brand_values = brand.split(",")
+            if sub_category is not None:
+                sub_category = self.request.GET.get("sub_category", "")
+                sub_category_values = sub_category.split(",")
+                if warranty is not None:
+                    warranty = self.request.GET.get("warranty", "")
+                    warranty_values = warranty.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values, )
+            elif warranty is not None:
+                warranty = self.request.GET.get("warranty", "")
+                warranty_values = warranty.split(",")
+                if sub_category is not None:
+                    sub_category = self.request.GET.get("sub_category", "")
+                    sub_category_values = sub_category.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  warranty__in=warranty_values)
+            else:
+                return Product.objects.filter(brand__name__in=brand_values, )
+
+        elif sub_category is not None:
+            sub_category = self.request.GET.get("sub_category", "")
+            sub_category_values = sub_category.split(",")
+            if warranty is not None:
+                warranty = self.request.GET.get("warranty", "")
+                warranty_values = warranty.split(",")
+                if brand is not None:
+                    brand = self.request.GET.get('brand', "")
+                    brand_values = brand.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+            elif brand is not None:
+                brand = self.request.GET.get('brand', "")
+                brand_values = brand.split(",")
+                if warranty is not None:
+                    warranty = self.request.GET.get("warranty", "")
+                    warranty_values = warranty.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(sub_category__name__in=sub_category_values,
+                                                  brand__name__in=brand_values, )
+            else:
+                return Product.objects.filter(sub_category__name__in=sub_category_values, )
+        elif warranty is not None:
+            warranty = self.request.GET.get("warranty", "")
+            warranty_values = warranty.split(",")
+            if brand is not None:
+                brand = self.request.GET.get('brand', "")
+                brand_values = brand.split(",")
+                if sub_category is not None:
+                    sub_category = self.request.GET.get("sub_category", "")
+                    sub_category_values = sub_category.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  warranty__in=warranty_values)
+            elif sub_category is not None:
+                sub_category = self.request.GET.get("sub_category", "")
+                sub_category_values = sub_category.split(",")
+                if brand is not None:
+                    brand = self.request.GET.get('brand', "")
+                    brand_values = brand.split(",")
+                    return Product.objects.filter(brand__name__in=brand_values,
+                                                  sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+                else:
+                    return Product.objects.filter(sub_category__name__in=sub_category_values,
+                                                  warranty__in=warranty_values)
+            else:
+                return Product.objects.filter(warranty__in=warranty_values)
+        return Product.objects.all()
 
     # def get_queryset(self):
     #     brand = self.request.GET.get("brand", None)
@@ -79,112 +175,30 @@ class ProductAPIView(ListAPIView):
     #     return Product.objects.all()
 
 #Actual Filtering starts
-    def get_queryset(self):
-        brand = self.request.GET.get('brand',None)
-        category = self.request.GET.get("category",None)
-        warranty = self.request.GET.get("warranty", None)
-        if brand is not None:
-            brand = self.request.GET.get('brand', "")
-            brand_values = brand.split(",")
-            if category is not None:
-                    category = self.request.GET.get("category", "")
-                    category_values = category.split(",")
-                    if warranty is not None:
-                        warranty = self.request.GET.get("warranty", "")
-                        warranty_values = warranty.split(",")
-                        return Product.objects.filter(brand__name__in=brand_values,
-                                              category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-                    else:
-                        return Product.objects.filter(brand__name__in=brand_values,
-                                                  category__name__in=category_values,)
-            elif warranty is not None:
-                    warranty = self.request.GET.get("warranty", "")
-                    warranty_values = warranty.split(",")
-                    if category is not None:
-                        category = self.request.GET.get("category", "")
-                        category_values = category.split(",")
-                        return Product.objects.filter(brand__name__in=brand_values,
-                                                      category__name__in=category_values,
-                                                      warranty__in=warranty_values)
-                    else:
-                        return Product.objects.filter(brand__name__in=brand_values,
-                                                      warranty__in=warranty_values)
-            else:
-                    return Product.objects.filter(brand__name__in=brand_values,)
 
-        elif category is not None:
-            category = self.request.GET.get("category", "")
-            category_values = category.split(",")
-            if warranty is not None:
-                warranty = self.request.GET.get("warranty", "")
-                warranty_values = warranty.split(",")
-                if brand is not None:
-                    brand = self.request.GET.get('brand', "")
-                    brand_values = brand.split(",")
-                    return Product.objects.filter(brand__name__in=brand_values,
-                                                  category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-                else:
-                    return Product.objects.filter(category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-            elif brand is not None:
-                brand = self.request.GET.get('brand', "")
-                brand_values = brand.split(",")
-                if warranty is not None:
-                    warranty = self.request.GET.get("warranty", "")
-                    warranty_values = warranty.split(",")
-                    return Product.objects.filter(brand__name__in=brand_values,
-                                                  category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-                else:
-                    return Product.objects.filter(category__name__in=category_values,
-                                                  brand__name__in=brand_values,)
-            else:
-                return Product.objects.filter(category__name__in=category_values,)
-        elif warranty is not None:
-            warranty = self.request.GET.get("warranty", "")
-            warranty_values = warranty.split(",")
-            if brand is not None:
-                brand = self.request.GET.get('brand', "")
-                brand_values = brand.split(",")
-                if category is not None:
-                    category = self.request.GET.get("category", "")
-                    category_values = category.split(",")
-                    return Product.objects.filter(brand__name__in=brand_values,
-                                                  category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-                else:
-                    return Product.objects.filter(brand__name__in=brand_values,
-                                                  warranty__in=warranty_values)
-            elif category is not None:
-                category = self.request.GET.get("category", "")
-                category_values = category.split(",")
-                if brand is not None:
-                    brand = self.request.GET.get('brand', "")
-                    brand_values = brand.split(",")
-                    return Product.objects.filter(brand__name__in=brand_values,
-                                                  category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-                else:
-                    return Product.objects.filter(category__name__in=category_values,
-                                                  warranty__in=warranty_values)
-            else:
-                return Product.objects.filter(warranty__in=warranty_values)
-        return Product.objects.all()
+
+
+
+
+
+
+
 
 # Actual Filtering Ends
 
 class PrdouctSearchAPIView(ListAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
+    #print(queryset)
     serializer_class = ProductSerializer
-    filter_backends = [SearchFilter]
+    filter_backends = [SearchFilter,OrderingFilter]
     #search_fields = ['name','brand__name','brand__brand_category', 'description',
                      #'collection__name','category__name',]
-    search_fields = ['name','brand__name','collection__name','sub_category',
-                     'category__name','description','variants__color']
+    search_fields = ['name','brand__name','collection__name','sub_category__name',
+                     'description','variants__color']
     pagination_class = CustomPagination
+
+
 
 class ProductDetailAPIView(RetrieveAPIView):
     permission_classes = [AllowAny]

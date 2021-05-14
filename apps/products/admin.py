@@ -74,7 +74,7 @@ class BrandAdmin(admin.ModelAdmin):
     def delete(self, obj):
         return format_html('<a class="btn-btn" href="/admin/products/brand/{}/delete/">Delete</a>', obj.id)
 
-    list_display = ('name', 'brand_category', 'edit','delete' )
+    list_display = ('name', 'edit','delete' )
     list_display_links = ('name', )
     icon_name = 'layers'
 

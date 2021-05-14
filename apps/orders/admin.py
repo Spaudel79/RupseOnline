@@ -37,7 +37,7 @@ class OrderItemsAdmin(admin.ModelAdmin):
         return format_html('<a class="btn-btn" href="/admin/orders/orderitem/{}/delete/">Delete</a>', obj.id)
 
     list_filter = ['order','item']
-    list_display = ['order','item','quantity','order_variants','edit','delete']
+    list_display = ['item','quantity','order_variants','edit','delete']
     # list_display = ('user', 'ordered_date', 'edit','delete')
     # list_display_links = ('user', )
 

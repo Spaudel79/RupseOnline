@@ -37,7 +37,7 @@ class Subcategory(models.Model):
         return self.name
 
 class Brand(models.Model):
-    brand_category = models.ForeignKey(Category,on_delete=models.CASCADE,blank=True,null=True)
+    brand_category = models.ManyToManyField(Category,blank=True,null=True)
     name = models.CharField(max_length=100, unique=True)
     featured = models.BooleanField(default=False)
     image = models.ImageField(null=True, blank=True)
