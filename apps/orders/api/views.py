@@ -11,7 +11,7 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from .serializers import *
-from apps.products.models import Product,Variants
+from apps.products.models import *
 from ..import models
 from ..models import CartItem, Cart, WishList,WishListItems
 from rest_framework.permissions import (AllowAny,IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
@@ -19,6 +19,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import (CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,GenericAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, GenericAPIView,)
+from rest_framework.authtoken.models import Token
+from django.db.models import Sum
+from datetime import datetime, timedelta
+from django.db.models import Count
+from django.db.models import Q
+from apps.accounts.models import CustomUser,Customer
+from apps.accounts.api.serializers import *
+from apps.products.api.pagination import CustomPagination
 
 class CartAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -206,10 +214,54 @@ class BillingInfoView(ListAPIView):
 class SellerOrderView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = OrderDetailSerializer
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         #return Order.objects.filter(item__merchant=self.kwargs['pk'])
         return Order.objects.filter(order_items__item__merchant=self.kwargs['pk'])
+
+
+class CustomersView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = CustomerProfileSerializer
+
+    def get_queryset(self):
+        abc = Customer.objects.filter(customer__user__order__order_items__item__merchant=self.kwargs['pk'])
+        return abc
+
+
+
+class DashboardView(ListAPIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        count_1 = Order.objects.filter(order_items__item__merchant=self.kwargs['pk']).count()
+        count_2 = Token.objects.filter(user__is_customer=True).count()
+        count_3 = Category.objects.count()
+        count_4 = Variants.objects.filter(products__merchant=self.kwargs['pk']).count()
+        count_5 = OrderItem.objects.filter(item__merchant=self.kwargs['pk']).aggregate(Sum('quantity'))
+        count_6 = Subcategory.objects.count()
+        count_7 = OrderItem.objects.filter(item__merchant=self.kwargs['pk']).aggregate(Sum('price'))
+
+        startdate = datetime.today() + timedelta(days=1)
+        enddate = startdate - timedelta(days=7)
+
+        count_8 = Order.objects.filter(order_items__item__merchant=self.kwargs['pk'],ordered_date__range=[startdate, enddate]).count()
+        #count_9 = Order.objects.annotate(abc=Count('user')).filter(order_items__item__merchant=self.kwargs['pk']).distinct().count()
+        count_9 = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct().count()
+
+        return Response(
+            {'active_users_now': count_2,
+             'total_customers': count_9,
+                'total_orders': count_1,
+             'total_categories': count_3,
+             'total_subcategories' : count_6,
+             'total_products_available': count_4,
+             'total_prodcuts_sold': count_5,
+             'total_earnings': count_7,
+             # 'total_orders_of_the_week': count_8},
+             },
+            status=status.HTTP_200_OK)
 
 
 class UpdateOrderView(UpdateAPIView):
@@ -217,6 +269,19 @@ class UpdateOrderView(UpdateAPIView):
     #queryset = Order.objects.prefetch_related('order_items').all()
     queryset = Order.objects.all()
     serializer_class = OrderUpdateSerializer
+
+class CustomersOfAMerchantView(ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = CustomerProfileSerializer
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        abc = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct()
+        #abc = Customer.objects.all()
+        return abc
+
+
+
 
 
 

@@ -4,6 +4,7 @@ from rest_auth.serializers import LoginSerializer
 from rest_auth.registration.serializers import RegisterSerializer
 from ..models import *
 from django.db.models import Q
+from rest_framework.authtoken.models import Token
 
 
 try:
@@ -15,21 +16,25 @@ except ImportError:
 
 User = get_user_model()
 
+class UserSerializer(serializers.ModelSerializer):
+    #count = serializers.SerializerMethodField()
+    class Meta:
+        model = Token
+        fields = ['key','created','user']
+        #depth = 1
+
+        # def get_count(self,obj):
+        #     abc = obj..filter(user_is_customer=True)
+        #     return abc
 
 class CustomerProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+        depth = 2
 
 class CustomerTestProfileSerializer(serializers.ModelSerializer):
-    # customer = serializers.PrimaryKeyRelatedField()
-    # first_name = serializers.CharField(required=False,read_only=True)
-    # last_name = serializers.CharField(required=False,read_only=True)
-    # phone_num = serializers.CharField(required=False,read_only=True)
-    # region = serializers.CharField(required=False,read_only=True)
-    # city = serializers.CharField(required=False,read_only=True)
-    # area = serializers.CharField(required=False,read_only=True)
-    # address = serializers.CharField(required=False,read_only=True)
+
     class Meta:
         model = Customer
         #fields = '__all__'

@@ -90,7 +90,7 @@ class Variants(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=20,default=500)
     size = models.CharField(max_length=50, choices=SIZE, default='not applicable',blank=True,null=True)
     color = models.CharField(max_length=70, default="not applicable",blank=True,null=True)
-    variant_image = models.ImageField(upload_to="products/images", blank=True)
+    variant_image = models.ImageField(upload_to="products/images", blank=True,null=True)
     thumbnail = ImageSpecField(source='variant_image',
                                processors=[ResizeToFill(100, 50)],
                                format='JPEG',

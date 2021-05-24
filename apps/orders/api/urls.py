@@ -41,6 +41,8 @@ urlpatterns = [
     #merchant-apis
     path('api/merchantorders/<int:pk>',views.SellerOrderView.as_view(),name='api-sellerorder'),
     path('api/updateorder/<int:pk>',views.UpdateOrderView.as_view(),name ='api-updateorder'),
+    path('api/dashboard/info/<int:pk>',views.DashboardView.as_view(),name ='api-dashboard'),
+    path('api/total/customers/<int:pk>',views.CustomersOfAMerchantView.as_view(),name ='api-total-customers'),
 
     #points-api
     #path('api/points',views.PointsView.as_view(),name ='api-points')

@@ -20,5 +20,6 @@ urlpatterns = [
     path('api/customer/token', views.CustomerTokenView.as_view(), name='api-customer-token'),
     path("api/login/", views.LoginUserView.as_view(), name='api-login'),
     path("api/logout/", views.Logout.as_view(), name='api-logout'),
+    path("api/users/online", views.OnlineUsers.as_view(), name='api-online'),
     # path("api/register", views.RegisterUserView.as_view(), name='api-register')
 ]

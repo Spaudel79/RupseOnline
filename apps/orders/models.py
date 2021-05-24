@@ -77,7 +77,7 @@ class Order(models.Model):
 
 
     def final_price(self):
-        total = sum([_.price for _ in self.order_items.all()])
+        total = sum([_.price_1 for _ in self.order_items.all()])
         total -= Decimal(self.price_of_points)
         print(total)
         return total
@@ -115,21 +115,19 @@ class Order(models.Model):
         verbose_name_plural = "Orders"
         ordering = ('-id',)
 
-# def price(self):
-#     total_item_price = self.quantity * self.item.varaints.price
-#     return total_item_price
+
 
 
 
 class OrderItem(models.Model):
-    #user = models.ForeignKey(User,on_delete=models.CASCADE, blank=True
+
     #orderItem_ID = models.UUIDField(max_length=12, editable=False,default=str(uuid.uuid4()))
     orderItem_ID = models.CharField(max_length=12, editable=False, default=id_generator)
     order = models.ForeignKey(Order,on_delete=models.CASCADE, blank=True,null=True,related_name='order_items')
     item = models.ForeignKey(Product, on_delete=models.CASCADE,blank=True, null=True)
     order_variants = models.ForeignKey(Variants, on_delete=models.CASCADE,blank=True,null=True)
     quantity = models.IntegerField(default=1)
-    #price = models.IntegerField(blank=True,null=True)
+    price = models.IntegerField(blank=True,null=True)
 
 
 
@@ -145,10 +143,14 @@ class OrderItem(models.Model):
     order_item_status = models.CharField(max_length=50,choices=ORDER_STATUS,default='To_Ship')
 
     @property
-    def price(self):
+    def price_1(self):
         total_item_price = self.quantity * self.order_variants.price
         # print(total_item_price)
         return total_item_price
+
+    def save(self, *args, **kwargs):
+        self.price = self.price_1
+        super(OrderItem, self).save(*args, **kwargs)
 
     # def save(self,*args,**kwargs):
     #     quantity = self.quantity
@@ -219,3 +221,13 @@ class Points(models.Model):
                                           points_gained=abc)
 
     post_save.connect(collect_points, sender=Order)
+
+class Coupons(models.Model):
+    code = models.CharField(max_length=50,unique=True)
+    valid_form = models.DateTimeField()
+    valid_till = models.DateTimeField()
+    active = models.BooleanField(default=False)
+    discount = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.code

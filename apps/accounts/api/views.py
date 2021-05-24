@@ -11,6 +11,7 @@ ListAPIView,RetrieveAPIView)
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 
 # class CustomLoginView(LoginView):
 #     pass
@@ -140,6 +141,7 @@ class CustomerTokenView(ListAPIView):
         serializer = CustomUserDetailsSerializer(request.user)
         return Response({"user": serializer.data})
 
+
 class Logout(GenericAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
@@ -148,3 +150,17 @@ class Logout(GenericAPIView):
         # simply delete the token to force a login
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
+
+class OnlineUsers(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    # renderer_classes = [JSONRenderer]
+
+    def get(self, request, *args, **kwargs):
+        count = Token.objects.filter(user__is_customer=True).count()
+        print(count)
+        return Response(
+            {'count':count},
+               status=status.HTTP_200_OK )
+
+
+

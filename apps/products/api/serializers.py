@@ -33,8 +33,6 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class VariantSerializer(serializers.ModelSerializer):
-    #id = serializers.PrimaryKeyRelatedField(read_only=True)
-    #variant_image = serializers.ImageField(required=False)
     id = serializers.IntegerField(required=False)
     class Meta:
         model = Variants
@@ -79,14 +77,9 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
         depth = 1
 
 class  AddProductSerializer(serializers.ModelSerializer):
-    #category = CategorySerializer(many=True,required=True)
-    #brand = BrandSerializer(required=True)
-    #collection = CollectionSerializer(required=True)
-    #merchant = serializers.PrimaryKeyRelatedField(read_only=True)
     id = serializers.PrimaryKeyRelatedField(read_only=True)
-    variants = VariantSerializer(many=True)
+    variants = VariantSerializer(many=True,required=False)
     slug = serializers.SlugField(read_only=True)
-    #category = CategorySerializer(many=True)
     # category = serializers.SlugRelatedField(
     #     many=True,
     #     queryset=Category.objects.all(),

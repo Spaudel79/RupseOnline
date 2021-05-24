@@ -15,6 +15,7 @@ from apps.accounts.models import Seller, Customer
 
 from rest_framework.generics import (GenericAPIView,CreateAPIView, DestroyAPIView, ListCreateAPIView,ListAPIView, UpdateAPIView,
 RetrieveUpdateAPIView, RetrieveAPIView, mixins)
+from rest_framework.parsers import FormParser,JSONParser,MultiPartParser
 
 
 # class ProductViewSet(viewsets.ModelViewSet):
@@ -240,6 +241,7 @@ class GetReviewAPIView(ListAPIView):
 class SellerProductsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductSerializer
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         seller = get_object_or_404(Seller,pk=self.kwargs['pk'])
@@ -247,7 +249,8 @@ class SellerProductsAPIView(ListAPIView):
 
 class ProductAddAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    queryset = Product.objects.all()
+    parser_classes = [MultiPartParser,JSONParser,FormParser]
+    # queryset = Product.objects.all()
     serializer_class = AddProductSerializer
 
     # def perform_create(self, serializer):
