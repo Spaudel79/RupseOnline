@@ -27,6 +27,7 @@ from django.db.models import Q
 from apps.accounts.models import CustomUser,Customer
 from apps.accounts.api.serializers import *
 from apps.products.api.pagination import CustomPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 class CartAPIView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -214,20 +215,15 @@ class BillingInfoView(ListAPIView):
 class SellerOrderView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = OrderDetailSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['user__first_name','user__last_name','order_items_status' ]
+    ordering_fields = ['order_items_price','ordered_date']
     pagination_class = CustomPagination
 
     def get_queryset(self):
         #return Order.objects.filter(item__merchant=self.kwargs['pk'])
         return Order.objects.filter(order_items__item__merchant=self.kwargs['pk'])
 
-
-class CustomersView(ListAPIView):
-    permission_classes = [AllowAny]
-    serializer_class = CustomerProfileSerializer
-
-    def get_queryset(self):
-        abc = Customer.objects.filter(customer__user__order__order_items__item__merchant=self.kwargs['pk'])
-        return abc
 
 
 
@@ -243,37 +239,71 @@ class DashboardView(ListAPIView):
         count_6 = Subcategory.objects.count()
         count_7 = OrderItem.objects.filter(item__merchant=self.kwargs['pk']).aggregate(Sum('price'))
 
-        startdate = datetime.today() + timedelta(days=1)
-        enddate = startdate - timedelta(days=7)
 
-        count_8 = Order.objects.filter(order_items__item__merchant=self.kwargs['pk'],ordered_date__range=[startdate, enddate]).count()
+        count = []
+        dates_count = []
+
+        i=1
+        while (i <= 31):
+            startdate = datetime.today() - timedelta(days=i)
+            enddate = startdate + timedelta(days=1)
+
+            counts = Order.objects.filter(order_items__item__merchant=self.kwargs['pk'],
+                                               ordered_date__range=[startdate, enddate]).count()
+
+            count.append(counts)
+            enddate = enddate.strftime('%m/%d/%Y')
+            dates_count.append(enddate)
+            i += 1
+
+        dictionary = dict(zip(dates_count, count))
+
         #count_9 = Order.objects.annotate(abc=Count('user')).filter(order_items__item__merchant=self.kwargs['pk']).distinct().count()
-        count_9 = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct().count()
+        count_15 = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct().count()
 
         return Response(
             {'active_users_now': count_2,
-             'total_customers': count_9,
+             'total_customers': count_15,
                 'total_orders': count_1,
              'total_categories': count_3,
              'total_subcategories' : count_6,
              'total_products_available': count_4,
              'total_prodcuts_sold': count_5,
              'total_earnings': count_7,
-             # 'total_orders_of_the_week': count_8},
+
+             'orders_with_dates':dictionary
+
              },
             status=status.HTTP_200_OK)
 
 
-class UpdateOrderView(UpdateAPIView):
+class UpdateOrderView(UpdateAPIView,DestroyAPIView):
     permission_classes = [AllowAny]
     #queryset = Order.objects.prefetch_related('order_items').all()
+    #value = self.kwargs['pk']
     queryset = Order.objects.all()
+    print(queryset)
     serializer_class = OrderUpdateSerializer
+
+
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({
+            "message": "Order has been deleted successfully."
+        },
+            status=status.HTTP_204_NO_CONTENT)
+
+    def perform_destroy(self, instance):
+        instance.delete()
 
 class CustomersOfAMerchantView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = CustomerProfileSerializer
     pagination_class = CustomPagination
+    search_fields = ['first_name', 'last_name', 'order_items_status']
+    ordering_fields = ['ordered_date']
 
     def get_queryset(self):
         abc = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct()

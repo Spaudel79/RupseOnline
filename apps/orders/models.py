@@ -79,13 +79,13 @@ class Order(models.Model):
     def final_price(self):
         total = sum([_.price_1 for _ in self.order_items.all()])
         total -= Decimal(self.price_of_points)
-        print(total)
+
         return total
 
     @property
     def price_of_points(self):
         point_spent = self.point_spent
-        print(point_spent)
+
         if point_spent == 0:
             return 0.0
         elif point_spent <= 10000.0 and point_spent >0:

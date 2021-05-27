@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
-from .pagination import CustomPagination
+
 from .filter import ProductFilter
 from django.shortcuts import get_object_or_404
 from .serializers import *
@@ -241,6 +241,9 @@ class GetReviewAPIView(ListAPIView):
 class SellerProductsAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = ProductSerializer
+    filter_backends = [SearchFilter,OrderingFilter]
+    search_fields = ['name',]
+    ordering_fields = ['variants__price','name']
     pagination_class = CustomPagination
 
     def get_queryset(self):

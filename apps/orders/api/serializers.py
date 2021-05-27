@@ -90,14 +90,9 @@ class OrderItemSerializer(serializers.ModelSerializer):
     #OrderItem.objects.annotate(total_item_price=F('quantity') * F('item.variants.price'))
 
 class OrderItemUpdateSerializer(serializers.ModelSerializer):
-    #order_variants = VariantSerializer(read_only=True)
-    #order_variants =VariantSerializer()
     item = serializers.PrimaryKeyRelatedField(read_only=True)
-    #id = serializers.PrimaryKeyRelatedField(read_only=False)
     id = serializers.IntegerField()
     order = serializers.PrimaryKeyRelatedField(read_only=True)
-    # order_variants = serializers.PrimaryKeyRelatedField(read_only=True)
-    #orderItem_ID=serializers.ReadOnlyField()
     class Meta:
         model = OrderItem
         fields = ['id','item','order','order_variants', 'quantity','order_item_status','price']
