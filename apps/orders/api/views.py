@@ -170,7 +170,6 @@ class WishListItemsView(ListAPIView):
 
 class AddtoOrderItemView(ListCreateAPIView):
     permission_classes = [IsAuthenticated]
-    #queryset = OrderItem.objects.all()
     serializer_class = OrderSerializer
 
     # def post(self, request, pk):
@@ -196,9 +195,6 @@ class OrderDetailView(ListAPIView):
     serializer_class = OrderDetailSerializer
     permission_classes = (IsAuthenticated,)
 
-    # def get_object(self):
-    #     try:
-    #         order = Order.objects.get(user=self.request.user, ordered=False)
 
     def get_queryset(self):
         try:
@@ -213,7 +209,7 @@ class BillingInfoView(ListAPIView):
     serializer_class = BillingInfoSerializer
 
 class SellerOrderView(ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = OrderDetailSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['user__first_name','user__last_name','order_items_status' ]
@@ -228,7 +224,7 @@ class SellerOrderView(ListAPIView):
 
 
 class DashboardView(ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         count_1 = Order.objects.filter(order_items__item__merchant=self.kwargs['pk']).count()
@@ -278,7 +274,7 @@ class DashboardView(ListAPIView):
 
 
 class UpdateOrderView(UpdateAPIView,DestroyAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     #queryset = Order.objects.prefetch_related('order_items').all()
     #value = self.kwargs['pk']
     queryset = Order.objects.all()
@@ -299,7 +295,7 @@ class UpdateOrderView(UpdateAPIView,DestroyAPIView):
         instance.delete()
 
 class CustomersOfAMerchantView(ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = CustomerProfileSerializer
     pagination_class = CustomPagination
     search_fields = ['first_name', 'last_name', 'order_items_status']
