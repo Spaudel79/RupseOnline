@@ -16,13 +16,47 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ("id", "name","image",'subcategory')
         #fields = '__all__'
 
+    def create(self, validated_data):
+        name = validated_data.get('name')
+        image = validated_data.get('image')
+        category = Category.objects.create(name=name,image=image)
+
+        category.save()
+
+        subcategory_data = validated_data.get('subcategory')
+
+
+        for subcategory_data in subcategory_data:
+            abc = Subcategory.objects.create(**subcategory_data)
+            category.subcategory.add(abc)
+
+        category.save()
+        return category
+
+
+
+
+
+
 class BrandSerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
 
     class Meta:
         model = Brand
-        fields = '__all__'
-        # fields = ("id", "name", "image")
+        fields = ("id",'brand_category', "name", 'featured',"image")
+
+    def create(self, validated_data):
+        name = validated_data.get('name')
+        featured = validated_data.get('featured')
+        image = validated_data.get('image')
+
+        brand = Brand.objects.create(name=name,featured=featured,image=image)
+
+
+        brand_category_data = validated_data.get('brand_category')
+        brand.brand_category.set(brand_category_data)
+        brand.save()
+        return brand
 
 class CollectionSerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
@@ -78,7 +112,7 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
 
 class  AddProductSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
-    variants = VariantSerializer(many=True,required=False)
+    #variants = VariantSerializer(many=True,required=False)
     slug = serializers.SlugField(read_only=True)
     # category = serializers.SlugRelatedField(
     #     many=True,
@@ -141,14 +175,12 @@ class  AddProductSerializer(serializers.ModelSerializer):
             xyz = ImageBucket.objects.create(**picture_data)
             product.picture.add(xyz)
 
-         product.save()
-         for variants_data in variants_data:
-             abc = Variants.objects.create(**variants_data)
-             product.variants.add(abc)
-         # for abc in variants_data:
-         #     #product.variants.set(['variants'])
+         product.variants.set(variants_data)
+         # product.save()
+         # for variants_data in variants_data:
+         #     abc = Variants.objects.create(**variants_data)
          #     product.variants.add(abc)
-         #product.variants.set(variants_data)
+
          product.save()
          return product
 

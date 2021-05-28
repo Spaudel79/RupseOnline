@@ -28,21 +28,51 @@ from rest_framework.parsers import FormParser,JSONParser,MultiPartParser
 #     search_fields = ["category__name", "name", "description"]
 
 class CategoryAPIView(ListCreateAPIView):
-    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.request.method == 'GET':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 class BrandAPIView(ListCreateAPIView):
-    permission_classes = [AllowAny]
+
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['brand_category']
 
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.request.method == 'GET':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
+
 class CollectionAPIView(ListCreateAPIView):
-    permission_classes = [AllowAny]
+
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.request.method == 'GET':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAdminUser]
+        return [permission() for permission in permission_classes]
 
 class ProductAPIView(ListAPIView):
     permission_classes = [AllowAny]
@@ -261,6 +291,13 @@ class ProductAddAPIView(CreateAPIView):
     #     collection = get_object_or_404(Collection, pk=self.kwargs['pk'])
     #     serializer.save(brand=brand,collection=collection)
 
+class VarinatAddAPIView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = Variants.objects.all()
+    print(queryset)
+    serializer_class = VariantSerializer
+
+
 
 class ProductDeleteView(DestroyAPIView):
     permission_classes = [IsAuthenticated]
@@ -293,7 +330,6 @@ class BannersView(
     queryset = Banners.objects.all().order_by('-id')[:1]
     serializer_class = BannersSerializer
 
-    # def list(self, request, *args, **kwargs):
-    #     return (request,*args,**kwargs)
+
 
 
