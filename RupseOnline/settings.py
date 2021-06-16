@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'imagekit',
+    'debug_toolbar',
 
     #custom apps
     'apps.accounts',
@@ -92,6 +93,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
      # 'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
@@ -201,6 +203,12 @@ CKEDITOR_CONFIGS = {
         'height': 400
     },
 }
+
+INTERNAL_IPS = [
+
+    '127.0.0.1',
+
+]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 

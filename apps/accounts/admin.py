@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
-    list_display = ("first_name", "last_name", "email", "is_customer", "is_seller")
+    list_display = ("id","first_name", "last_name", "email", "is_customer", "is_seller")
     list_filter = ("first_name", "last_name", "email", "is_staff", "is_active","is_staff")
     fieldsets = (
         (None, {"fields": ("email", "password")}),

@@ -66,9 +66,9 @@
 # print(d.get('c'))
 # # print(d.pop('c'))
 
-abc = 'Here, is, the word'
-print(abc)
-print(type(abc))
-abc_new = abc.split(",")
-print(abc_new)
-print(type(abc_new))
+# abc = 'Here, is, the word'
+# print(abc)
+# print(type(abc))
+# abc_new = abc.split(",")
+# print(abc_new)
+# print(type(abc_new))

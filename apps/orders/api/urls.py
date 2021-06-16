@@ -47,4 +47,9 @@ urlpatterns = [
     #points-api
     #path('api/points',views.PointsView.as_view(),name ='api-points')
 
+    #coupons-api
+    path('api/coupons',views.CouponView.as_view()),
+    path('api/coupons/<int:pk>',views.CouponView.as_view()),
+
+
 ]

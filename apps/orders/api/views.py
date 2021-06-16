@@ -13,7 +13,7 @@ from django.http import Http404
 from .serializers import *
 from apps.products.models import *
 from ..import models
-from ..models import CartItem, Cart, WishList,WishListItems
+from ..models import CartItem, Cart, WishList,WishListItems,Coupons
 from rest_framework.permissions import (AllowAny,IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -160,6 +160,7 @@ class WishListItemsView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        print(WishListItems.objects.filter(owner=user).select_related('owner').query)
         return WishListItems.objects.filter(owner=user)
 
 
@@ -203,10 +204,12 @@ class OrderDetailView(ListAPIView):
         except ObjectDoesNotExist:
             raise Http404("You do not have an active order")
 
+
 class BillingInfoView(ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = BillingDetails.objects.all()
     serializer_class = BillingInfoSerializer
+
 
 class SellerOrderView(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -217,10 +220,8 @@ class SellerOrderView(ListAPIView):
     pagination_class = CustomPagination
 
     def get_queryset(self):
-        #return Order.objects.filter(item__merchant=self.kwargs['pk'])
+        # return Order.objects.filter(item__merchant=self.kwargs['pk'])
         return Order.objects.filter(order_items__item__merchant=self.kwargs['pk'])
-
-
 
 
 class DashboardView(ListAPIView):
@@ -235,17 +236,16 @@ class DashboardView(ListAPIView):
         count_6 = Subcategory.objects.count()
         count_7 = OrderItem.objects.filter(item__merchant=self.kwargs['pk']).aggregate(Sum('price'))
 
-
         count = []
         dates_count = []
 
-        i=1
-        while (i <= 31):
+        i = 1
+        while i <= 31:
             startdate = datetime.today() - timedelta(days=i)
             enddate = startdate + timedelta(days=1)
 
             counts = Order.objects.filter(order_items__item__merchant=self.kwargs['pk'],
-                                               ordered_date__range=[startdate, enddate]).count()
+                                          ordered_date__range=[startdate, enddate]).count()
 
             count.append(counts)
             enddate = enddate.strftime('%m/%d/%Y')
@@ -254,7 +254,8 @@ class DashboardView(ListAPIView):
 
         dictionary = dict(zip(dates_count, count))
 
-        #count_9 = Order.objects.annotate(abc=Count('user')).filter(order_items__item__merchant=self.kwargs['pk']).distinct().count()
+        # count_9 = Order.objects.annotate(abc=Count('user')).
+        # filter(order_items__item__merchant=self.kwargs['pk']).distinct().count()
         count_15 = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct().count()
 
         return Response(
@@ -273,13 +274,16 @@ class DashboardView(ListAPIView):
             status=status.HTTP_200_OK)
 
 
-class UpdateOrderView(UpdateAPIView,DestroyAPIView):
+class UpdateOrderView(UpdateAPIView,DestroyAPIView,ListAPIView):
     permission_classes = [IsAuthenticated]
     #queryset = Order.objects.prefetch_related('order_items').all()
     #value = self.kwargs['pk']
     queryset = Order.objects.all()
-    print(queryset)
+
     serializer_class = OrderUpdateSerializer
+
+    def get_queryset(self):
+        return Order.objects.filter(id=self.kwargs['pk'])
 
 
 
@@ -305,6 +309,45 @@ class CustomersOfAMerchantView(ListAPIView):
         abc = Customer.objects.filter(customer__order__order_items__item__merchant=self.kwargs['pk']).distinct()
         #abc = Customer.objects.all()
         return abc
+
+
+class CouponView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self,request,pk,*args,**kwargs):
+        abc = Coupons.objects.all()
+        serializer = CouponSerializer(abc,many=True)
+        return Response (serializer.data)
+
+
+    def post(self,reuest,*args,**kwargs):
+        serializer = CouponSerializer(data=reuest.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,{
+                "message":"Coupon has been created"
+            })
+        return Response(serializer.errors)
+
+    def put(self,request,pk,*args,**kwargs):
+        id =pk
+        coupon = Coupons.objects.get(id=id)
+        serializer = CouponSerializer(coupon)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,{
+                "message":"Coupon hase been updated"
+            })
+        return Response(serializer.data)
+
+    def delete(self,pk,reuest,*args,**kwargs):
+        id = pk
+        coupon = Coupons.objects.get(id=id)
+        coupon.delete()
+        return Response({"message":"Coupon has been deleted"})
+
+
+
 
 
 

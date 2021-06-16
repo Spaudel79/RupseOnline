@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework.filters import SearchFilter, OrderingFilter
 # from django_filters.rest_framework import as filterset
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
 
 from .filter import ProductFilter
 from django.shortcuts import get_object_or_404
@@ -18,14 +19,7 @@ RetrieveUpdateAPIView, RetrieveAPIView, mixins)
 from rest_framework.parsers import FormParser,JSONParser,MultiPartParser
 
 
-# class ProductViewSet(viewsets.ModelViewSet):
-#     queryset = Product.objects.all()
-#     # permission_classes = [permissions.IsAuthenticated, ]
-#     serializer_class = ProductSerializer
-#     lookup_field = "slug"
-#
-#     filter_backends = [SearchFilter, OrderingFilter]
-#     search_fields = ["category__name", "name", "description"]
+
 
 class CategoryAPIView(ListCreateAPIView):
 
@@ -74,10 +68,19 @@ class CollectionAPIView(ListCreateAPIView):
             permission_classes = [IsAdminUser]
         return [permission() for permission in permission_classes]
 
+
+# class ProductAPIView(ListAPIView):
+#     permission_classes = [AllowAny]
+#     serializer_class = ProductSerializer
+#     #queryset = Product.objects.all()
+#
+#     queryset = Product.objects.select_related('merchant','brand','collection','sub_category')
+#     pagination_class = CustomPagination
+
 class ProductAPIView(ListAPIView):
     permission_classes = [AllowAny]
-    queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    queryset = Product.objects.select_related('jpt')
     filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['availability',
     #                     'warranty', 'services'
@@ -282,7 +285,7 @@ class SellerProductsAPIView(ListAPIView):
 
 class ProductAddAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = [MultiPartParser,JSONParser,FormParser]
+    # parser_classes = [MultiPartParser,JSONParser,FormParser]
     # queryset = Product.objects.all()
     serializer_class = AddProductSerializer
 
@@ -291,12 +294,23 @@ class ProductAddAPIView(CreateAPIView):
     #     collection = get_object_or_404(Collection, pk=self.kwargs['pk'])
     #     serializer.save(brand=brand,collection=collection)
 
+import json
+# class ProductAddAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+#
+#     def post(self,request,*args,**kwargs):
+#         serializer = AddProductSerializer(data=request.data)
+#         if serializer.is_valid():
+#             return Response(serializer.data,{
+#                 "message":"Product has been created"
+#             })
+#         return Response(serializer.errors)
+
 class VarinatAddAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Variants.objects.all()
     print(queryset)
     serializer_class = VariantSerializer
-
 
 
 class ProductDeleteView(DestroyAPIView):

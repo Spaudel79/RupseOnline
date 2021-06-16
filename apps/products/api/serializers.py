@@ -112,7 +112,7 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
 
 class  AddProductSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
-    #variants = VariantSerializer(many=True,required=False)
+    variants = VariantSerializer(many=True)
     slug = serializers.SlugField(read_only=True)
     # category = serializers.SlugRelatedField(
     #     many=True,
@@ -136,10 +136,15 @@ class  AddProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
          #user = self.context['request'].user
+
          picture_data = validated_data.get('picture')
+
          merchant = validated_data.get('merchant')
+
          category_data = validated_data.get('category')
+
          featured = validated_data.get('featured')
+
          top_rated = validated_data.get('top_rated')
          brand = validated_data.get('brand')
          collection = validated_data.get('collection')
@@ -155,8 +160,13 @@ class  AddProductSerializer(serializers.ModelSerializer):
 
         #variants_logic
 
-         variants_data = validated_data.get('variants')
 
+         variants_data = validated_data.get('variants')
+         #breakpoint()
+         print(variants_data)
+
+
+         # from pudb import set_trace;set_trace()
 
          #products-logic
 
@@ -168,18 +178,18 @@ class  AddProductSerializer(serializers.ModelSerializer):
                                           availability=availability,warranty=warranty,
                                           services=services,merchant=merchant)
          product.save()
-         #category_data = Category.objects.filter(category__in=category_data)
+
 
          product.category.set(category_data)
-         for picture_data in picture_data:
-            xyz = ImageBucket.objects.create(**picture_data)
-            product.picture.add(xyz)
+         # for picture_data in picture_data:
+         #    xyz = ImageBucket.objects.create(**picture_data)
+         #    product.picture.add(xyz)
 
-         product.variants.set(variants_data)
-         # product.save()
-         # for variants_data in variants_data:
-         #     abc = Variants.objects.create(**variants_data)
-         #     product.variants.add(abc)
+         # product.variants.set(variants_data)
+         product.save()
+         for variants_data in variants_data:
+             abc = Variants.objects.create(**variants_data)
+             product.variants.add(abc)
 
          product.save()
          return product

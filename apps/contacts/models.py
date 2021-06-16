@@ -48,6 +48,9 @@ class Contact(models.Model):
     class Meta:
         verbose_name_plural = 'Customer Messages'
 
+    def __str__(self):
+        return self.full_name
+
 class ContactInfo(models.Model):
     location_1 = models.CharField(max_length=255,blank=True)
     location_2 = models.CharField(max_length=255, blank=True)

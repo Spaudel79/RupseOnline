@@ -223,6 +223,8 @@ class Points(models.Model):
     post_save.connect(collect_points, sender=Order)
 
 class Coupons(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE,
+                                blank=True,null=True,related_name="coupons")
     code = models.CharField(max_length=50,unique=True)
     valid_form = models.DateTimeField()
     valid_till = models.DateTimeField()

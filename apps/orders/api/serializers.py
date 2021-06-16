@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ..models import Cart, CartItem,WishList,WishListItems,OrderItem,Order,BillingDetails
+from apps.orders.models import Cart, CartItem,WishList,WishListItems,OrderItem,Order,BillingDetails,Coupons
 from apps.products.models import Product,Variants
 from apps.accounts.models import CustomUser
 from django.db.models import F
@@ -147,10 +147,16 @@ class OrderSerializer(serializers.ModelSerializer):
     #         OrderItem.objects.create(order=order,**order_items)
     #     return order
 
+
     def create(self, validated_data):
         user = self.context['request'].user
         if not user.is_seller:
+
             order_items = validated_data.pop('order_items')
+            # breakpoint()
+            # print(order_items)
+            # print(validated_data)
+            # print(**validated_data)
             billing_details = validated_data.pop('billing_details')
             order = Order.objects.create(user=user, **validated_data)
             BillingDetails.objects.create(user=user, order=order, **billing_details)
@@ -207,8 +213,8 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['id','ordered','order_status','order_items','total_price','billing_details']
-
+        fields = ['id','ordered','ordered_date','order_status','order_items','total_price','current_points','billing_details']
+        depth= 2
 
 
     def update(self, instance, validated_data):
@@ -273,8 +279,14 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         #super().save()
         #super().save()
         instance.save()
-        return super().update(instance,validated_data)
-        #return instance
+        super().update(instance,validated_data)
+        return instance
+
+
+class CouponSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Coupons
+        fields ='__all__'
 
 
 
