@@ -36,4 +36,7 @@ urlpatterns = [
 
     #banners_api
     path('api/banners',views.BannersView.as_view(),name='api-banners'),
+
+    #images
+    path('api/image',views.ImageView.as_view(),name='api-images'),
 ]

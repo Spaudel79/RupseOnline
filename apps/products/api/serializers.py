@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import Product, Category, Brand, Collection,Review,Variants,ImageBucket,Banners,Subcategory
+from ..models import Product, Category, Brand, Collection,Review,Variants,ImageBucket,Banners,Subcategory,Images
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 
@@ -110,10 +110,19 @@ class ProductSerializer(TaggitSerializer,serializers.ModelSerializer):
         # lookup_field = "slug"
         depth = 1
 
+class  SAddProductSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Product
+        fields = ['id','merchant','featured', 'top_rated','category','brand','collection','sub_category',
+                  'name','slug','description', 'main_product_image','best_seller','picture',
+                  'rating','availability','warranty','services','variants']
+
 class  AddProductSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(read_only=True)
     variants = VariantSerializer(many=True)
     slug = serializers.SlugField(read_only=True)
+    # category = serializers.PrimaryKeyRelatedField(required=False,read_only=True)
     # category = serializers.SlugRelatedField(
     #     many=True,
     #     queryset=Category.objects.all(),
@@ -135,6 +144,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
         #depth = 1
 
     def create(self, validated_data):
+         print(validated_data)
          #user = self.context['request'].user
 
          picture_data = validated_data.get('picture')
@@ -142,6 +152,7 @@ class  AddProductSerializer(serializers.ModelSerializer):
          merchant = validated_data.get('merchant')
 
          category_data = validated_data.get('category')
+         print(category_data)
 
          featured = validated_data.get('featured')
 
@@ -158,12 +169,13 @@ class  AddProductSerializer(serializers.ModelSerializer):
          warranty = validated_data.get('warranty')
          services = validated_data.get('services')
 
-        #variants_logic
+         print(validated_data)
+         #variants_logic
 
 
          variants_data = validated_data.get('variants')
          #breakpoint()
-         print(variants_data)
+         # print(variants_data)
 
 
          # from pudb import set_trace;set_trace()
@@ -180,10 +192,12 @@ class  AddProductSerializer(serializers.ModelSerializer):
          product.save()
 
 
-         product.category.set(category_data)
+
          # for picture_data in picture_data:
          #    xyz = ImageBucket.objects.create(**picture_data)
          #    product.picture.add(xyz)
+
+
 
          # product.variants.set(variants_data)
          product.save()
@@ -298,4 +312,9 @@ class Test(serializers.Serializer):
 class BannersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Banners
+        fields = '__all__'
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Images
         fields = '__all__'

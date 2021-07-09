@@ -205,3 +205,9 @@ class Banners(models.Model):
         verbose_name_plural = 'Banner Images'
 
 
+class Images(models.Model):
+    pic = models.ImageField(upload_to="sample/images", blank=True)
+
+
+
+
